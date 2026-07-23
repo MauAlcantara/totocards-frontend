@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PedidoService {
-  private apiUrl = 'http://localhost:3000/api/pedidos';
+  private apiUrl = 'https://totocards-backend.onrender.com/api/pedidos';
 
   constructor(private http: HttpClient) {}
 

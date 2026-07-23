@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ProductoService {
   // La URL de tu backend en Express.js
-  private apiUrl = 'http://localhost:3000/api/productos';
+  private apiUrl = 'https://totocards-backend.onrender.com/api/productos';
 
   constructor(private http: HttpClient) { }
 

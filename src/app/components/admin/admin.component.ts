@@ -33,7 +33,7 @@ export class AdminComponent implements OnInit {
   cargarUsuarios(): void {
     const token = localStorage.getItem('tototoken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get('http://localhost:3000/api/admin/usuarios', { headers }).subscribe({
+    this.http.get('https://totocards-backend.onrender.com/api/admin/usuarios', { headers }).subscribe({
       next: (datos: any) => this.usuarios = datos,
       error: (err) => console.error('Error al cargar usuarios', err)
     });
@@ -50,7 +50,7 @@ export class AdminComponent implements OnInit {
       precio: producto.precio
     };
 
-    this.http.put(`http://localhost:3000/api/admin/productos/${producto.id_producto}`, payload, { headers }).subscribe({
+    this.http.put(`https://totocards-backend.onrender.com/api/admin/productos/${producto.id_producto}`, payload, { headers }).subscribe({
       next: (res: any) => {
         this.toastService.mostrar('Inventario actualizado correctamente.', 'success');
         this.cargarProductos(); // Recargamos la lista
@@ -66,7 +66,7 @@ export class AdminComponent implements OnInit {
     const token = localStorage.getItem('tototoken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.put(`http://localhost:3000/api/admin/usuarios/${usuario.id_usuario}/estado`, { activo: nuevoEstado }, { headers })
+    this.http.put(`https://totocards-backend.onrender.com/api/admin/usuarios/${usuario.id_usuario}/estado`, { activo: nuevoEstado }, { headers })
       .subscribe({
         next: (res: any) => {
           this.toastService.mostrar(res.mensaje, nuevoEstado ? 'success' : 'info');
