@@ -13,11 +13,12 @@ import { ToastService } from '../../services/toast.service';
   styleUrls: ['./product-detail.component.css']
 })
 export class ProductDetailComponent implements OnInit {
-  // Inicialmente no hay producto (null) y mostramos un estado de carga
   producto: any = null;
   cargando: boolean = true;
+  
+  // 1. NUEVA VARIABLE: Controla el número del contador
+  cantidadSeleccionada: number = 1;
 
-  // Inyectamos ActivatedRoute y nuestro Servicio
   constructor(
     private route: ActivatedRoute,
     private productoService: ProductoService,
@@ -26,29 +27,44 @@ export class ProductDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 1. Capturar el "id" que viene en la URL (ejemplo: /producto/3)
     const idProducto = this.route.snapshot.paramMap.get('id');
     
-
     if (idProducto) {
-      // 2. Pedirle al backend los datos de ese ID específico
       this.productoService.obtenerProductoPorId(idProducto).subscribe({
         next: (datos) => {
-          this.producto = datos; // Llenamos nuestra variable con la info de Postgres
-          this.cargando = false; // Quitamos el estado de carga
+          this.producto = datos; 
+          this.cargando = false; 
         },
         error: (err) => {
           console.error('Error al cargar el detalle del producto:', err);
           this.cargando = false;
         }
       });
-      
     }  
   }
+
+  // 2. NUEVA FUNCIÓN: Sube la cantidad, pero topa con el límite de stock
+  aumentarCantidad(): void {
+    if (this.producto && this.cantidadSeleccionada < this.producto.stock) {
+      this.cantidadSeleccionada++;
+    }
+  }
+
+  // 3. NUEVA FUNCIÓN: Baja la cantidad, pero nunca menos de 1
+  disminuirCantidad(): void {
+    if (this.cantidadSeleccionada > 1) {
+      this.cantidadSeleccionada--;
+    }
+  }
+
+  // 4. ACTUALIZADA: Ahora envía la "cantidadSeleccionada" en lugar de un "1" fijo
   agregarItem(): void {
     if (this.producto && this.producto.stock > 0) {
-      this.cartService.agregarAlCarrito(this.producto, 1);
-    this.toastService.mostrar(`Articulo añadido: ${this.producto.nombre}`, 'success');
+      this.cartService.agregarAlCarrito(this.producto, this.cantidadSeleccionada);
+      this.toastService.mostrar(`Articulo añadido: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
+      
+      // Opcional: Reiniciamos el contador a 1 después de añadir al carrito
+      this.cantidadSeleccionada = 1; 
     }
   }
 }

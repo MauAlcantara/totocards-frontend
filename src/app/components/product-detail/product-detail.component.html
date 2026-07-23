@@ -13,13 +13,15 @@
     <div class="image-gallery-column">
 
       <div class="main-product-image-box">
+
         <span class="detail-badge" [ngClass]="{
-            'nuevo': producto.estado === 'DISPONIBLE',
-            'agotado': producto.estado === 'AGOTADO',
-            'popular': producto.estado === 'PREVENTA'
+            'nuevo': producto.stock > 0 && producto.estado === 'DISPONIBLE',
+            'agotado': producto.stock === 0 || producto.estado === 'AGOTADO',
+            'popular': producto.stock > 0 && producto.estado === 'PREVENTA'
           }">
-          {{ producto.estado }}
+          {{ producto.stock === 0 ? 'AGOTADO' : producto.estado }}
         </span>
+
         <img [src]="producto.imagen_url" [alt]="producto.nombre">
       </div>
 
@@ -48,9 +50,9 @@
 
       <div class="purchase-actions-box" *ngIf="producto.stock > 0">
         <div class="quantity-selector">
-          <button>-</button>
-          <span class="quantity-value">1</span>
-          <button>+</button>
+          <button (click)="disminuirCantidad()">-</button>
+          <span class="quantity-value">{{ cantidadSeleccionada }}</span>
+          <button (click)="aumentarCantidad()">+</button>
         </div>
         <button class="primary-add-to-cart-btn" (click)="agregarItem()">
           🛒 Añadir al Carrito
