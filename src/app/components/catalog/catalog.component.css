@@ -1,0 +1,219 @@
+.catalog-container-minimal {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.catalog-header {
+  margin-bottom: 30px;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 20px;
+}
+
+.catalog-header h2 {
+  font-size: 2.5rem;
+  color: var(--color-primario);
+  margin: 0 0 10px 0;
+}
+
+.catalog-header p {
+  color: #718096;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Barra horizontal de filtros */
+.horizontal-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+  background-color: white;
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  border: 1px solid #edf2f7;
+}
+
+.filter-dropdown select,
+.filter-sort select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  color: var(--color-texto);
+  font-family: var(--fuente-cuerpo);
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-sort {
+  margin-left: auto;
+}
+
+/* Empuja el ordenamiento a la derecha */
+
+/* Cuadrícula completa */
+.products-grid-full {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+/* Reutilizar estilos de tarjetas pulidas */
+.tcg-card {
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #edf2f7;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tcg-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+.tcg-card:hover .card-image img {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 6px;
+  z-index: 10;
+}
+
+.badge.nuevo {
+  background-color: var(--color-detalles);
+  color: var(--color-texto);
+}
+
+.badge.popular {
+  background-color: #4a5568;
+}
+
+.badge.preventa {
+  background-color: #1f909c;
+}
+
+.badge.agotado {
+  background-color: #ae0b0b;
+}
+
+.card-image {
+  width: 100%;
+  height: 240px;
+  background-color: var(--color-fondo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+  transition: transform 0.3s ease;
+}
+
+.card-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.stars {
+  color: var(--color-detalles);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.card-info h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  color: var(--color-texto);
+  min-height: 44px;
+}
+
+.price {
+  font-size: 1.3rem;
+  color: var(--color-primario);
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.add-button {
+  background-color: var(--color-acento);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+  margin-top: auto;
+}
+
+.add-button:hover {
+  background-color: #c62c0a;
+}
+
+/* --- ESTILOS DEL EVENTO: OFERTA RELÁMPAGO --- */
+.flash-sale-banner {
+  background: linear-gradient(90deg, #e53e3e 0%, #c53030 100%);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+  /* Animación de latido para llamar a la acción urgente */
+  animation: pulseAlert 2s infinite;
+}
+
+.flash-sale-banner p {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+}
+
+.flash-icon {
+  font-size: 1.6rem;
+}
+
+/* Efecto de pulso que simula urgencia (e-commerce real) */
+@keyframes pulseAlert {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(229, 62, 62, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
+  }
+}

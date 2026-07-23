@@ -1,0 +1,49 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Únete a TotoCards</h2>
+      <p>Crea tu cuenta oficial y empieza a armar tu mazo competitivo 2026.</p>
+    </div>
+
+    <div class="auth-error-banner" *ngIf="mensajeError">⚠️ {{ mensajeError }}</div>
+    <div class="auth-success-banner" *ngIf="mensajeExito">✅ {{ mensajeExito }}</div>
+
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="auth-form">
+
+      <div class="form-group">
+        <label for="nombre">Nombre Completo</label>
+        <input type="text" id="nombre" formControlName="nombre" placeholder="Tu nombre completo"
+          [ngClass]="{'input-error': registroForm.get('nombre')?.touched && registroForm.get('nombre')?.invalid}">
+        <span class="error-msg"
+          *ngIf="registroForm.get('nombre')?.touched && registroForm.get('nombre')?.hasError('required')">El nombre es
+          requerido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" formControlName="email" placeholder="ejemplo@totocards.com"
+          [ngClass]="{'input-error': registroForm.get('email')?.touched && registroForm.get('email')?.invalid}">
+        <span class="error-msg"
+          *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('invalid')">Formato de correo
+          inválido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña (Mínimo 6 caracteres)</label>
+        <input type="password" id="password" formControlName="password" placeholder="Crea una clave segura"
+          [ngClass]="{'input-error': registroForm.get('password')?.touched && registroForm.get('password')?.invalid}">
+        <span class="error-msg"
+          *ngIf="registroForm.get('password')?.touched && registroForm.get('password')?.hasError('minlength')">Debe
+          tener al menos 6 caracteres.</span>
+      </div>
+
+      <button type="submit" class="auth-submit-btn" [disabled]="registroForm.invalid || cargando">
+        {{ cargando ? 'Procesando Registro...' : 'Crear Cuenta TCG' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿Ya eres parte del club? <a routerLink="/login">Inicia sesión aquí</a></p>
+    </div>
+  </div>
+</div>

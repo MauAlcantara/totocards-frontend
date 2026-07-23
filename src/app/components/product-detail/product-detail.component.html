@@ -1,0 +1,89 @@
+<div *ngIf="cargando" class="loading-spinner">
+  <p>Cargando los tesoros de la boveda TCG...</p>
+</div>
+
+<main class="detail-container" *ngIf="!cargando && producto">
+
+  <div class="breadcrumb">
+    <a routerLink="/catalogo">← Volver al catálogo</a>
+  </div>
+
+  <div class="detail-layout">
+
+    <div class="image-gallery-column">
+
+      <div class="main-product-image-box">
+        <span class="detail-badge" [ngClass]="{
+            'nuevo': producto.estado === 'DISPONIBLE',
+            'agotado': producto.estado === 'AGOTADO',
+            'popular': producto.estado === 'PREVENTA'
+          }">
+          {{ producto.estado }}
+        </span>
+        <img [src]="producto.imagen_url" [alt]="producto.nombre">
+      </div>
+
+      <p class="protection-notice">
+        Todos nuestros productos de alto valor son manipulados con guantes de nitrilo y enviados en empaques a prueba de
+        daños para garantizar su condición Mint.
+      </p>
+    </div>
+
+    <div class="info-checkout-column">
+
+      <div class="product-type-tag">{{ producto.categoria }}</div>
+      <div class="detail-stars">★★★★★ <span class="reviews-count">(Valoración máxima)</span></div>
+
+      <h2>{{ producto.nombre }}</h2>
+
+      <div class="price-stock-card">
+        <p class="detail-price">${{ producto.precio }} MXN</p>
+        <p class="stock-status" [ngClass]="{
+            'out-of-stock': producto.stock === 0,
+            'low-stock': producto.stock > 0 && producto.stock <= 5
+          }">
+          {{ producto.stock > 0 ? '✓ ' + producto.stock + ' Disponibles en Bóveda' : '✗ Agotado Temporalmente' }}
+        </p>
+      </div>
+
+      <div class="purchase-actions-box" *ngIf="producto.stock > 0">
+        <div class="quantity-selector">
+          <button>-</button>
+          <span class="quantity-value">1</span>
+          <button>+</button>
+        </div>
+        <button class="primary-add-to-cart-btn" (click)="agregarItem()">
+          🛒 Añadir al Carrito
+        </button>
+      </div>
+
+      <div class="out-of-stock-notice" *ngIf="producto.stock === 0">
+        Actualmente no contamos con existencias de este artículo en nuestra bóveda. Mantente atento a nuestras redes
+        para próximos re-stocks.
+      </div>
+
+      <div class="product-description-block">
+        <h3>Descripción del Producto</h3>
+        <p>{{ producto.descripcion }}</p>
+      </div>
+
+      <div class="technical-specs-table">
+        <h3>Ficha Técnica</h3>
+        <ul>
+          <li><span>Expansión:</span> <strong>{{ producto.expansion }}</strong></li>
+          <li><span>Lanzamiento:</span>
+            <strong>{{ producto.fecha_lanzamiento ? (producto.fecha_lanzamiento | date:'longDate') : 'Ya disponible'
+              }}</strong>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div *ngIf="!cargando && !producto" class="error-container">
+  <h2>¡Ups! Carta no encontrada</h2>
+  <p>El artículo que estás buscando no existe en nuestro inventario actual.</p>
+  <a routerLink="/catalogo" class="btn-error">Regresar al catálogo</a>
+</div>

@@ -1,0 +1,49 @@
+<main class="checkout-container">
+  <h2>Finalizar Compra</h2>
+
+  <div class="checkout-grid">
+
+    <div class="order-summary">
+      <h3>Resumen de tu Pedido</h3>
+
+      <div class="cart-item" *ngFor="let item of carrito">
+        <img [src]="item.imagen_url" [alt]="item.nombre" width="60">
+        <div class="item-info">
+          <h4>{{ item.nombre }}</h4>
+          <p>Cant: {{ item.cantidad }} x ${{ item.precio_unitario }}</p>
+          <button (click)="quitarItem(item.id_producto)"
+            style="background: none; border: none; color: #e53e3e; font-size: 0.8rem; cursor: pointer; padding: 0; margin-top: 5px;">✕
+            Quitar</button>
+        </div>
+        <div class="item-total">
+          ${{ item.quantity * item.precio_unitario || item.cantidad * item.precio_unitario }}
+        </div>
+      </div>
+      
+      <div *ngIf="carrito.length === 0 && !mensaje" style="text-align: center; padding: 20px;">
+        <p>Tu carrito está vacío. ¡Ve al catálogo a buscar expansiones!</p>
+        <a routerLink="/catalogo" style="color: var(--color-primario); font-weight: bold;">Explorar productos</a>
+      </div>
+
+      <div class="cart-total">
+        <span>Total a Pagar:</span>
+        <strong>${{ total }} MXN</strong>
+      </div>
+    </div>
+
+    <div class="payment-panel">
+      <h3>Método de Pago</h3>
+      <p class="secure-notice">🔒 Pagos procesados de forma segura mediante encriptación bancaria.</p>
+
+      <div class="server-message" *ngIf="mensaje"
+        [ngClass]="{'success': mensaje.includes('✅'), 'error': mensaje.includes('❌')}">
+        {{ mensaje }}
+      </div>
+
+      <button class="pay-btn" (click)="pagar()" [disabled]="cargando || carrito.length === 0">
+        {{ cargando ? 'Procesando el pago con el banco...' : 'Pagar Pedido Ahora' }}
+      </button>
+    </div>
+
+  </div>
+</main>

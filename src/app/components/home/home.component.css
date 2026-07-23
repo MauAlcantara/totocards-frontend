@@ -1,0 +1,325 @@
+/* --- CONTENEDOR RAÍZ --- */
+.body-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* --- CINTA CALENDARIZADA (AJUSTE PREMIUM FULL-WIDTH) --- */
+.seasonal-banner {
+  background: linear-gradient(90deg, #f6e05e 0%, #ecc94b 100%);
+  width: 100vw;
+  /* Borde a borde de pantalla completo */
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 14px 0;
+  box-shadow: 0 4px 15px rgba(236, 201, 75, 0.2);
+  border-radius: 0;
+  /* Eliminados bordes redondeados incorrectos */
+  margin-bottom: 0;
+  /* Eliminado espacio en blanco / desfase con el hero */
+  z-index: 20;
+  animation: slideDown 0.4s ease-out;
+}
+
+.seasonal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.sun-icon {
+  color: #744210;
+  animation: spin 25s linear infinite;
+}
+
+.seasonal-content p {
+  color: #744210;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* --- HERO BANNER --- */
+.hero-banner {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 530px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  margin-top: 0;
+  /* Garantiza unión hermética con el banner de arriba */
+}
+
+.fade-carousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.fade-carousel img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  z-index: 1;
+  font-size: 0;
+}
+
+.fade-carousel img.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.carousel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
+  z-index: 3;
+}
+
+.hero-text-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.mini-tag {
+  background-color: var(--color-detalles);
+  color: var(--color-texto);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-text-content h2 {
+  font-size: 3.5rem;
+  color: white;
+  line-height: 1.2;
+  margin: 0 0 15px 0;
+  max-width: 650px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-text-content p {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #f0f4f8;
+  margin-bottom: 35px;
+  max-width: 600px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.cta-button {
+  background-color: var(--color-acento);
+  color: white;
+  border: none;
+  padding: 16px 36px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(227, 53, 13, 0.5);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  background-color: #c62c0a;
+}
+
+/* --- SECCIÓN CATÁLOGO --- */
+.catalog-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 40px;
+  box-sizing: border-box;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.section-header h3 {
+  font-size: 2rem;
+  color: var(--color-primario);
+  margin: 0;
+}
+
+.section-header p {
+  margin: 5px 0 0 0;
+  color: #718096;
+}
+
+.view-all {
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.tcg-card {
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #edf2f7;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tcg-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+.tcg-card:hover .card-image img {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 6px;
+  z-index: 10;
+}
+
+.badge.nuevo {
+  background-color: var(--color-detalles);
+  color: var(--color-texto);
+}
+
+.badge.popular {
+  background-color: #4a5568;
+}
+
+.card-image {
+  width: 100%;
+  height: 260px;
+  background-color: var(--color-fondo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+  transition: transform 0.3s ease;
+}
+
+.card-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.stars {
+  color: var(--color-detalles);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.card-info h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  color: var(--color-texto);
+  min-height: 44px;
+}
+
+.price {
+  font-size: 1.3rem;
+  color: var(--color-primario);
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.add-button {
+  background-color: var(--color-acento);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+  margin-top: auto;
+}
+
+.add-button:hover {
+  background-color: #c62c0a;
+}
+
+/* --- ANIMACIONES --- */
+@keyframes slideDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

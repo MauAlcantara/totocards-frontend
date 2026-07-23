@@ -1,3 +1,26 @@
 import { Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
+import { CatalogComponent } from './components/catalog/catalog.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { PreventasComponent } from './components/preventas/preventas.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { authGuard } from './guards/auth.guard';
+import { RegistroComponent } from './components/registro/registro.component';
+import { LoginComponent } from './components/login/login.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { AdminComponent } from './components/admin/admin.component'; // Importar
+import { adminGuard } from './guards/admin.guard'; // Importar
 
-export const routes: Routes = [];
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },             
+  { path: 'catalogo', component: CatalogComponent },   
+  { path: 'contacto', component: ContactComponent },
+  { path: 'preventas', component: PreventasComponent },
+  { path: 'producto/:id', component: ProductDetailComponent },
+  { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] }, // 🔒 PROTEGIDO
+  { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
+  { path: 'login', component: LoginComponent },       // RUTA REGISTRADA
+  { path: 'registro', component: RegistroComponent }, // RUTA REGISTRADA
+  { path: '**', redirectTo: '' }                      
+];

@@ -1,0 +1,89 @@
+<main class="admin-container">
+  <h2>Panel de administración </h2>
+  <p>Panel exclusivo para la gestión de inventario y control de usuarios.</p>
+
+  <div class="admin-tabs">
+    <button [ngClass]="{'active': pestaniaActual === 'productos'}" (click)="pestaniaActual = 'productos'"> Gestionar
+      Inventario</button>
+    <button [ngClass]="{'active': pestaniaActual === 'usuarios'}" (click)="pestaniaActual = 'usuarios'">
+      Coleccionistas Registrados</button>
+  </div>
+
+  <section *ngIf="pestaniaActual === 'productos'" class="admin-table-section">
+    <h3>Catálogo Unificado de Artículos</h3>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Artículo</th>
+          <th>Expansión</th>
+          <th>Precio Base</th>
+          <th>Stock Actual</th>
+          <th>Estado del Ciclo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prod of productos">
+          <td><strong>{{ prod.id_producto }}</strong></td>
+          <td>{{ prod.nombre }}</td>
+          <td><span class="sub-text">{{ prod.expansion }}</span></td>
+          <td>${{ prod.precio }} MXN</td>
+
+          <td>
+            <input type="number" #inputStock [value]="prod.stock" class="table-input">
+          </td>
+
+          <td>
+            <select #selectEstado [value]="prod.estado" class="table-select">
+              <option value="DISPONIBLE">DISPONIBLE (Catálogo)</option>
+              <option value="PREVENTA">PREVENTA (Lanzamientos)</option>
+              <option value="AGOTADO">AGOTADO (Sin Existencias)</option>
+            </select>
+          </td>
+
+          <td>
+            <button class="btn-save-table"
+              (click)="guardarCambiosProducto(prod, inputStock.value, selectEstado.value)">Guardar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section *ngIf="pestaniaActual === 'usuarios'" class="admin-table-section">
+    <h3>Historial de Coleccionistas en la Plataforma</h3>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID Usuario</th>
+          <th>Nombre del Miembro</th>
+          <th>Correo Electrónico</th>
+          <th>Fecha de Ingreso</th>
+          <th>Estado de Cuenta</th>
+          <th>Administrar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of usuarios">
+          <td>#{{ user.id_usuario }}</td>
+          <td><strong>{{ user.nombre }}</strong></td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.fecha_registro | date:'mediumDate' }}</td>
+          <td>
+            <span
+              [ngStyle]="{'color': user.activo ? '#2f855a' : '#e53e3e', 'font-weight': 'bold', 'background': user.activo ? '#f0fff4' : '#fff5f5', 'padding': '4px 8px', 'border-radius': '6px'}">
+              {{ user.activo ? ' Habilitado' : ' Deshabilitado' }}
+            </span>
+          </td>
+          <td>
+            <button (click)="toggleEstadoUsuario(user)"
+              [ngStyle]="{'background': user.activo ? '#e53e3e' : '#2f855a', 'color': 'white', 'border': 'none', 'padding': '6px 12px', 'border-radius': '6px', 'cursor': 'pointer'}">
+              {{ user.activo ? 'Deshabilitar' : 'Reactivar' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>

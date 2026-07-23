@@ -1,0 +1,40 @@
+<main class="preorders-container">
+
+  <header class="preorders-header">
+    <div class="header-content">
+      <span class="mini-tag">Asegura tu colección</span>
+      <h2>Preventas Oficiales 2026</h2>
+      <p>Reserva los lanzamientos más esperados de Pokémon TCG antes de que se agoten. Desde la inminente llegada de
+        <strong>Pitch Black</strong> hasta la codiciada expansión <strong>30th Celebration</strong>.
+      </p>
+    </div>
+  </header>
+
+  <section class="products-grid-full">
+
+    <article class="tcg-card preorder-card" *ngFor="let producto of preventas">
+      <span class="badge" [ngClass]="{
+          'aniversario': producto.expansion === '30th Anniversary Promo', 
+          'alta-demanda': producto.stock <= 15
+        }">
+        {{ producto.estado }}
+      </span>
+
+      <div class="card-image" [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
+        <img [src]="producto.imagen_url" [alt]="producto.nombre">
+      </div>
+
+      <div class="card-info">
+        <div class="release-date">
+          Sale el: <strong>{{ producto.fecha_lanzamiento | date:'longDate' }}</strong>
+        </div>
+
+        <h4 [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">{{ producto.nombre }}</h4>
+        <p class="price">${{ producto.precio }}</p>
+
+        <button class="reserve-button">Reservar Ahora</button>
+      </div>
+    </article>
+
+  </section>
+</main>

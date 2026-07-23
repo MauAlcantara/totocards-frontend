@@ -1,0 +1,22 @@
+<main class="contact-container">
+  <h2>Centro de Soporte TotoCards</h2>
+  <p>¿Tienes dudas sobre una carta o tu pedido? Escríbenos y te responderemos a la brevedad posible (Comunicación
+    Asíncrona).</p>
+
+  <form *ngIf="!mensajeEnviado" (submit)="enviarMensaje($event)" class="async-form">
+    <label>Tu Correo Electrónico:</label>
+    <input type="email" placeholder="ejemplo@correo.com" required>
+
+    <label>Tu Mensaje:</label>
+    <textarea rows="5" placeholder="Escribe tu duda aquí..." required></textarea>
+
+    <button type="submit" class="submit-btn">Enviar Mensaje</button>
+    <p class="loading-text">{{ estadoEnvio }}</p>
+  </form>
+
+  <div *ngIf="mensajeEnviado" class="success-box">
+    <h3>¡Mensaje Recibido! ✅</h3>
+    <p>Hemos guardado tu ticket en nuestro servidor. Te responderemos por correo en menos de 24 horas.</p>
+    <button (click)="mensajeEnviado = false" class="submit-btn">Enviar otro mensaje</button>
+  </div>
+</main>

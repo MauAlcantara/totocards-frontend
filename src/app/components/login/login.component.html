@@ -1,0 +1,48 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>¡Bienvenido de vuelta, Coleccionista!</h2>
+      <p>Ingresa tus credenciales para acceder a tu bóveda TCG.</p>
+    </div>
+
+    <div class="auth-error-banner" *ngIf="mensajeError">
+      ⚠️ {{ mensajeError }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email" 
+          placeholder="ejemplo@totocards.com"
+          [ngClass]="{'input-error': loginForm.get('email')?.touched && loginForm.get('email')?.invalid}"
+        >
+        <span class="error-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">El correo es obligatorio.</span>
+        <span class="error-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')">Formato de correo no válido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          placeholder="••••••••"
+          [ngClass]="{'input-error': loginForm.get('password')?.touched && loginForm.get('password')?.invalid}"
+        >
+        <span class="error-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">La contraseña es obligatoria.</span>
+      </div>
+
+      <button type="submit" class="auth-submit-btn" [disabled]="loginForm.invalid || cargando">
+        {{ cargando ? 'Validando Credenciales...' : 'Iniciar Sesión' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿Eres nuevo en la comunidad? <a routerLink="/registro">Regístrate aquí</a></p>
+    </div>
+  </div>
+</div>

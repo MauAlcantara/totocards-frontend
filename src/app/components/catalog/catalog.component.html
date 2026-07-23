@@ -1,0 +1,57 @@
+<main class="catalog-container-minimal">
+  <header class="catalog-header">
+    <h2>Catálogo Completo</h2>
+    <p>Explora nuestra colección completa de productos sellados.</p>
+  </header>
+
+  <div class="flash-sale-banner" *ngIf="esFinDeSemana">
+    <span class="flash-icon">⚡</span>
+    <p><strong>¡OFERTA RELÁMPAGO DE FIN DE SEMANA!</strong> 10% de descuento automático al añadir ETB al carrito (Válido de Jueves a Domingo).</p>
+  </div>
+
+  <nav class="horizontal-filters">
+    <div class="filter-dropdown">
+      <select>
+        <option value="">Todas las Categorías</option>
+        <option value="sobre">Single Pack</option>
+        <option value="box">Elite Trainer Box</option>
+      </select>
+    </div>
+    <div class="filter-dropdown">
+      <select>
+        <option value="">Colección</option>
+        <option value="PerfectOrder">Perfect Order</option>
+        <option value="ChaosRising">Chaos Rising</option>
+        <option value="PitchBlack">Pitch Black</option>
+      </select>
+    </div>
+    <div class="filter-sort">
+      <select>
+        <option value="default">Ordenar por: Destacados</option>
+        <option value="price-low">Precio: Menor a Mayor</option>
+        <option value="price-high">Precio: Mayor a Menor</option>
+      </select>
+    </div>
+  </nav>
+
+  <div class="products-grid-full">
+    <div class="tcg-card" *ngFor="let producto of inventario">
+      <div class="badge" [ngClass]="{'nuevo': producto.estado === 'DISPONIBLE'}">
+        {{ producto.estado }}
+      </div>
+
+      <div class="card-image" [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
+        <img [src]="producto.imagen_url" [alt]="producto.nombre">
+      </div>
+
+      <div class="card-info">
+        <div class="stars">★★★★★</div>
+        <h4 [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
+          {{ producto.nombre }}
+        </h4>
+        <div class="price">${{ producto.precio }} MXN</div>
+        <button class="add-button">🛒 Añadir</button>
+      </div>
+    </div>
+  </div>
+</main>
