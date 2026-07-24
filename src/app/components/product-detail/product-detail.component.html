@@ -90,3 +90,14 @@
   <p>El artículo que estás buscando no existe en nuestro inventario actual.</p>
   <a routerLink="/catalogo" class="btn-error">Regresar al catálogo</a>
 </div>
+
+<div class="modal-overlay" *ngIf="mostrarModalLogin" (click)="cerrarModalLogin()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>¡Alto ahí, Coleccionista! 🛑</h3>
+    <p>Para poder armar tu carrito y apartar tus cartas, necesitas iniciar sesión o crear una cuenta en TotoCards.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>
+      <button class="btn-primary" routerLink="/login">Iniciar Sesión</button>
+    </div>
+  </div>
+</div>

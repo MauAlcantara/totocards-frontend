@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router} from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
 import { CartService } from '../../services/cart.service';
 import { ToastService } from '../../services/toast.service'; 
+import { AuthService } from '../../services/auth.service'; // 🔥 Agregamos AuthService
 
 @Component({
   selector: 'app-catalog',
@@ -15,11 +16,14 @@ import { ToastService } from '../../services/toast.service';
 export class CatalogComponent implements OnInit {
   inventario: any[] = [];
   esFinDeSemana: boolean = false;
+  mostrarModalLogin: boolean = false; 
 
   constructor
     (private productoService: ProductoService,
     private cartService: CartService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    public authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -43,11 +47,29 @@ this.productoService.obtenerProductos().subscribe({
     });
   }
   agregarItem(producto: any): void {
+    // 1. Validar si NO ha iniciado sesión (Invitado)
+    if (!this.authService.estaLogueado()) {
+      this.mostrarModalLogin = true;
+      return; // Detiene la función
+    }
+
+    // 2. Validar si es Administrador
+    const usuario = this.authService.obtenerUsuarioActual();
+    if (usuario?.roles?.includes('Administrador')) {
+      this.toastService.mostrar('Los administradores no pueden realizar compras en la tienda.', 'error');
+      return; // Detiene la función
+    }
+
+    // 3. Si es un usuario normal y hay stock, pasa al carrito
     if (producto && producto.stock > 0) {
       this.cartService.agregarAlCarrito(producto, 1);
       this.toastService.mostrar(`Articulo añadido: 1x ${producto.nombre}`, 'success');
     } else {
       this.toastService.mostrar('Este artículo está agotado por el momento.', 'error');
     }
+  }
+  
+  cerrarModalLogin(): void {
+    this.mostrarModalLogin = false;
   }
 }
