@@ -30,7 +30,15 @@ export class HeaderComponent implements OnInit {
     public authService: AuthService,
     private cartService: CartService,
     private router: Router
-  ) {}
+  ) { }
+  
+  get puedeVerCarrito(): boolean {
+    const estaLogueado = this.authService.estaLogueado();
+    const usuario = this.authService.obtenerUsuarioActual();
+    const esAdmin = usuario?.roles?.includes('Administrador');
+    
+    return estaLogueado && !esAdmin;
+  }
 
   ngOnInit(): void {
     // Motor Predictivo
@@ -52,7 +60,6 @@ export class HeaderComponent implements OnInit {
       error: (err) => console.error('Error buscando', err)
     });
 
-    // 🔥 CORRECCIÓN 2: Tipamos 'items' y 'item' como 'any' para que Vercel reconozca '.cantidad'
     this.cartService.carrito$.subscribe((items: any[]) => {
       this.totalItems = items.reduce((acc, item: any) => acc + item.cantidad, 0);
     });
