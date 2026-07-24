@@ -4,7 +4,7 @@
     <div class="seasonal-content">
       <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
         <path
-          d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zm0-10c.28 0 .5-.22.5-.5V3c0-.28-.22-.5-.5-.5s-.5.22-.5.5v1.5c0 .28.22.5 <b></b>.5.5zm0 14c-.28 0-.5.22-.5.5V21c0 .28.22.5.5.5s.5-.22.5-.5v-1.5c0-.28-.22-.5-.5-.5zm7.071-12.071c.2-.2.2-.51 0-.71l-1.061-1.061c-.2-.2-.51-.2-.71 0s-.2.51 0 .71l1.061 1.061c.2.2.51.2.71 0zM5.636 17.293c-.2.2-.2.51 0 .71l1.061 1.061c.2.2.51.2.71 0s.2-.51 0-.71l-1.061-1.061c-.2-.2-.51-.2-.71 0zM5.5 12c0-.28-.22-.5-.5-.5H3.5c-.28 0-.5.22-.5.5s.22.5.5.5H5c.28 0 .5-.22.5-.5zm15.5-.5c-.28 0-.5.22-.5.5s.22.5.5.5h1.5c.28 0 .5-.22.5-.5s-.22-.5-.5-.5H21zm-2.429 5.793c-.2-.2-.51-.2-.71 0s-.2.51 0 .71l1.061 1.061c.2.2.51.2.71 0s.2-.51 0-.71l-1.061-1.061zm-11.896-11.5c-.2-.2-.51-.2-.71 0L4.929 4.854c-.2.2-.2.51 0 .71s.51.2.71 0l1.061-1.061c.2-.2.2-.51 0-.71z" />
+          d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zm0-10c.28 0 .5-.22.5-.5V3c0-.28-.22-.5-.5-.5s-.5.22-.5.5v1.5c0 .28.22.5 .5.5zm0 14c-.28 0-.5.22-.5.5V21c0 .28.22.5.5.5s.5-.22.5-.5v-1.5c0-.28-.22-.5-.5-.5zm7.071-12.071c.2-.2.2-.51 0-.71l-1.061-1.061c-.2-.2-.51-.2-.71 0s-.2.51 0 .71l1.061 1.061c.2.2.51.2.71 0zM5.636 17.293c-.2.2-.2.51 0 .71l1.061 1.061c.2.2.51.2.71 0s.2-.51 0-.71l-1.061-1.061c-.2-.2-.51-.2-.71 0zM5.5 12c0-.28-.22-.5-.5-.5H3.5c-.28 0-.5.22-.5.5s.22.5.5.5H5c.28 0 .5-.22.5-.5zm15.5-.5c-.28 0-.5.22-.5.5s.22.5.5.5h1.5c.28 0 .5-.22.5-.5s-.22-.5-.5-.5H21zm-2.429 5.793c-.2-.2-.51-.2-.71 0s-.2.51 0 .71l1.061 1.061c.2.2.51.2.71 0s.2-.51 0-.71l-1.061-1.061zm-11.896-11.5c-.2-.2-.51-.2-.71 0L4.929 4.854c-.2.2-.2.51 0 .71s.51.2.71 0l1.061-1.061c.2-.2.2-.51 0-.71z" />
       </svg>
       <p><strong>¡FESTIVAL DE VERANO TCG 2026!</strong> Aprovecha envío gratis en todas las Elite Trainer Boxes durante
         todo el mes.</p>
@@ -23,16 +23,16 @@
       <h2>Expande tu mazo con las mejores cartas TCG</h2>
       <p>En TotoCards somos apasionados del juego. Encuentra los últimos lanzamientos, cartas raras y productos sellados
         con envíos seguros a todo el país. ¡Arma el mazo de tus sueños hoy mismo!</p>
-      <button class="cta-button">COMPRAR CAJA DE SOBRES</button>
+      <button class="cta-button" routerLink="/catalogo">COMPRAR CAJA DE SOBRES</button>
     </div>
   </section>
 
   <div class="catalog-wrapper">
     <section class="catalog-section">
       <div class="section-header">
-        <h3>⭐ Lo más vendido</h3>
+        <h3>Lo más vendido</h3>
         <p>Los productos favoritos de nuestra comunidad.</p>
-        <a href="#" class="view-all">Ver todo</a>
+        <a routerLink="/catalogo" class="view-all">Ver todo</a>
       </div>
 
       <div class="cards-grid">
@@ -45,7 +45,8 @@
             <div class="stars">⭐⭐⭐⭐⭐</div>
             <h4>Chaos Rising - Elite Trainer Box</h4>
             <p class="price">$1,590.00</p>
-            <button class="add-button">Añadir al carrito</button>
+
+            <button class="add-button" routerLink="/producto/1">Ver detalles</button>
           </div>
         </article>
 
@@ -58,7 +59,8 @@
             <div class="stars">⭐⭐⭐⭐★</div>
             <h4>Perfect Order - Elite Trainer Box</h4>
             <p class="price">$1,250.00</p>
-            <button class="add-button">Añadir al carrito</button>
+
+            <button class="add-button" routerLink="/producto/2">Ver detalles</button>
           </div>
         </article>
       </div>

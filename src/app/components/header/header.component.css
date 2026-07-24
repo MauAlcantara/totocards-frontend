@@ -40,7 +40,6 @@
 
 .navigation .main-nav-list>li {
   position: relative;
-  /* Bloque contenedor para el submenú */
   padding: 10px 0;
 }
 
@@ -60,7 +59,6 @@
 .dropdown-menu {
   position: absolute;
   top: 100%;
-  /* Cuelga exactamente debajo del li */
   left: 0;
   background-color: white !important;
   border-radius: 12px !important;
@@ -68,18 +66,15 @@
   padding: 10px 0 !important;
   min-width: 180px !important;
   z-index: 99999 !important;
-  /* Capa máxima por encima de todo */
 
   /* FORZAR COMPORTAMIENTO VERTICAL */
   display: block !important;
-  /* Rompe el flex heredado del padre */
   list-style: none !important;
   margin: 0 !important;
   border: 1px solid #edf2f7 !important;
   animation: dropdownFadeIn 0.2s ease-out;
 }
 
-/* Forzar que cada fila del submenú ocupe todo el ancho y no se encime */
 .dropdown-menu li {
   display: block !important;
   width: 100% !important;
@@ -90,7 +85,6 @@
 
 .dropdown-menu a {
   color: #2d3748 !important;
-  /* Forzar color oscuro para que sea legible en el fondo blanco */
   padding: 12px 20px !important;
   display: block !important;
   font-size: 0.95rem !important;
@@ -153,7 +147,6 @@
 .elastic-search-results {
   position: absolute;
   top: 120%;
-  /* Cuelga justo debajo de la barra de búsqueda */
   left: 0;
   width: 100%;
   background-color: white;
@@ -165,7 +158,6 @@
   z-index: 3000;
   max-height: 350px;
   overflow-y: auto;
-  /* Permite scroll si hay muchos resultados */
   border: 1px solid #edf2f7;
   animation: dropdownFadeIn 0.2s ease-out;
 }
@@ -178,7 +170,6 @@
 .elastic-search-results a {
   display: flex;
   justify-content: space-between;
-  /* Texto izq, Etiqueta der */
   align-items: center;
   padding: 10px 15px;
   text-decoration: none;
@@ -198,7 +189,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* Corta textos muy largos con "..." */
   max-width: 70%;
 }
 
@@ -234,9 +224,7 @@
   align-items: center;
   justify-content: center;
   z-index: 999999;
-  /* Por encima de cualquier header o footer */
   backdrop-filter: blur(4px);
-  /* Efecto cristalino moderno */
 }
 
 .modal-content {
@@ -331,7 +319,6 @@
   align-items: center;
   justify-content: center;
   width: 26px;
-  /* Tamaño del icono */
   height: 26px;
   transition: transform 0.2s;
 }
@@ -340,27 +327,22 @@
   transform: translateY(-2px);
 }
 
-/* Regla para pintar los SVG de blanco */
 .action-icon svg {
   width: 100%;
   height: 100%;
   fill: white;
 }
 
-/* Menú de perfil alineado hacia la izquierda */
 .profile-trigger {
   position: relative;
 }
 
 .profile-menu {
   left: auto !important;
-  /* Quita el alineamiento por defecto del catálogo */
   right: -10px !important;
-  /* Se alinea desde la derecha hacia la izquierda */
   min-width: 180px !important;
 }
 
-/* Enlace especial rojo para cerrar sesión */
 .logout-link {
   cursor: pointer;
   color: #e53e3e !important;
@@ -378,13 +360,9 @@
 .cart-badge {
   position: absolute;
   top: -8px;
-  /* Lo empuja hacia arriba del carrito */
   right: -10px;
-  /* Lo empuja hacia la derecha del carrito */
   background-color: #ffcb05;
-  /* Un amarillo TCG genial (puedes usar var(--color-acento) si prefieres rojo) */
   color: #2d3748;
-  /* Texto oscuro para que resalte en el amarillo */
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -394,14 +372,11 @@
   align-items: center;
   justify-content: center;
   border: 2px solid var(--color-primario);
-  /* Borde del mismo color que tu header para que parezca que "corta" el carrito */
   box-sizing: content-box;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  /* Pequeña sombra para dar relieve */
   z-index: 2;
 }
 
-/* Evitar que el globo se muestre si no hay items (Opcional, pero se ve más limpio) */
 .cart-badge:empty,
 .cart-badge:contains("0") {
   display: none;
