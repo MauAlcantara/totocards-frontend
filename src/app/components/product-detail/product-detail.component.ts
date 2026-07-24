@@ -80,7 +80,7 @@ export class ProductDetailComponent implements OnInit {
       this.cantidadSeleccionada = 1; 
     }
   }
-  
+
   validarCantidad(event: any): void {
     let valorEscrito = parseInt(event.target.value, 10);
 
@@ -95,6 +95,9 @@ export class ProductDetailComponent implements OnInit {
     }
 
     event.target.value = this.cantidadSeleccionada;
+  }
+  cerrarModalLogin(): void {
+    this.mostrarModalLogin = false;
   }
 }
 
