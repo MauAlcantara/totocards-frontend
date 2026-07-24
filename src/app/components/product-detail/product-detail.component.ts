@@ -15,8 +15,6 @@ import { ToastService } from '../../services/toast.service';
 export class ProductDetailComponent implements OnInit {
   producto: any = null;
   cargando: boolean = true;
-  
-  // 1. NUEVA VARIABLE: Controla el número del contador
   cantidadSeleccionada: number = 1;
 
   constructor(
@@ -43,28 +41,41 @@ export class ProductDetailComponent implements OnInit {
     }  
   }
 
-  // 2. NUEVA FUNCIÓN: Sube la cantidad, pero topa con el límite de stock
   aumentarCantidad(): void {
     if (this.producto && this.cantidadSeleccionada < this.producto.stock) {
       this.cantidadSeleccionada++;
     }
   }
 
-  // 3. NUEVA FUNCIÓN: Baja la cantidad, pero nunca menos de 1
+
   disminuirCantidad(): void {
     if (this.cantidadSeleccionada > 1) {
       this.cantidadSeleccionada--;
     }
   }
 
-  // 4. ACTUALIZADA: Ahora envía la "cantidadSeleccionada" en lugar de un "1" fijo
+  
   agregarItem(): void {
     if (this.producto && this.producto.stock > 0) {
       this.cartService.agregarAlCarrito(this.producto, this.cantidadSeleccionada);
       this.toastService.mostrar(`Articulo añadido: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
-      
-      // Opcional: Reiniciamos el contador a 1 después de añadir al carrito
       this.cantidadSeleccionada = 1; 
     }
   }
+  validarCantidad(event: any): void {
+    let valorEscrito = parseInt(event.target.value, 10);
+
+    if (isNaN(valorEscrito) || valorEscrito < 1) {
+      this.cantidadSeleccionada = 1;
+    } 
+    else if (valorEscrito > this.producto.stock) {
+      this.cantidadSeleccionada = this.producto.stock;
+    } 
+    else {
+      this.cantidadSeleccionada = valorEscrito;
+    }
+
+    event.target.value = this.cantidadSeleccionada;
+  }
 }
+

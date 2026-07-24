@@ -5,7 +5,7 @@
 <main class="detail-container" *ngIf="!cargando && producto">
 
   <div class="breadcrumb">
-    <a routerLink="/catalogo">← Volver al catálogo</a>
+    <a routerLink="/catalogo">Volver al catálogo</a>
   </div>
 
   <div class="detail-layout">
@@ -51,11 +51,12 @@
       <div class="purchase-actions-box" *ngIf="producto.stock > 0">
         <div class="quantity-selector">
           <button (click)="disminuirCantidad()">-</button>
-          <span class="quantity-value">{{ cantidadSeleccionada }}</span>
+          <input type="number" class="quantity-input" [value]="cantidadSeleccionada" (input)="validarCantidad($event)"
+            style="width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; background: transparent; appearance: textfield;">
           <button (click)="aumentarCantidad()">+</button>
         </div>
         <button class="primary-add-to-cart-btn" (click)="agregarItem()">
-          🛒 Añadir al Carrito
+          Añadir al Carrito
         </button>
       </div>
 

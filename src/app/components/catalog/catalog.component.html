@@ -36,21 +36,29 @@
 
   <div class="products-grid-full">
     <div class="tcg-card" *ngFor="let producto of inventario">
-      <div class="badge" [ngClass]="{'nuevo': producto.estado === 'DISPONIBLE'}">
-        {{ producto.estado }}
+  
+      <div class="badge" [ngClass]="{
+            'nuevo': producto.stock > 0 && producto.estado === 'DISPONIBLE',
+            'agotado': producto.stock === 0 || producto.estado === 'AGOTADO'
+          }">
+        {{ producto.stock === 0 ? 'AGOTADO' : producto.estado }}
       </div>
-
+  
       <div class="card-image" [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
         <img [src]="producto.imagen_url" [alt]="producto.nombre">
       </div>
-
+  
       <div class="card-info">
         <div class="stars">★★★★★</div>
         <h4 [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
           {{ producto.nombre }}
         </h4>
         <div class="price">${{ producto.precio }} MXN</div>
-        <button class="add-button">🛒 Añadir</button>
+  
+        <button class="add-button" (click)="agregarItem(producto)" [disabled]="producto.stock === 0"
+          [ngStyle]="{'background-color': producto.stock === 0 ? '#cbd5e1' : '', 'cursor': producto.stock === 0 ? 'not-allowed' : 'pointer'}">
+          {{ producto.stock > 0 ? ' Añadir' : 'Agotado' }}
+        </button>
       </div>
     </div>
   </div>
