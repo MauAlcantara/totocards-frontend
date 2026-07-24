@@ -13,6 +13,7 @@ import { adminGuard } from './guards/admin.guard';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { TerminosComponent } from './components/terminos/terminos.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
+import { PedidosComponent } from './components/pedidos/pedidos.component';
 
 
 export const routes: Routes = [
@@ -28,5 +29,6 @@ export const routes: Routes = [
   { path: 'privacidad', component: PrivacidadComponent },
   { path: 'terminos', component: TerminosComponent },
   { path: 'perfil', component: PerfilComponent },
+  { path: 'pedidos', component: PedidosComponent },
   { path: '**', redirectTo: '' }              
 ];

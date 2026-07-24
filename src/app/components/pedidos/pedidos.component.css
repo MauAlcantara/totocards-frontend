@@ -1,0 +1,172 @@
+.pedidos-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  min-height: 50vh;
+}
+
+.pedidos-header {
+  margin-bottom: 30px;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 15px;
+}
+
+.pedidos-header h2 {
+  font-size: 2.2rem;
+  color: var(--color-primario);
+  margin: 0 0 10px 0;
+}
+
+.pedidos-header p {
+  color: #718096;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* --- TARJETAS DE PEDIDO --- */
+.pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pedido-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #edf2f7;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pedido-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.pedido-info {
+  flex: 2;
+}
+
+.pedido-id {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--color-texto);
+  margin-bottom: 5px;
+}
+
+.pedido-fecha {
+  color: #718096;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.pedido-detalles {
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.pedido-estado {
+  flex: 1;
+  text-align: right;
+  padding-right: 30px;
+}
+
+.pedido-total {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--color-primario);
+  margin-top: 10px;
+}
+
+.badge-estado {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.badge-estado.pendiente {
+  background-color: #fefcbf;
+  color: #2b6cb0;
+}
+
+.badge-estado.camino {
+  background-color: #feebc8;
+  color: #c05621;
+}
+
+.badge-estado.entregado {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+.btn-detalles {
+  background-color: white;
+  color: var(--color-primario);
+  border: 2px solid var(--color-primario);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-detalles:hover {
+  background-color: var(--color-primario);
+  color: white;
+}
+
+/* --- ESTADO VACÍO --- */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: white;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  color: var(--color-texto);
+  margin: 0 0 10px 0;
+}
+
+.empty-state p {
+  color: #718096;
+  margin-bottom: 25px;
+}
+
+.btn-comprar {
+  background-color: var(--color-acento);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pedido-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .pedido-estado {
+    text-align: left;
+    padding-right: 0;
+  }
+}

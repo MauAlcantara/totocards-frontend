@@ -1,0 +1,42 @@
+<main class="pedidos-container">
+  <div class="pedidos-header">
+    <h2>Mis Compras</h2>
+    <p>Rastrea tus paquetes y revisa el historial de tu bóveda.</p>
+  </div>
+
+  <div class="loading-state" *ngIf="cargando">
+    <p>Consultando los registros de la bóveda...</p>
+  </div>
+
+  <div class="pedidos-list" *ngIf="!cargando && pedidos.length > 0">
+    <article class="pedido-card" *ngFor="let pedido of pedidos">
+      <div class="pedido-info">
+        <div class="pedido-id">Orden #{{ pedido.id_pedido }}</div>
+        <div class="pedido-fecha">Realizado el: {{ pedido.fecha | date:'longDate' }}</div>
+        <div class="pedido-detalles">{{ pedido.articulos }} Artículo(s) sellado(s)</div>
+      </div>
+
+      <div class="pedido-estado">
+        <span class="badge-estado" [ngClass]="{
+            'pendiente': pedido.estado === 'PENDIENTE',
+            'camino': pedido.estado === 'EN CAMINO',
+            'entregado': pedido.estado === 'ENTREGADO'
+          }">
+          {{ pedido.estado }}
+        </span>
+        <div class="pedido-total">${{ pedido.total }} MXN</div>
+      </div>
+
+      <div class="pedido-acciones">
+        <button class="btn-detalles">Ver Detalles</button>
+      </div>
+    </article>
+  </div>
+
+  <div class="empty-state" *ngIf="!cargando && pedidos.length === 0">
+    <div class="empty-icon">📦</div>
+    <h3>Aún no tienes pedidos</h3>
+    <p>Tu bóveda está vacía. ¡Es un buen momento para empezar tu colección!</p>
+    <button class="btn-comprar" routerLink="/catalogo">Explorar Catálogo</button>
+  </div>
+</main>
