@@ -381,3 +381,14 @@
 .cart-badge:contains("0") {
   display: none;
 }
+
+/* Clase para la miniatura de la foto de perfil en el Header */
+.header-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  /* Borde blanco para que resalte con el fondo */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
