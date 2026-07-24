@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router'; 
 import { ProductoService } from '../../services/producto.service';
 import { AuthService } from '../../services/auth.service'; 
-import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; // 🔥 Importamos 'of'
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { CartService } from '../../services/cart.service';
 export class HeaderComponent implements OnInit {
   // Menús
   menuAbierto: boolean = false;
-  perfilMenuAbierto: boolean = false; // <-- Nueva bandera para el menú de perfil
+  perfilMenuAbierto: boolean = false; 
   
   // Carrito y Búsqueda
   totalItems: number = 0; 
@@ -25,7 +25,6 @@ export class HeaderComponent implements OnInit {
   mostrarDropdown: boolean = false;
   private busquedaSubject = new Subject<string>();
 
-  // IMPORTANTE: Hicimos 'authService' public para que el HTML lo pueda leer directamente
   constructor(
     private productoService: ProductoService,
     public authService: AuthService,
@@ -35,14 +34,13 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     // Motor Predictivo
-    
     this.busquedaSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((termino) => {
         if (termino.trim() === '') {
           this.mostrarDropdown = false;
-          return [];
+          return of([]); // 🔥 CORRECCIÓN 1: Vercel exige retornar un Observable, no un array crudo '[]'
         }
         return this.productoService.buscarProductos(termino);
       })
@@ -53,9 +51,10 @@ export class HeaderComponent implements OnInit {
       },
       error: (err) => console.error('Error buscando', err)
     });
-    this.cartService.carrito$.subscribe(items => {
-      // Sumamos la cantidad de todas las cartas añadidas y actualizamos la variable
-      this.totalItems = items.reduce((acc, item) => acc + item.cantidad, 0);
+
+    // 🔥 CORRECCIÓN 2: Tipamos 'items' y 'item' como 'any' para que Vercel reconozca '.cantidad'
+    this.cartService.carrito$.subscribe((items: any[]) => {
+      this.totalItems = items.reduce((acc, item: any) => acc + item.cantidad, 0);
     });
   }
 
@@ -66,21 +65,18 @@ export class HeaderComponent implements OnInit {
   abrirMenu(): void { this.menuAbierto = true; }
   cerrarMenu(): void { this.menuAbierto = false; }
 
-  // Nuevas funciones para el hover del icono de perfil
   abrirMenuPerfil(): void { this.perfilMenuAbierto = true; }
   cerrarMenuPerfil(): void { this.perfilMenuAbierto = false; }
 
-  // Función crítica para destruir el Token y proteger la cuenta
   cerrarSesion(): void {
     this.authService.cerrarSesion();
-    this.cerrarMenuPerfil(); // Cerramos el menú
-    this.router.navigate(['/']); // Mandamos al usuario al Home
+    this.cerrarMenuPerfil(); 
+    this.router.navigate(['/']); 
   }
 
   // ==========================================
   // FUNCIONES DEL CARRITO Y BÚSQUEDA
   // ==========================================
-
   
   onCarritoClick(): void {
     if (this.authService.estaLogueado()) {
