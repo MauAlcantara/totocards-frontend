@@ -41,24 +41,34 @@
       <div class="price-stock-card">
         <p class="detail-price">${{ producto.precio }} MXN</p>
         <p class="stock-status" [ngClass]="{
-            'out-of-stock': producto.stock === 0,
-            'low-stock': producto.stock > 0 && producto.stock <= 5
-          }">
-          {{ producto.stock > 0 ? '✓ ' + producto.stock + ' Disponibles en Bóveda' : '✗ Agotado Temporalmente' }}
-        </p>
+          'out-of-stock': producto.stock === 0,
+          'low-stock': producto.stock > 0 && producto.stock <= 5
+        }">
+        <span *ngIf="producto.stock > 0 && producto.estado !== 'PREVENTA'">
+          ✓ {{ producto.stock }} Disponibles
+        </span>
+        <span *ngIf="producto.stock > 0 && producto.estado === 'PREVENTA'" style="color: #2b6cb0;">
+          Reservas Disponibles (Límite 2 por cliente)
+        </span>
+        <span *ngIf="producto.stock === 0">
+          ✗ Agotado Temporalmente
+        </span>
+      </p>
+    </div>
+
+    <div class="purchase-actions-box" *ngIf="producto.stock > 0">
+      <div class="quantity-selector">
+        <button (click)="disminuirCantidad()">-</button>
+        <input type="number" class="quantity-input" [value]="cantidadSeleccionada" (input)="validarCantidad($event)"
+        style="width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; background: transparent; appearance: textfield;">
+        <button (click)="aumentarCantidad()">+</button>
       </div>
 
-      <div class="purchase-actions-box" *ngIf="producto.stock > 0">
-        <div class="quantity-selector">
-          <button (click)="disminuirCantidad()">-</button>
-          <input type="number" class="quantity-input" [value]="cantidadSeleccionada" (input)="validarCantidad($event)"
-            style="width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; background: transparent; appearance: textfield;">
-          <button (click)="aumentarCantidad()">+</button>
-        </div>
-        <button class="primary-add-to-cart-btn" (click)="agregarItem()">
-          Añadir al Carrito
-        </button>
-      </div>
+      <button class="primary-add-to-cart-btn" (click)="agregarItem()"
+      [ngStyle]="{'background-color': producto.estado === 'PREVENTA' ? '#2d3748' : ''}">
+      {{ producto.estado === 'PREVENTA' ? 'Reservar Ahora' : 'Añadir al Carrito' }}
+    </button>
+  </div>
 
       <div class="out-of-stock-notice" *ngIf="producto.stock === 0">
         Actualmente no contamos con existencias de este artículo en nuestra bóveda. Mantente atento a nuestras redes
@@ -93,7 +103,7 @@
 
 <div class="modal-overlay" *ngIf="mostrarModalLogin" (click)="cerrarModalLogin()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <h3>¡Alto ahí, Coleccionista! 🛑</h3>
+    <h3>¡Alto ahí, Coleccionista! </h3>
     <p>Para poder armar tu carrito y apartar tus cartas, necesitas iniciar sesión o crear una cuenta en TotoCards.</p>
     <div class="modal-actions">
       <button class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>

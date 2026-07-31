@@ -46,7 +46,8 @@ export class ProductDetailComponent implements OnInit {
   }
 
   aumentarCantidad(): void {
-    if (this.producto && this.cantidadSeleccionada < this.producto.stock) {
+    const maximo = this.obtenerMaximoPermitido();
+    if (this.producto && this.cantidadSeleccionada < maximo) {
       this.cantidadSeleccionada++;
     }
   }
@@ -59,36 +60,41 @@ export class ProductDetailComponent implements OnInit {
   }
 
   
-  agregarItem(): void {
-    // 1. Validar si NO ha iniciado sesión (Invitado)
+agregarItem(): void {
     if (!this.authService.estaLogueado()) {
       this.mostrarModalLogin = true;
       return;
     }
 
-    // 2. Validar si es Administrador
     const usuario = this.authService.obtenerUsuarioActual();
     if (usuario?.roles?.includes('Administrador')) {
       this.toastService.mostrar('Los administradores no pueden realizar compras en la tienda.', 'error');
       return;
     }
 
-    // 3. Flujo normal
     if (this.producto && this.producto.stock > 0) {
       this.cartService.agregarAlCarrito(this.producto, this.cantidadSeleccionada);
-      this.toastService.mostrar(`Articulo añadido: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
+      
+      // Mensaje dinámico
+      if (this.producto.estado === 'PREVENTA') {
+        this.toastService.mostrar(`Reserva asegurada: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
+      } else {
+        this.toastService.mostrar(`Articulo añadido: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
+      }
+      
       this.cantidadSeleccionada = 1; 
     }
   }
 
   validarCantidad(event: any): void {
     let valorEscrito = parseInt(event.target.value, 10);
+    const maximo = this.obtenerMaximoPermitido();
 
     if (isNaN(valorEscrito) || valorEscrito < 1) {
       this.cantidadSeleccionada = 1;
     } 
-    else if (valorEscrito > this.producto.stock) {
-      this.cantidadSeleccionada = this.producto.stock;
+    else if (valorEscrito > maximo) {
+      this.cantidadSeleccionada = maximo;
     } 
     else {
       this.cantidadSeleccionada = valorEscrito;
@@ -98,6 +104,13 @@ export class ProductDetailComponent implements OnInit {
   }
   cerrarModalLogin(): void {
     this.mostrarModalLogin = false;
+  }
+
+  // Calcula el límite permitido
+  obtenerMaximoPermitido(): number {
+    if (!this.producto) return 1;
+    const limitePreventa = this.producto.estado === 'PREVENTA' ? 2 : this.producto.stock;
+    return Math.min(this.producto.stock, limitePreventa);
   }
 }
 

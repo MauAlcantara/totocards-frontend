@@ -32,7 +32,9 @@
         <h4 [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">{{ producto.nombre }}</h4>
         <p class="price">${{ producto.precio }}</p>
 
-        <button class="reserve-button">Reservar Ahora</button>
+        <button class="reserve-button" [routerLink]="['/producto', producto.id_producto]">
+          Reservar Ahora
+        </button>
       </div>
     </article>
 
