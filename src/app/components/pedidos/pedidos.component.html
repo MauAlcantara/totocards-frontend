@@ -11,10 +11,14 @@
   <div class="pedidos-list" *ngIf="!cargando && pedidos.length > 0">
     <article class="pedido-card" *ngFor="let pedido of pedidos">
       <div class="pedido-info">
-        <div class="pedido-id">Orden #{{ pedido.id_pedido }}</div>
-        <div class="pedido-fecha">Realizado el: {{ pedido.fecha | date:'longDate' }}</div>
-        <div class="pedido-detalles">{{ pedido.articulos }} Artículo(s) sellado(s)</div>
-      </div>
+        <div class="pedido-id">Orden #{{ formatearCodigoOrden(pedido.id_pedido) }}</div>
+        <div class="pedido-fecha">Realizado el: {{ pedido.fecha_creacion | date:'longDate' }}</div>
+        <div class="pedido-detalles">{{ pedido.articulos || 'Artículos' }} sellado(s)</div>
+
+        <span class="badge-envio" [ngClass]="pedido.es_preventa ? 'preventa' : 'inmediato'">
+              {{ pedido.es_preventa ? ' RESERVA (PRE-ORDEN)' : ' ENVÍO INMEDIATO' }}
+            </span>
+          </div>
 
       <div class="pedido-estado">
         <span class="badge-estado" [ngClass]="{
@@ -34,7 +38,7 @@
   </div>
 
   <div class="empty-state" *ngIf="!cargando && pedidos.length === 0">
-    <div class="empty-icon">📦</div>
+    <div class="empty-icon"></div>
     <h3>Aún no tienes pedidos</h3>
     <p>Tu bóveda está vacía. ¡Es un buen momento para empezar tu colección!</p>
     <button class="btn-comprar" routerLink="/catalogo">Explorar Catálogo</button>

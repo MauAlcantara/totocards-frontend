@@ -1,5 +1,5 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core'; // 1. Agregamos Inject y PLATFORM_ID
-import { isPlatformBrowser } from '@angular/common'; // 2. Importamos el verificador
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core'; 
+import { isPlatformBrowser } from '@angular/common'; 
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -9,10 +9,7 @@ export class CartService {
   private carritoSubject = new BehaviorSubject<any[]>([]);
   public carrito$: Observable<any[]> = this.carritoSubject.asObservable();
 
-  // 3. Inyectamos el ID de la plataforma en el constructor
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    
-    // 4. Envolvemos la lectura en un IF protector
     if (isPlatformBrowser(this.platformId)) {
       const carritoGuardado = localStorage.getItem('totocart');
       if (carritoGuardado) {
@@ -29,20 +26,31 @@ export class CartService {
     const carritoActual = [...this.obtenerCarrito()];
     const itemExistente = carritoActual.find(item => item.id_producto === producto.id_producto);
 
+    // 🔥 REGLA DE ORO: Si es preventa el límite máximo es 2, si no, es su stock real.
+    const limiteMaximo = producto.estado === 'PREVENTA' ? 2 : producto.stock;
+
     if (itemExistente) {
-      if (itemExistente.cantidad + cantidad <= producto.stock) {
-        itemExistente.cantidad += cantidad;
+      // Calculamos la suma de lo que YA tiene en el carrito + lo nuevo que intenta agregar
+      const nuevaCantidad = itemExistente.cantidad + cantidad;
+      
+      if (nuevaCantidad <= limiteMaximo) {
+        itemExistente.cantidad = nuevaCantidad;
       } else {
-        itemExistente.cantidad = producto.stock; 
+        // Si se pasa de listo, lo bloqueamos topándolo al límite máximo
+        itemExistente.cantidad = limiteMaximo; 
       }
     } else {
+      // Validamos que desde el primer clic no intenten inyectar una cantidad mayor
+      const cantidadInicial = cantidad > limiteMaximo ? limiteMaximo : cantidad;
+      
       carritoActual.push({
         id_producto: producto.id_producto,
         nombre: producto.nombre,
         precio_unitario: parseFloat(producto.precio),
-        cantidad: cantidad,
+        cantidad: cantidadInicial,
         imagen_url: producto.imagen_url,
-        stock: producto.stock 
+        stock: producto.stock,
+        estado: producto.estado // Guardamos el estado para usarlo en el front
       });
     }
 
@@ -58,10 +66,8 @@ export class CartService {
     this.actualizarEstado([]);
   }
 
-  // 5. Protegemos también la escritura
   private actualizarEstado(nuevoCarrito: any[]): void {
     this.carritoSubject.next(nuevoCarrito);
-    
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('totocart', JSON.stringify(nuevoCarrito));
     }

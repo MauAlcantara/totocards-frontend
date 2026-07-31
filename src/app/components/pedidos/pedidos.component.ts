@@ -15,7 +15,7 @@ export class PedidosComponent implements OnInit {
   pedidos: any[] = [];
   cargando: boolean = true;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   ngOnInit(): void {
     const token = localStorage.getItem('tototoken');
@@ -43,5 +43,16 @@ export class PedidosComponent implements OnInit {
           this.cargando = false;
         }
       });
+  }
+
+  formatearCodigoOrden(id: number | string): string {
+    if (!id) return 'TCG-0000';
+    // Si ya viene con el prefijo TCG (por ejemplo, en los datos fijos de muestra)
+    if (typeof id === 'string' && id.includes('TCG')) {
+      return id;
+    }
+    // Rellena con ceros a la izquierda hasta tener 4 dígitos
+    const numeroFormateado = String(id).padStart(4, '0');
+    return `TCG-${numeroFormateado}`;
   }
 }
