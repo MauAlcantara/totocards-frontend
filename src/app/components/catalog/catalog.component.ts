@@ -1,25 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router} from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // 🔥 Importamos FormsModule para binding de los selects
 import { ProductoService } from '../../services/producto.service';
 import { CartService } from '../../services/cart.service';
 import { ToastService } from '../../services/toast.service'; 
-import { AuthService } from '../../services/auth.service'; // 🔥 Agregamos AuthService
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule], // 🔥 Agregamos FormsModule aquí
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.css']
 })
 export class CatalogComponent implements OnInit {
   inventario: any[] = [];
+  inventarioFiltrado: any[] = []; // 🔥 Lista dinámica que se muestra en el HTML
   esFinDeSemana: boolean = false;
-  mostrarModalLogin: boolean = false; 
+  mostrarModalLogin: boolean = false;
 
-  constructor
-    (private productoService: ProductoService,
+  // 🔥 Variables de estado para los filtros
+  categoriaSeleccionada: string = '';
+  coleccionSeleccionada: string = '';
+  ordenSeleccionado: string = 'default';
+
+  // 🔥 Lista dinámica de colecciones/expansiones extraídas de la BD
+  coleccionesDisponibles: string[] = [];
+
+  constructor(
+    private productoService: ProductoService,
     private cartService: CartService,
     private toastService: ToastService,
     public authService: AuthService,
@@ -27,7 +37,6 @@ export class CatalogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // --- 1. LÓGICA DEL EVENTO CALENDARIZADO (DÍA DE LA SEMANA) ---
     const fechaActual = new Date();
     const diaSemana = fechaActual.getDay();
     
@@ -35,18 +44,68 @@ export class CatalogComponent implements OnInit {
       this.esFinDeSemana = true;
     }
 
-    // --- 2. CARGA DE BASE DE DATOS ---
-this.productoService.obtenerProductos().subscribe({
+    this.productoService.obtenerProductos().subscribe({
       next: (datosBackend) => {
+        // Filtrar productos que no sean preventas
         this.inventario = datosBackend.filter((prod: any) => prod.estado !== 'PREVENTA');
-        console.log('Catálogo cargado y filtrado:', this.inventario);
+        
+        // Extraemos dinámicamente las colecciones únicas presentes en la BD
+        const coleccionesSet = new Set(this.inventario.map(p => p.expansion).filter(Boolean));
+        this.coleccionesDisponibles = Array.from(coleccionesSet);
+
+        // Inicialmente mostramos todo el inventario
+        this.aplicarFiltros();
       },
       error: (error) => {
         console.error('Error al obtener los productos', error);
       }
     });
   }
-agregarItem(producto: any): void {
+
+  // 🔥 LÓGICA DE FILTRADO Y ORDENAMIENTO DINÁMICO
+  aplicarFiltros(): void {
+    let resultado = [...this.inventario];
+
+    // 1. Filtrar por Categoría
+    if (this.categoriaSeleccionada) {
+      resultado = resultado.filter(prod => {
+        const catProd = (prod.categoria || '').toLowerCase();
+        const nomProd = (prod.nombre || '').toLowerCase();
+        const catFiltro = this.categoriaSeleccionada.toLowerCase();
+
+        return catProd.includes(catFiltro) || nomProd.includes(catFiltro);
+      });
+    }
+
+    // 2. Filtrar por Colección / Expansión
+    if (this.coleccionSeleccionada) {
+      resultado = resultado.filter(prod => 
+        prod.expansion === this.coleccionSeleccionada
+      );
+    }
+
+    // 3. Ordenar por Precio
+    if (this.ordenSeleccionado === 'price-low') {
+      resultado.sort((a, b) => Number(a.precio) - Number(b.precio));
+    } else if (this.ordenSeleccionado === 'price-high') {
+      resultado.sort((a, b) => Number(b.precio) - Number(a.precio));
+    } else {
+      // Default: Disponibles primero, luego agotados
+      resultado.sort((a, b) => (b.stock > 0 ? 1 : 0) - (a.stock > 0 ? 1 : 0));
+    }
+
+    this.inventarioFiltrado = resultado;
+  }
+
+  // Limpiar todos los filtros con un clic
+  limpiarFiltros(): void {
+    this.categoriaSeleccionada = '';
+    this.coleccionSeleccionada = '';
+    this.ordenSeleccionado = 'default';
+    this.aplicarFiltros();
+  }
+
+  agregarItem(producto: any): void {
     if (!this.authService.estaLogueado()) {
       this.mostrarModalLogin = true;
       return; 
@@ -59,13 +118,11 @@ agregarItem(producto: any): void {
     }
 
     if (producto && producto.stock > 0) {
-      // 1. Verificamos el límite
       const carritoActual = this.cartService.obtenerCarrito();
       const itemEnCarrito = carritoActual.find(item => item.id_producto === producto.id_producto);
       const cantidadActual = itemEnCarrito ? itemEnCarrito.cantidad : 0;
       const maximoPermitido = producto.estado === 'PREVENTA' ? 2 : producto.stock;
 
-      // 2. Bloqueo si ya está en el límite
       if (cantidadActual >= maximoPermitido) {
         if (producto.estado === 'PREVENTA') {
           this.toastService.mostrar('Tienes el máximo permitido de preventas (2) en tu carrito.', 'error');
@@ -75,7 +132,6 @@ agregarItem(producto: any): void {
         return; 
       }
 
-      // 3. Flujo normal (Como en el catálogo siempre se agrega de 1 en 1, es directo)
       this.cartService.agregarAlCarrito(producto, 1);
       
       if (producto.estado === 'PREVENTA') {
@@ -87,7 +143,7 @@ agregarItem(producto: any): void {
       this.toastService.mostrar('Este artículo está agotado por el momento.', 'error');
     }
   }
-  
+
   cerrarModalLogin(): void {
     this.mostrarModalLogin = false;
   }

@@ -309,3 +309,32 @@
     transform: scale(1) translateY(0);
   }
 }
+
+/* Estilo del botón limpiar filtros */
+.btn-limpiar-filtros {
+  background-color: #e2e8f0;
+  color: #4a5568;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-limpiar-filtros:hover {
+  background-color: #cbd5e1;
+  color: #1a202c;
+}
+
+/* Mensaje cuando ningún producto coincide con el filtro */
+.no-filter-results {
+  text-align: center;
+  padding: 50px 20px;
+  background: white;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+  margin-top: 20px;
+  color: #718096;
+}

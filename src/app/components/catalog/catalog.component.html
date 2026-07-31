@@ -5,56 +5,66 @@
   </header>
 
   <div class="flash-sale-banner" *ngIf="esFinDeSemana">
-    <span class="flash-icon">⚡</span>
-    <p><strong>¡OFERTA RELÁMPAGO DE FIN DE SEMANA!</strong> 10% de descuento automático al añadir ETB al carrito (Válido de Jueves a Domingo).</p>
+    <span class="flash-icon"></span>
+    <p><strong>¡OFERTA RELÁMPAGO DE FIN DE SEMANA!</strong> 10% de descuento automático al añadir ETB al carrito (Válido
+      de Viernes a Domingo).</p>
   </div>
 
   <nav class="horizontal-filters">
+
     <div class="filter-dropdown">
-      <select>
+      <select [(ngModel)]="categoriaSeleccionada" (change)="aplicarFiltros()">
         <option value="">Todas las Categorías</option>
-        <option value="sobre">Single Pack</option>
-        <option value="box">Elite Trainer Box</option>
+        <option value="Sobres">Sobres (Booster Packs)</option>
+        <option value="Elite Trainer Box">Elite Trainer Box (ETB)</option>
+        <option value="Booster Box">Booster Box</option>
       </select>
     </div>
+
     <div class="filter-dropdown">
-      <select>
-        <option value="">Colección</option>
-        <option value="PerfectOrder">Perfect Order</option>
-        <option value="ChaosRising">Chaos Rising</option>
-        <option value="PitchBlack">Pitch Black</option>
+      <select [(ngModel)]="coleccionSeleccionada" (change)="aplicarFiltros()">
+        <option value="">Todas las Colecciones</option>
+        <option *ngFor="let coleccion of coleccionesDisponibles" [value]="coleccion">
+          {{ coleccion }}
+        </option>
       </select>
     </div>
+
     <div class="filter-sort">
-      <select>
+      <select [(ngModel)]="ordenSeleccionado" (change)="aplicarFiltros()">
         <option value="default">Ordenar por: Destacados</option>
         <option value="price-low">Precio: Menor a Mayor</option>
         <option value="price-high">Precio: Mayor a Menor</option>
       </select>
     </div>
+
+    <button *ngIf="categoriaSeleccionada || coleccionSeleccionada || ordenSeleccionado !== 'default'"
+      (click)="limpiarFiltros()" class="btn-limpiar-filtros">
+      ✕ Limpiar Filtros
+    </button>
   </nav>
 
   <div class="products-grid-full">
-    <div class="tcg-card" *ngFor="let producto of inventario">
-  
+    <div class="tcg-card" *ngFor="let producto of inventarioFiltrado">
+
       <div class="badge" [ngClass]="{
             'nuevo': producto.stock > 0 && producto.estado === 'DISPONIBLE',
             'agotado': producto.stock === 0 || producto.estado === 'AGOTADO'
           }">
         {{ producto.stock === 0 ? 'AGOTADO' : producto.estado }}
       </div>
-  
+
       <div class="card-image" [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
         <img [src]="producto.imagen_url" [alt]="producto.nombre">
       </div>
-  
+
       <div class="card-info">
         <div class="stars">★★★★★</div>
         <h4 [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
           {{ producto.nombre }}
         </h4>
         <div class="price">${{ producto.precio }} MXN</div>
-  
+
         <button class="add-button" (click)="agregarItem(producto)" [disabled]="producto.stock === 0"
           [ngStyle]="{'background-color': producto.stock === 0 ? '#cbd5e1' : '', 'cursor': producto.stock === 0 ? 'not-allowed' : 'pointer'}">
           {{ producto.stock > 0 ? ' Añadir' : 'Agotado' }}
@@ -62,10 +72,16 @@
       </div>
     </div>
   </div>
+
+  <div class="no-filter-results" *ngIf="inventarioFiltrado.length === 0 && inventario.length > 0">
+    <p> No se encontraron productos que coincidan con los filtros seleccionados.</p>
+    <button (click)="limpiarFiltros()" class="btn-primary" style="margin-top: 10px;">Ver todos los productos</button>
+  </div>
 </main>
+
 <div class="modal-overlay" *ngIf="mostrarModalLogin" (click)="cerrarModalLogin()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <h3>¡Alto ahí, Coleccionista! 🛑</h3>
+    <h3>¡Alto ahí, Coleccionista! </h3>
     <p>Para poder armar tu carrito y apartar tus cartas, necesitas iniciar sesión o crear una cuenta en TotoCards.</p>
     <div class="modal-actions">
       <button class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>
