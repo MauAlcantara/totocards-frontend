@@ -392,3 +392,16 @@
   /* Borde blanco para que resalte con el fondo */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+.btn-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  padding: 0;
+}
+
+.btn-search:hover {
+  transform: scale(1.1);
+  stroke: var(--color-primario);
+}

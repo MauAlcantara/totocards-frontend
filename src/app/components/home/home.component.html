@@ -30,40 +30,31 @@
   <div class="catalog-wrapper">
     <section class="catalog-section">
       <div class="section-header">
-        <h3>Lo más vendido</h3>
-        <p>Los productos favoritos de nuestra comunidad.</p>
+        <h3>Lo más destacado</h3>
+        <p>Los artículos de nuestra bóveda con mayor disponibilidad para envío inmediato.</p>
         <a routerLink="/catalogo" class="view-all">Ver todo</a>
       </div>
 
       <div class="cards-grid">
-        <article class="tcg-card">
-          <span class="badge nuevo">NUEVO</span>
-          <div class="card-image">
-            <img src="assets/ChaosRising.webp" alt="Chaos Rising - Elite Trainer Box">
+        <article class="tcg-card" *ngFor="let producto of productosDestacados">
+          <span class="badge nuevo">DESTACADO</span>
+
+          <div class="card-image" [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
+            <img [src]="producto.imagen_url" [alt]="producto.nombre">
           </div>
+
           <div class="card-info">
             <div class="stars">⭐⭐⭐⭐⭐</div>
-            <h4>Chaos Rising - Elite Trainer Box</h4>
-            <p class="price">$1,590.00</p>
+            <h4 [routerLink]="['/producto', producto.id_producto]" style="cursor: pointer;">
+              {{ producto.nombre }}
+            </h4>
+            <p class="price">${{ producto.precio }} MXN</p>
 
-            <button class="add-button" routerLink="/producto/1">Ver detalles</button>
-          </div>
-        </article>
-
-        <article class="tcg-card">
-          <span class="badge popular">POPULAR</span>
-          <div class="card-image">
-            <img src="assets/PerfectOrder.webp" alt="Perfect Order - Elite Trainer Box">
-          </div>
-          <div class="card-info">
-            <div class="stars">⭐⭐⭐⭐★</div>
-            <h4>Perfect Order - Elite Trainer Box</h4>
-            <p class="price">$1,250.00</p>
-
-            <button class="add-button" routerLink="/producto/2">Ver detalles</button>
+            <button class="add-button" [routerLink]="['/producto', producto.id_producto]">Ver detalles</button>
           </div>
         </article>
       </div>
+
     </section>
   </div>
 </main>

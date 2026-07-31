@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // 🔥 Importamos FormsModule para binding de los selects
 import { ProductoService } from '../../services/producto.service';
 import { CartService } from '../../services/cart.service';
@@ -33,6 +33,7 @@ export class CatalogComponent implements OnInit {
     private cartService: CartService,
     private toastService: ToastService,
     public authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -44,16 +45,26 @@ export class CatalogComponent implements OnInit {
       this.esFinDeSemana = true;
     }
 
+    this.route.queryParams.subscribe(params => {
+      if (params['cat'] === 'sobres') this.categoriaSeleccionada = 'Sobres';
+      else if (params['cat'] === 'etb') this.categoriaSeleccionada = 'Elite Trainer Box';
+      else if (params['cat'] === 'box') this.categoriaSeleccionada = 'Booster Box';
+      else this.categoriaSeleccionada = ''; // Ver todo
+
+      // Si el inventario ya se había cargado, re-filtramos de inmediato
+      if (this.inventario.length > 0) {
+        this.aplicarFiltros();
+      }
+    });
+
     this.productoService.obtenerProductos().subscribe({
       next: (datosBackend) => {
-        // Filtrar productos que no sean preventas
         this.inventario = datosBackend.filter((prod: any) => prod.estado !== 'PREVENTA');
         
-        // Extraemos dinámicamente las colecciones únicas presentes en la BD
         const coleccionesSet = new Set(this.inventario.map(p => p.expansion).filter(Boolean));
         this.coleccionesDisponibles = Array.from(coleccionesSet);
 
-        // Inicialmente mostramos todo el inventario
+        // 🔥 En vez de llamar aplicarFiltros() vacío, ahora aplicará lo que haya en la URL
         this.aplicarFiltros();
       },
       error: (error) => {
