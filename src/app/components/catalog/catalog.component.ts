@@ -46,24 +46,43 @@ this.productoService.obtenerProductos().subscribe({
       }
     });
   }
-  agregarItem(producto: any): void {
-    // 1. Validar si NO ha iniciado sesión (Invitado)
+agregarItem(producto: any): void {
     if (!this.authService.estaLogueado()) {
       this.mostrarModalLogin = true;
-      return; // Detiene la función
+      return; 
     }
 
-    // 2. Validar si es Administrador
     const usuario = this.authService.obtenerUsuarioActual();
     if (usuario?.roles?.includes('Administrador')) {
       this.toastService.mostrar('Los administradores no pueden realizar compras en la tienda.', 'error');
-      return; // Detiene la función
+      return; 
     }
 
-    // 3. Si es un usuario normal y hay stock, pasa al carrito
     if (producto && producto.stock > 0) {
+      // 1. Verificamos el límite
+      const carritoActual = this.cartService.obtenerCarrito();
+      const itemEnCarrito = carritoActual.find(item => item.id_producto === producto.id_producto);
+      const cantidadActual = itemEnCarrito ? itemEnCarrito.cantidad : 0;
+      const maximoPermitido = producto.estado === 'PREVENTA' ? 2 : producto.stock;
+
+      // 2. Bloqueo si ya está en el límite
+      if (cantidadActual >= maximoPermitido) {
+        if (producto.estado === 'PREVENTA') {
+          this.toastService.mostrar('Tienes el máximo permitido de preventas (2) en tu carrito.', 'error');
+        } else {
+          this.toastService.mostrar('Ya tienes todo el stock disponible en tu carrito.', 'error');
+        }
+        return; 
+      }
+
+      // 3. Flujo normal (Como en el catálogo siempre se agrega de 1 en 1, es directo)
       this.cartService.agregarAlCarrito(producto, 1);
-      this.toastService.mostrar(`Articulo añadido: 1x ${producto.nombre}`, 'success');
+      
+      if (producto.estado === 'PREVENTA') {
+        this.toastService.mostrar(`Reserva asegurada: 1x ${producto.nombre}`, 'success');
+      } else {
+        this.toastService.mostrar(`Articulo añadido: 1x ${producto.nombre}`, 'success');
+      }
     } else {
       this.toastService.mostrar('Este artículo está agotado por el momento.', 'error');
     }

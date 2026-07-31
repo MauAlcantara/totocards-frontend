@@ -73,13 +73,37 @@ agregarItem(): void {
     }
 
     if (this.producto && this.producto.stock > 0) {
-      this.cartService.agregarAlCarrito(this.producto, this.cantidadSeleccionada);
+      // 1. Verificamos cuántos hay en el carrito actualmente
+      const carritoActual = this.cartService.obtenerCarrito();
+      const itemEnCarrito = carritoActual.find(item => item.id_producto === this.producto.id_producto);
+      const cantidadActual = itemEnCarrito ? itemEnCarrito.cantidad : 0;
+      const maximoPermitido = this.obtenerMaximoPermitido();
+
+      // 2. Si ya llegó al límite, bloqueamos y mandamos la advertencia
+      if (cantidadActual >= maximoPermitido) {
+        if (this.producto.estado === 'PREVENTA') {
+          this.toastService.mostrar('Tienes el máximo permitido de preventas (2) en tu carrito.', 'error');
+        } else {
+          this.toastService.mostrar('Ya has agregado todo el stock disponible a tu carrito.', 'error');
+        }
+        return; // Detenemos la ejecución aquí
+      }
+
+      // 3. Ajustamos por si intenta agregar de golpe más de lo que le queda permitido
+      let cantidadAAgregar = this.cantidadSeleccionada;
+      let avisoExtra = '';
+      if (cantidadActual + cantidadAAgregar > maximoPermitido) {
+        cantidadAAgregar = maximoPermitido - cantidadActual;
+        avisoExtra = ` (Ajustado al límite permitido)`;
+      }
+
+      // 4. Agregamos al carrito e imprimimos el éxito real
+      this.cartService.agregarAlCarrito(this.producto, cantidadAAgregar);
       
-      // Mensaje dinámico
       if (this.producto.estado === 'PREVENTA') {
-        this.toastService.mostrar(`Reserva asegurada: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
+        this.toastService.mostrar(`Reserva asegurada: ${cantidadAAgregar}x ${this.producto.nombre}${avisoExtra}`, 'success');
       } else {
-        this.toastService.mostrar(`Articulo añadido: ${this.cantidadSeleccionada}x ${this.producto.nombre}`, 'success');
+        this.toastService.mostrar(`Articulo añadido: ${cantidadAAgregar}x ${this.producto.nombre}${avisoExtra}`, 'success');
       }
       
       this.cantidadSeleccionada = 1; 
