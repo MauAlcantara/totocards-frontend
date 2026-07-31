@@ -13,13 +13,18 @@ import { CartService } from '../../services/cart.service'; // Importar el carrit
 })
 export class CheckoutComponent implements OnInit {
   carrito: any[] = [];
+  subtotal: number = 0;
+  descuentoEtb: number = 0;
+  costoEnvio: number = 0;
+  envioGratisVerano: boolean = false;
   total: number = 0;
+
   cargando: boolean = false;
   mensaje: string = '';
 
   constructor(
     private pedidoService: PedidoService, 
-    private cartService: CartService, // Inyectamos el carrito
+    private cartService: CartService, 
     private router: Router
   ) {}
 
@@ -31,8 +36,34 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  calcularTotal(): void {
-    this.total = this.carrito.reduce((acc, item) => acc + (item.precio_unitario * item.cantidad), 0);
+calcularTotal(): void {
+    const fechaActual = new Date();
+    const diaSemana = fechaActual.getDay();
+    const mesActual = fechaActual.getMonth();
+    const anioActual = fechaActual.getFullYear();
+
+    // Evento 1: Fin de semana (Jueves 4, Viernes 5, Sábado 6, Domingo 0)
+    const esFinDeSemana = (diaSemana === 4 || diaSemana === 5 || diaSemana === 6 || diaSemana === 0);
+    
+    // Evento 2: Verano 2026 (Junio a Agosto)
+    this.envioGratisVerano = (anioActual === 2026 && mesActual >= 5 && mesActual <= 7);
+
+    this.subtotal = 0;
+    this.descuentoEtb = 0;
+
+    this.carrito.forEach(item => {
+      this.subtotal += (item.precio_unitario * item.cantidad);
+
+      // Si es fin de semana y el nombre del producto incluye "Elite Trainer Box" (sin importar mayúsculas)
+      if (esFinDeSemana && item.nombre.toLowerCase().includes('elite trainer box')) {
+        this.descuentoEtb += (item.precio_unitario * 0.10) * item.cantidad; // 10% de descuento
+      }
+    });
+
+    this.costoEnvio = this.envioGratisVerano ? 0 : 150.00; // Costo base de envío $150
+    
+    // Total final
+    this.total = this.subtotal - this.descuentoEtb + this.costoEnvio;
   }
 
   // Nueva función por si el usuario quiere arrepentirse y quitar un item desde la pasarela

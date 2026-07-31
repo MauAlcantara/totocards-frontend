@@ -115,3 +115,37 @@
   color: #c53030;
   border: 1px solid #fed7d7;
 }
+
+.cart-summary-details {
+  background-color: #f7fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+.summary-row.discount {
+  color: #e53e3e;
+  font-weight: bold;
+}
+
+.summary-row.shipping .free-shipping {
+  color: #38a169;
+  font-weight: bold;
+  background-color: #c6f6d5;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.summary-divider {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 15px 0;
+}

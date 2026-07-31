@@ -25,15 +25,35 @@
         <a routerLink="/catalogo" style="color: var(--color-primario); font-weight: bold;">Explorar productos</a>
       </div>
 
-      <div class="cart-total">
-        <span>Total a Pagar:</span>
-        <strong>${{ total }} MXN</strong>
-      </div>
+<div class="cart-summary-details">
+  <div class="summary-row">
+    <span>Subtotal</span>
+    <span>${{ subtotal | number:'1.2-2' }}</span>
+  </div>
+
+  <div class="summary-row discount" *ngIf="descuentoEtb > 0">
+    <span> Descuento Fin de Semana (10% en ETB):</span>
+    <span>-${{ descuentoEtb | number:'1.2-2' }}</span>
+  </div>
+
+  <div class="summary-row shipping">
+    <span>Envío a Bóveda:</span>
+    <span *ngIf="envioGratisVerano" class="free-shipping">¡GRATIS (Festival Verano)!</span>
+    <span *ngIf="!envioGratisVerano">$150.00</span>
+  </div>
+
+  <hr class="summary-divider">
+
+  <div class="cart-total">
+    <span>Total a Pagar:</span>
+    <strong>${{ total | number:'1.2-2' }} MXN</strong>
+  </div>
+</div>
     </div>
 
     <div class="payment-panel">
       <h3>Método de Pago</h3>
-      <p class="secure-notice">🔒 Pagos procesados de forma segura mediante encriptación bancaria.</p>
+      <p class="secure-notice"> Pagos procesados de forma segura mediante encriptación bancaria.</p>
 
       <div class="server-message" *ngIf="mensaje"
         [ngClass]="{'success': mensaje.includes('✅'), 'error': mensaje.includes('❌')}">
