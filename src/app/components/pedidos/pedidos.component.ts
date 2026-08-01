@@ -27,7 +27,6 @@ export class PedidosComponent implements OnInit {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // Hacemos la petición a tu servidor en Render
     this.http.get<any[]>('https://totocards-backend.onrender.com/api/pedidos/mis-compras', { headers })
       .subscribe({
         next: (data) => {
@@ -36,7 +35,6 @@ export class PedidosComponent implements OnInit {
         },
         error: (err) => {
           console.error('No se pudieron cargar los pedidos (Puede que la tabla aún no exista)', err);
-          // 🛠️ DATOS DE MUESTRA: Si el backend falla, mostramos uno falso para que el profe vea el diseño
           this.pedidos = [
             { id_pedido: 'TCG-8472', fecha: new Date(), total: 1590.00, estado: 'EN CAMINO', articulos: 1 }
           ];
@@ -47,11 +45,9 @@ export class PedidosComponent implements OnInit {
 
   formatearCodigoOrden(id: number | string): string {
     if (!id) return 'TCG-0000';
-    // Si ya viene con el prefijo TCG (por ejemplo, en los datos fijos de muestra)
     if (typeof id === 'string' && id.includes('TCG')) {
       return id;
     }
-    // Rellena con ceros a la izquierda hasta tener 4 dígitos
     const numeroFormateado = String(id).padStart(4, '0');
     return `TCG-${numeroFormateado}`;
   }

@@ -21,7 +21,6 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    // Definimos el formulario con sus reglas de validación
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -38,12 +37,10 @@ export class LoginComponent {
       next: (res) => {
         console.log('Login exitoso:', res);
         this.cargando = false;
-        // Redirigimos al catálogo o al Home
         this.router.navigate(['/catalogo']);
       },
       error: (err) => {
         this.cargando = false;
-        // Capturamos el error estructurado de Express
         this.mensajeError = err.error?.mensaje || 'Ocurrió un error en el servidor.';
       }
     });

@@ -38,7 +38,6 @@ export class PedidoDetalleComponent implements OnInit {
     }
   }
 
-  // Reciclamos la misma función para mantener la elegancia de los IDs
   formatearCodigoOrden(id: number): string {
     return `TCG-${String(id).padStart(4, '0')}`;
   }

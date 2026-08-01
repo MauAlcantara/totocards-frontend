@@ -11,6 +11,5 @@ import { RouterLink } from '@angular/router';
   ], 
 })
 export class FooterComponent {
-  // Año dinámico para el copyright
   anioActual: number = new Date().getFullYear();
 }

@@ -73,23 +73,20 @@ agregarItem(): void {
     }
 
     if (this.producto && this.producto.stock > 0) {
-      // 1. Verificamos cuántos hay en el carrito actualmente
       const carritoActual = this.cartService.obtenerCarrito();
       const itemEnCarrito = carritoActual.find(item => item.id_producto === this.producto.id_producto);
       const cantidadActual = itemEnCarrito ? itemEnCarrito.cantidad : 0;
       const maximoPermitido = this.obtenerMaximoPermitido();
 
-      // 2. Si ya llegó al límite, bloqueamos y mandamos la advertencia
       if (cantidadActual >= maximoPermitido) {
         if (this.producto.estado === 'PREVENTA') {
           this.toastService.mostrar('Tienes el máximo permitido de preventas (2) en tu carrito.', 'error');
         } else {
           this.toastService.mostrar('Ya has agregado todo el stock disponible a tu carrito.', 'error');
         }
-        return; // Detenemos la ejecución aquí
+        return; 
       }
 
-      // 3. Ajustamos por si intenta agregar de golpe más de lo que le queda permitido
       let cantidadAAgregar = this.cantidadSeleccionada;
       let avisoExtra = '';
       if (cantidadActual + cantidadAAgregar > maximoPermitido) {
@@ -97,7 +94,6 @@ agregarItem(): void {
         avisoExtra = ` (Ajustado al límite permitido)`;
       }
 
-      // 4. Agregamos al carrito e imprimimos el éxito real
       this.cartService.agregarAlCarrito(this.producto, cantidadAAgregar);
       
       if (this.producto.estado === 'PREVENTA') {
@@ -130,7 +126,6 @@ agregarItem(): void {
     this.mostrarModalLogin = false;
   }
 
-  // Calcula el límite permitido
   obtenerMaximoPermitido(): number {
     if (!this.producto) return 1;
     const limitePreventa = this.producto.estado === 'PREVENTA' ? 2 : this.producto.stock;

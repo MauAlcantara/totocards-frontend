@@ -11,10 +11,8 @@ export class PedidoService {
   constructor(private http: HttpClient) {}
 
   procesarCheckout(pedido: any): Observable<any> {
-    // Obtenemos el token guardado del login
     const token = localStorage.getItem('tototoken');
     
-    // Lo adjuntamos a las cabeceras HTTP por seguridad
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
     return this.http.post(`${this.apiUrl}/checkout`, pedido, { headers });

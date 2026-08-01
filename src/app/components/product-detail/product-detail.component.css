@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 
-/* --- NAV RETORNO --- */
 .breadcrumb {
   margin-bottom: 25px;
 }
@@ -22,7 +21,6 @@
   color: var(--color-acento);
 }
 
-/* --- DISPOSICIÓN DE COLUMNAS --- */
 .detail-layout {
   display: flex;
   gap: 60px;
@@ -33,7 +31,6 @@
   border: 1px solid #edf2f7;
 }
 
-/* --- COLUMNA IZQUIERDA (IMAGEN) --- */
 .image-gallery-column {
   flex: 1;
   display: flex;
@@ -59,7 +56,6 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  /* Evita recortes en las cajas o cartas */
   filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.18));
 }
 
@@ -84,7 +80,6 @@
   max-width: 80%;
 }
 
-/* --- COLUMNA DERECHA (CHECKOUT E INFO) --- */
 .info-checkout-column {
   flex: 1.2;
   display: flex;
@@ -118,7 +113,6 @@
   line-height: 1.2;
 }
 
-/* Bloque de Precio */
 .price-stock-card {
   border-bottom: 2px solid #edf2f7;
   padding-bottom: 20px;
@@ -136,15 +130,12 @@
   margin: 10px 0 0 0;
   font-size: 0.95rem;
   color: #2f855a;
-  /* Verde éxito */
 }
 
 .stock-status.low-stock {
   color: #dd6b20;
-  /* Naranja advertencia */
 }
 
-/* Acciones de compra */
 .purchase-actions-box {
   display: flex;
   gap: 20px;
@@ -199,7 +190,6 @@
   transform: translateY(-1px);
 }
 
-/* Bloques de Texto */
 .product-description-block h3,
 .technical-specs-table h3 {
   font-size: 1.2rem;
@@ -216,7 +206,6 @@
   font-size: 1rem;
 }
 
-/* Lista de Especificaciones TCG */
 .technical-specs-table ul {
   list-style: none;
   padding: 0;
@@ -238,8 +227,6 @@
 .technical-specs-table li strong {
   color: var(--color-texto);
 }
-
-/* Agrega o complementa estas reglas al final de tu product-detail.component.css actual */
 
 .detail-badge.nuevo {
   background-color: var(--color-detalles);
@@ -272,9 +259,6 @@
   margin-bottom: 30px;
 }
 
-/* ========================================== */
-/* MODAL POP-UP DE AUTENTICACIÓN (INVITADOS)  */
-/* ========================================== */
 .modal-overlay {
   position: fixed;
   top: 0;

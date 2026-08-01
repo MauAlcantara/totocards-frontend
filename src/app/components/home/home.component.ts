@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router'; 
-import { ProductoService } from '../../services/producto.service'; // 🔥 Importamos el servicio
+import { ProductoService } from '../../services/producto.service';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private productoService: ProductoService) {}
 
   ngOnInit() {
-    // 1. Evaluación Calendarizada (Práctica de Periodo)
     const fechaActual = new Date();
     const mesActual = fechaActual.getMonth();
     const anioActual = fechaActual.getFullYear();
@@ -33,22 +32,17 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.esEventoVerano = true;
     }
 
-    // 2. Carrusel Crossfade
     if (isPlatformBrowser(this.platformId)) {
       this.intervalo = setInterval(() => {
         this.imagenActualIndex = (this.imagenActualIndex + 1) % this.imagenesBanner.length;
       }, 4000);
     }
-    // 🔥 3. Carga Dinámica de Productos Destacados
     this.productoService.obtenerProductos().subscribe({
       next: (datos) => {
-        // Filtramos para evitar preventas o agotados
         const disponibles = datos.filter((p: any) => p.estado !== 'PREVENTA' && p.stock > 0);
         
-        // Ordenamos por stock de mayor a menor
         disponibles.sort((a: any, b: any) => b.stock - a.stock);
         
-        // Tomamos solo los 3 productos con más stock para la página principal
         this.productosDestacados = disponibles.slice(0, 3);
       },
       error: (err) => console.error('Error cargando los destacados', err)

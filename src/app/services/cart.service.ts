@@ -25,22 +25,17 @@ export class CartService {
   agregarAlCarrito(producto: any, cantidad: number = 1): void {
     const carritoActual = [...this.obtenerCarrito()];
     const itemExistente = carritoActual.find(item => item.id_producto === producto.id_producto);
-
-    // 🔥 REGLA DE ORO: Si es preventa el límite máximo es 2, si no, es su stock real.
     const limiteMaximo = producto.estado === 'PREVENTA' ? 2 : producto.stock;
 
     if (itemExistente) {
-      // Calculamos la suma de lo que YA tiene en el carrito + lo nuevo que intenta agregar
       const nuevaCantidad = itemExistente.cantidad + cantidad;
       
       if (nuevaCantidad <= limiteMaximo) {
         itemExistente.cantidad = nuevaCantidad;
       } else {
-        // Si se pasa de listo, lo bloqueamos topándolo al límite máximo
         itemExistente.cantidad = limiteMaximo; 
       }
     } else {
-      // Validamos que desde el primer clic no intenten inyectar una cantidad mayor
       const cantidadInicial = cantidad > limiteMaximo ? limiteMaximo : cantidad;
       
       carritoActual.push({
@@ -50,7 +45,7 @@ export class CartService {
         cantidad: cantidadInicial,
         imagen_url: producto.imagen_url,
         stock: producto.stock,
-        estado: producto.estado // Guardamos el estado para usarlo en el front
+        estado: producto.estado 
       });
     }
 

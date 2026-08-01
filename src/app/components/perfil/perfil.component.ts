@@ -29,7 +29,6 @@ export class PerfilComponent implements OnInit {
     }
   }
 
-  // Convierte la imagen a texto (Base64) cuando el usuario la selecciona
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
@@ -46,13 +45,11 @@ export class PerfilComponent implements OnInit {
     const token = localStorage.getItem('tototoken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // Mandamos el nombre y la foto al backend
     this.http.put(`https://totocards-backend.onrender.com/api/auth/actualizar-perfil`, 
       { nombre: this.usuario.nombre, avatar: this.usuario.avatar }, 
       { headers }
     ).subscribe({
       next: (res) => {
-        // Actualizamos el Gafete Virtual local para que los cambios se vean al instante
         const currentUser = this.authService.obtenerUsuarioActual();
         const updatedUser = { ...currentUser, nombre: this.usuario.nombre, avatar: this.usuario.avatar };
         localStorage.setItem('totouser', JSON.stringify(updatedUser));
@@ -60,7 +57,6 @@ export class PerfilComponent implements OnInit {
         this.toastService.mostrar('¡Información guardada en la bóveda!', 'success');
         this.guardando = false;
         
-        // Recarga la página para refrescar el header
         setTimeout(() => window.location.reload(), 1500);
       },
       error: (err) => {

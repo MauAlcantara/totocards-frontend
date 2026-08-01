@@ -1,5 +1,5 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core'; // 1. Agregamos esto
-import { isPlatformBrowser } from '@angular/common'; // 2. Agregamos esto
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core'; 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
@@ -9,7 +9,6 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
   private apiUrl = 'https://totocards-backend.onrender.com/api/auth';
 
-  // 3. Inyectamos la plataforma y el http
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -22,7 +21,6 @@ export class AuthService {
   login(credenciales: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credenciales).pipe(
       tap((res: any) => {
-        // 4. Protegemos la escritura al hacer login
         if (res.token && isPlatformBrowser(this.platformId)) {
           localStorage.setItem('tototoken', res.token);
           localStorage.setItem('totouser', JSON.stringify(res.usuario));
@@ -31,12 +29,11 @@ export class AuthService {
     );
   }
 
-  // 5. Protegemos la lectura continua (esta es la que rompía el Header)
   estaLogueado(): boolean {
     if (isPlatformBrowser(this.platformId)) {
       return !!localStorage.getItem('tototoken');
     }
-    return false; // Si está en el servidor, asume que no está logueado
+    return false; 
   }
 
   cerrarSesion(): void {

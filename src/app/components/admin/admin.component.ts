@@ -16,15 +16,11 @@ export class AdminComponent implements OnInit {
   pestaniaActual: string = 'productos'; 
   productos: any[] = [];
   usuarios: any[] = [];
-
-  // Variables CRUD Productos
   mostrarModalProducto: boolean = false;
   modoEdicion: boolean = false;
   productoActual: any = this.obtenerProductoVacio();
   mostrarModalEliminar: boolean = false;
   productoAEliminar: any = null;
-
-  // 🔥 NUEVAS Variables CRUD Usuarios
   mostrarModalUsuario: boolean = false;
   modoEdicionUsuario: boolean = false;
   usuarioActual: any = this.obtenerUsuarioVacio();
@@ -42,9 +38,6 @@ export class AdminComponent implements OnInit {
     this.cargarUsuarios();
   }
 
-  // ==========================================
-  // GESTIÓN DE PRODUCTOS (CRUD)
-  // ==========================================
   cargarProductos(): void {
     this.productoService.obtenerProductos().subscribe(datos => this.productos = datos);
   }
@@ -101,9 +94,6 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // ==========================================
-  // 🔥 GESTIÓN DE USUARIOS (CRUD COMPLETADO)
-  // ==========================================
   cargarUsuarios(): void {
     const token = localStorage.getItem('tototoken') || '';
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

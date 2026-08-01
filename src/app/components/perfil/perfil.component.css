@@ -28,7 +28,6 @@
   align-items: flex-start;
 }
 
-/* --- SECCIÓN DEL AVATAR --- */
 .avatar-section {
   flex: 1;
   background-color: white;
@@ -95,7 +94,6 @@
   margin-top: 10px;
 }
 
-/* --- SECCIÓN DEL FORMULARIO --- */
 .form-section {
   flex: 2;
   background-color: white;
@@ -165,7 +163,6 @@
   cursor: wait;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .perfil-layout {
     flex-direction: column;

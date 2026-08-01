@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router'; 
 import { ProductoService } from '../../services/producto.service';
 import { AuthService } from '../../services/auth.service'; 
-import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; // 🔥 Importamos 'of'
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; 
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -14,11 +14,8 @@ import { CartService } from '../../services/cart.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  // Menús
   menuAbierto: boolean = false;
-  perfilMenuAbierto: boolean = false; 
-  
-  // Carrito y Búsqueda
+  perfilMenuAbierto: boolean = false;
   totalItems: number = 0; 
   mostrarModalLogin: boolean = false; 
   resultadosBusqueda: any[] = [];
@@ -41,14 +38,13 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Motor Predictivo
     this.busquedaSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((termino) => {
         if (termino.trim() === '') {
           this.mostrarDropdown = false;
-          return of([]); // 🔥 CORRECCIÓN 1: Vercel exige retornar un Observable, no un array crudo '[]'
+          return of([]);
         }
         return this.productoService.buscarProductos(termino);
       })
@@ -65,10 +61,6 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  // ==========================================
-  // FUNCIONES DE MENÚS Y SESIÓN
-  // ==========================================
-  
   abrirMenu(): void { this.menuAbierto = true; }
   cerrarMenu(): void { this.menuAbierto = false; }
 
@@ -81,10 +73,6 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/']); 
   }
 
-  // ==========================================
-  // FUNCIONES DEL CARRITO Y BÚSQUEDA
-  // ==========================================
-  
   onCarritoClick(): void {
     if (this.authService.estaLogueado()) {
       this.router.navigate(['/checkout']); 

@@ -52,16 +52,12 @@
   margin-left: auto;
 }
 
-/* Empuja el ordenamiento a la derecha */
-
-/* Cuadrícula completa */
 .products-grid-full {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 30px;
 }
 
-/* Reutilizar estilos de tarjetas pulidas */
 .tcg-card {
   background-color: white;
   border-radius: 16px;
@@ -177,7 +173,6 @@
   background-color: #c62c0a;
 }
 
-/* --- ESTILOS DEL EVENTO: OFERTA RELÁMPAGO --- */
 .flash-sale-banner {
   background: linear-gradient(90deg, #e53e3e 0%, #c53030 100%);
   color: white;
@@ -189,7 +184,6 @@
   justify-content: center;
   gap: 15px;
   box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
-  /* Animación de latido para llamar a la acción urgente */
   animation: pulseAlert 2s infinite;
 }
 
@@ -203,7 +197,6 @@
   font-size: 1.6rem;
 }
 
-/* Efecto de pulso que simula urgencia (e-commerce real) */
 @keyframes pulseAlert {
   0% {
     box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7);
@@ -218,9 +211,6 @@
   }
 }
 
-/* ========================================== */
-/* MODAL POP-UP DE AUTENTICACIÓN (INVITADOS)  */
-/* ========================================== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -310,7 +300,6 @@
   }
 }
 
-/* Estilo del botón limpiar filtros */
 .btn-limpiar-filtros {
   background-color: #e2e8f0;
   color: #4a5568;
@@ -328,7 +317,6 @@
   color: #1a202c;
 }
 
-/* Mensaje cuando ningún producto coincide con el filtro */
 .no-filter-results {
   text-align: center;
   padding: 50px 20px;

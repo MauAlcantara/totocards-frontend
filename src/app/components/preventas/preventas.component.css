@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 
-/* --- BANNER DE PREVENTAS --- */
 .preorders-header {
   background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
   border-radius: 20px;
@@ -43,7 +42,6 @@
   margin: 0;
 }
 
-/* --- CUADRÍCULA Y TARJETAS --- */
 .products-grid-full {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -72,7 +70,6 @@
   transform: scale(1.08) rotate(-2deg);
 }
 
-/* --- ETIQUETAS PERSONALIZADAS --- */
 .badge {
   position: absolute;
   top: 15px;
@@ -84,20 +81,17 @@
   border-radius: 6px;
   z-index: 10;
   background-color: #4a5568;
-  /* Default */
+
 }
 
 .badge.alta-demanda {
   background-color: #e53e3e;
 }
 
-/* Rojo alerta */
 .badge.aniversario {
   background-color: #d69e2e;
   color: #1a202c;
 }
-
-/* Dorado */
 
 .card-image {
   width: 100%;
@@ -150,10 +144,8 @@
   margin-bottom: 15px;
 }
 
-/* --- BOTÓN DE APARTADO --- */
 .reserve-button {
   background-color: #2d3748;
-  /* Gris oscuro para diferenciar de compra normal */
   color: white;
   border: none;
   padding: 12px;

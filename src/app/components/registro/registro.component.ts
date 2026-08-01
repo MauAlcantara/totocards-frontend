@@ -40,7 +40,6 @@ export class RegistroComponent {
       next: (res) => {
         this.cargando = false;
         this.mensajeExito = '¡Cuenta TCG creada con éxito! Redirigiendo al login...';
-        // Esperamos 2 segundos para que el usuario lea el mensaje y redirigimos
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 2000);

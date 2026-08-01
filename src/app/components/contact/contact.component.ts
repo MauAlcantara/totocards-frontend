@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Necesario para formularios
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contact',
@@ -13,7 +13,6 @@ export class ContactComponent {
   mensajeEnviado = false;
   estadoEnvio = '';
 
-  // Función de comunicación asíncrona
   async enviarMensaje(event: Event) {
     event.preventDefault();
     this.estadoEnvio = 'Enviando tu mensaje al equipo de TotoCards...';

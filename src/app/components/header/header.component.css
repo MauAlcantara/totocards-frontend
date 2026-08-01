@@ -1,4 +1,3 @@
-/* --- CONFIGURACIÓN BASE DEL HEADER --- */
 .header-container {
   background-color: var(--color-primario);
   padding: 15px 40px;
@@ -55,7 +54,6 @@
   color: white;
 }
 
-/* --- SOLUCIÓN RADICAL: DROPDOWN TOTALMENTE AISLADO --- */
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -100,7 +98,6 @@
   color: var(--color-primario) !important;
 }
 
-/* --- COMPONENTES AUXILIARES DE BÚSQUEDA Y CARRITO --- */
 .search-cart-container {
   display: flex;
   align-items: center;
@@ -209,9 +206,6 @@
   font-style: italic;
 }
 
-/* ========================================== */
-/* MODAL POP-UP DE AUTENTICACIÓN DEL CARRITO  */
-/* ========================================== */
 
 .modal-overlay {
   position: fixed;
@@ -302,9 +296,6 @@
   }
 }
 
-/* ========================================== */
-/* ESTILOS DE LOS ÍCONOS DE PERFIL Y CARRITO  */
-/* ========================================== */
 
 .user-actions {
   display: flex;
@@ -354,9 +345,6 @@
   background-color: #fff5f5 !important;
 }
 
-/* ========================================== */
-/* ESTILO DE LA BURBUJA NUMÉRICA DEL CARRITO  */
-/* ========================================== */
 .cart-badge {
   position: absolute;
   top: -8px;
@@ -382,14 +370,12 @@
   display: none;
 }
 
-/* Clase para la miniatura de la foto de perfil en el Header */
 .header-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;
-  /* Borde blanco para que resalte con el fondo */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 

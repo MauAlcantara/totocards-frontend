@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { PedidoService } from '../../services/pedido.service';
-import { CartService } from '../../services/cart.service'; // Importar el carrito
+import { CartService } from '../../services/cart.service'; 
 
 @Component({
   selector: 'app-checkout',
@@ -29,7 +29,6 @@ export class CheckoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 1. Escuchamos el carrito real asíncronamente
     this.cartService.carrito$.subscribe(items => {
       this.carrito = items;
       this.calcularTotal();
@@ -42,10 +41,8 @@ calcularTotal(): void {
     const mesActual = fechaActual.getMonth();
     const anioActual = fechaActual.getFullYear();
 
-    // Evento 1: Fin de semana (Jueves 4, Viernes 5, Sábado 6, Domingo 0)
-    const esFinDeSemana = (diaSemana === 4 || diaSemana === 5 || diaSemana === 6 || diaSemana === 0);
+    const esFinDeSemana = (diaSemana === 5 || diaSemana === 6 || diaSemana === 0);
     
-    // Evento 2: Verano 2026 (Junio a Agosto)
     this.envioGratisVerano = (anioActual === 2026 && mesActual >= 5 && mesActual <= 7);
 
     this.subtotal = 0;
@@ -54,19 +51,16 @@ calcularTotal(): void {
     this.carrito.forEach(item => {
       this.subtotal += (item.precio_unitario * item.cantidad);
 
-      // Si es fin de semana y el nombre del producto incluye "Elite Trainer Box" (sin importar mayúsculas)
       if (esFinDeSemana && item.nombre.toLowerCase().includes('elite trainer box')) {
-        this.descuentoEtb += (item.precio_unitario * 0.10) * item.cantidad; // 10% de descuento
+        this.descuentoEtb += (item.precio_unitario * 0.10) * item.cantidad; 
       }
     });
 
-    this.costoEnvio = this.envioGratisVerano ? 0 : 150.00; // Costo base de envío $150
-    
-    // Total final
+    this.costoEnvio = this.envioGratisVerano ? 0 : 150.00; 
+
     this.total = this.subtotal - this.descuentoEtb + this.costoEnvio;
   }
 
-  // Nueva función por si el usuario quiere arrepentirse y quitar un item desde la pasarela
   quitarItem(id_producto: number): void {
     this.cartService.eliminarDelCarrito(id_producto);
   }
@@ -87,7 +81,6 @@ calcularTotal(): void {
         this.cargando = false;
         this.mensaje = '✅ ' + res.mensaje;
         
-        // 2. CRÍTICO: Si el banco de datos aprobó la compra, vaciamos el carrito local
         this.cartService.limpiarCarrito(); 
         
         setTimeout(() => this.router.navigate(['/']), 3000);

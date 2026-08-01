@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 140px); /* Ajustado para el tamaño del header y footer */
+  min-height: calc(100vh - 140px); 
   background-color: #f7fafc;
   padding: 40px 20px;
   box-sizing: border-box;
@@ -32,7 +32,6 @@
   margin: 0 0 30px 0;
 }
 
-/* Formulario */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -76,7 +75,6 @@
   font-weight: 500;
 }
 
-/* Banners de Servidor */
 .auth-error-banner {
   background-color: #fff5f5;
   border: 1px solid #fed7d7;
@@ -99,7 +97,6 @@
   text-align: left;
 }
 
-/* Botón de envío */
 .auth-submit-btn {
   background-color: var(--color-acento, #e3350d);
   color: white;

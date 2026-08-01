@@ -1,15 +1,12 @@
-/* --- CONTENEDOR RAÍZ --- */
 .body-container {
   width: 100%;
   margin: 0 auto;
   padding: 0;
 }
 
-/* --- CINTA CALENDARIZADA (AJUSTE PREMIUM FULL-WIDTH) --- */
 .seasonal-banner {
   background: linear-gradient(90deg, #f6e05e 0%, #ecc94b 100%);
   width: 100vw;
-  /* Borde a borde de pantalla completo */
   position: relative;
   left: 50%;
   right: 50%;
@@ -18,9 +15,7 @@
   padding: 14px 0;
   box-shadow: 0 4px 15px rgba(236, 201, 75, 0.2);
   border-radius: 0;
-  /* Eliminados bordes redondeados incorrectos */
   margin-bottom: 0;
-  /* Eliminado espacio en blanco / desfase con el hero */
   z-index: 20;
   animation: slideDown 0.4s ease-out;
 }
@@ -45,7 +40,6 @@
   letter-spacing: 0.3px;
 }
 
-/* --- HERO BANNER --- */
 .hero-banner {
   position: relative;
   width: 100vw;
@@ -60,7 +54,6 @@
   justify-content: flex-start;
   box-sizing: border-box;
   margin-top: 0;
-  /* Garantiza unión hermética con el banner de arriba */
 }
 
 .fade-carousel {
@@ -160,7 +153,6 @@
   background-color: #c62c0a;
 }
 
-/* --- SECCIÓN CATÁLOGO --- */
 .catalog-wrapper {
   max-width: 1200px;
   margin: 0 auto;
@@ -305,7 +297,6 @@
   background-color: #c62c0a;
 }
 
-/* --- ANIMACIONES --- */
 @keyframes slideDown {
   from {
     transform: translateY(-30px);
