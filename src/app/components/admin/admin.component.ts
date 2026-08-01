@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // 🔥 CRÍTICO: Necesario para los formularios [(ngModel)]
+import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ProductoService } from '../../services/producto.service';
 import { ToastService } from '../../services/toast.service';
@@ -8,7 +8,7 @@ import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule], // 🔥 Asegúrate de agregarlo aquí
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
@@ -16,11 +16,11 @@ export class AdminComponent implements OnInit {
   pestaniaActual: string = 'productos'; 
   productos: any[] = [];
   usuarios: any[] = [];
-
-  // 🔥 Variables para el Modal del CRUD
   mostrarModalProducto: boolean = false;
   modoEdicion: boolean = false;
   productoActual: any = this.obtenerProductoVacio();
+  mostrarModalEliminar: boolean = false;
+  productoAEliminar: any = null;
 
   constructor(
     private http: HttpClient,
@@ -97,17 +97,34 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  eliminarProducto(id: number): void {
-    if (confirm('⚠️ ¿Estás seguro de eliminar este producto? Esta acción es irreversible.')) {
-      const token = localStorage.getItem('tototoken') || '';
-      this.productoService.eliminarProducto(id, token).subscribe({
-        next: () => {
-          this.toastService.mostrar('Producto eliminado.', 'success');
-          this.cargarProductos();
-        },
-        error: () => this.toastService.mostrar('No se puede borrar porque hay compras ligadas a él.', 'error')
-      });
-    }
+  abrirModalEliminar(producto: any): void {
+    this.productoAEliminar = producto;
+    this.mostrarModalEliminar = true;
+  }
+
+  cerrarModalEliminar(): void {
+    this.mostrarModalEliminar = false;
+    this.productoAEliminar = null;
+  }
+
+  eliminarProductoConfirmado(): void {
+    if (!this.productoAEliminar) return;
+
+    const token = localStorage.getItem('tototoken') || '';
+    
+    this.productoService.eliminarProducto(this.productoAEliminar.id_producto, token).subscribe({
+      // ✨ Leemos (res: any) para imprimir exactamente el mensaje de tu backend
+      next: (res: any) => {
+        this.toastService.mostrar(res.mensaje || 'Producto eliminado correctamente.', 'success');
+        this.cargarProductos();
+        this.cerrarModalEliminar();
+      },
+      // ✨ Leemos (err: any) para capturar el error si PostgreSQL prohíbe el borrado
+      error: (err: any) => {
+        this.toastService.mostrar(err.error?.mensaje || 'No se puede borrar porque hay compras ligadas a él.', 'error');
+        this.cerrarModalEliminar();
+      }
+    });
   }
 
   // ==========================================
