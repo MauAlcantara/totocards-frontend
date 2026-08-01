@@ -10,41 +10,40 @@
   </div>
 
   <section *ngIf="pestaniaActual === 'productos'" class="admin-table-section">
-    <h3>Catálogo Unificado de Artículos</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <h3>Catálogo Unificado de Artículos</h3>
+      <button class="btn-primary" (click)="abrirModalCrear()">+ Añadir Producto</button>
+    </div>
+
     <table class="admin-table">
       <thead>
         <tr>
           <th>ID</th>
           <th>Artículo</th>
-          <th>Expansión</th>
           <th>Precio Base</th>
           <th>Stock Actual</th>
-          <th>Estado del Ciclo</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let prod of productos">
           <td><strong>{{ prod.id_producto }}</strong></td>
-          <td>{{ prod.nombre }}</td>
-          <td><span class="sub-text">{{ prod.expansion }}</span></td>
+          <td>
+            {{ prod.nombre }}<br>
+            <span class="sub-text">{{ prod.expansion }}</span>
+          </td>
           <td>${{ prod.precio }} MXN</td>
-
+          <td>{{ prod.stock }}</td>
           <td>
-            <input type="number" #inputStock [value]="prod.stock" class="table-input">
+            <span class="badge"
+              [ngClass]="{'badge-disponible': prod.estado === 'DISPONIBLE', 'badge-preventa': prod.estado === 'PREVENTA', 'badge-agotado': prod.estado === 'AGOTADO'}">
+              {{ prod.estado }}
+            </span>
           </td>
-
-          <td>
-            <select #selectEstado [value]="prod.estado" class="table-select">
-              <option value="DISPONIBLE">DISPONIBLE (Catálogo)</option>
-              <option value="PREVENTA">PREVENTA (Lanzamientos)</option>
-              <option value="AGOTADO">AGOTADO (Sin Existencias)</option>
-            </select>
-          </td>
-
-          <td>
-            <button class="btn-save-table"
-              (click)="guardarCambiosProducto(prod, inputStock.value, selectEstado.value)">Guardar</button>
+          <td class="action-buttons-cell">
+            <button class="btn-edit" (click)="abrirModalEditar(prod)">✏️ Editar</button>
+            <button class="btn-delete" (click)="eliminarProducto(prod.id_producto)">🗑️</button>
           </td>
         </tr>
       </tbody>
@@ -87,3 +86,72 @@
     </table>
   </section>
 </main>
+
+<div class="modal-overlay" *ngIf="mostrarModalProducto" (click)="cerrarModalProducto()">
+  <div class="modal-content admin-modal" (click)="$event.stopPropagation()">
+    <h3>{{ modoEdicion ? '✏️ Editar Producto' : '📦 Nuevo Producto' }}</h3>
+
+    <form (ngSubmit)="guardarProducto()" #productoForm="ngForm" class="admin-form">
+      <div class="form-grid">
+        <div class="input-group full-width">
+          <label>Nombre del Producto *</label>
+          <input type="text" [(ngModel)]="productoActual.nombre" name="nombre" required>
+        </div>
+
+        <div class="input-group">
+          <label>Precio (MXN) *</label>
+          <input type="number" [(ngModel)]="productoActual.precio" name="precio" required>
+        </div>
+
+        <div class="input-group">
+          <label>Stock en Bóveda *</label>
+          <input type="number" [(ngModel)]="productoActual.stock" name="stock" required>
+        </div>
+
+        <div class="input-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="productoActual.categoria" name="categoria">
+            <option value="Sobres">Sobres</option>
+            <option value="Elite Trainer Box">Elite Trainer Box</option>
+            <option value="Booster Box">Booster Box</option>
+            <option value="Accesorios">Accesorios</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Expansión / Colección</label>
+          <input type="text" [(ngModel)]="productoActual.expansion" name="expansion">
+        </div>
+
+        <div class="input-group full-width">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="productoActual.descripcion" name="descripcion" rows="3"></textarea>
+        </div>
+
+        <div class="input-group full-width">
+          <label>URL de la Imagen</label>
+          <input type="text" [(ngModel)]="productoActual.imagen_url" name="imagen_url">
+        </div>
+
+        <div class="input-group">
+          <label>Estado del Ciclo</label>
+          <select [(ngModel)]="productoActual.estado" name="estado">
+            <option value="DISPONIBLE">DISPONIBLE</option>
+            <option value="PREVENTA">PREVENTA</option>
+            <option value="AGOTADO">AGOTADO</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Fecha de Lanzamiento</label>
+          <input type="date" [(ngModel)]="productoActual.fecha_lanzamiento" name="fecha_lanzamiento">
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 25px;">
+        <button type="button" class="btn-secondary" (click)="cerrarModalProducto()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="productoForm.invalid">Guardar Datos</button>
+      </div>
+    </form>
+  </div>
+</div>

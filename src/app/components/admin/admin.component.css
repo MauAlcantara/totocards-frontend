@@ -118,3 +118,109 @@
 .btn-save-table:hover {
   background-color: #22543d;
 }
+
+.action-buttons-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit {
+  background-color: #ebf8ff;
+  color: #2b6cb0;
+  border: 1px solid #bee3f8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: #3182ce;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #fff5f5;
+  color: #c53030;
+  border: 1px solid #fed7d7;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #e53e3e;
+  color: white;
+}
+
+/* --- ETIQUETAS DE ESTADO --- */
+.badge-disponible {
+  background-color: #c6f6d5;
+  color: #22543d;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.badge-preventa {
+  background-color: #e2e8f0;
+  color: #2d3748;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.badge-agotado {
+  background-color: #fed7d7;
+  color: #822727;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+/* --- MODAL FORMULARIO ADMIN --- */
+.admin-modal {
+  max-width: 600px !important;
+  width: 90%;
+  text-align: left !important;
+}
+
+.admin-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.input-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #4a5568;
+  margin-bottom: 5px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+}

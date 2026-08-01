@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // 🔥 CRÍTICO: Necesario para los formularios [(ngModel)]
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ProductoService } from '../../services/producto.service';
 import { ToastService } from '../../services/toast.service';
@@ -7,29 +8,111 @@ import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule], // 🔥 Asegúrate de agregarlo aquí
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  pestaniaActual: string = 'productos'; // Controla si ve la pestaña de productos o usuarios
+  pestaniaActual: string = 'productos'; 
   productos: any[] = [];
   usuarios: any[] = [];
+
+  // 🔥 Variables para el Modal del CRUD
+  mostrarModalProducto: boolean = false;
+  modoEdicion: boolean = false;
+  productoActual: any = this.obtenerProductoVacio();
 
   constructor(
     private http: HttpClient,
     private productoService: ProductoService,
-    private toastService: ToastService,) { }
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
     this.cargarProductos();
     this.cargarUsuarios();
   }
 
+  // ==========================================
+  // GESTIÓN DE PRODUCTOS (CRUD)
+  // ==========================================
   cargarProductos(): void {
     this.productoService.obtenerProductos().subscribe(datos => this.productos = datos);
   }
 
+  obtenerProductoVacio() {
+    return {
+      nombre: '', descripcion: '', precio: 0, stock: 0,
+      categoria: 'Sobres', expansion: '', imagen_url: '',
+      estado: 'DISPONIBLE', fecha_lanzamiento: null
+    };
+  }
+
+  abrirModalCrear(): void {
+    this.modoEdicion = false;
+    this.productoActual = this.obtenerProductoVacio();
+    this.mostrarModalProducto = true;
+  }
+
+  abrirModalEditar(producto: any): void {
+    this.modoEdicion = true;
+    this.productoActual = { ...producto }; // Clonamos para no editar la tabla en vivo hasta darle guardar
+    
+    // Si tiene fecha, la ajustamos para el input type="date"
+    if (this.productoActual.fecha_lanzamiento) {
+      this.productoActual.fecha_lanzamiento = new Date(this.productoActual.fecha_lanzamiento).toISOString().split('T')[0];
+    }
+    this.mostrarModalProducto = true;
+  }
+
+  cerrarModalProducto(): void {
+    this.mostrarModalProducto = false;
+  }
+
+  guardarProducto(): void {
+    const token = localStorage.getItem('tototoken') || '';
+    
+    if (this.modoEdicion) {
+      // ✏️ ACTUALIZAR
+      this.productoService.actualizarProducto(this.productoActual.id_producto, this.productoActual, token)
+        .subscribe({
+          next: () => {
+            this.toastService.mostrar('Producto actualizado correctamente.', 'success');
+            this.cargarProductos();
+            this.cerrarModalProducto();
+          },
+          error: () => this.toastService.mostrar('Error al actualizar el producto.', 'error')
+        });
+    } else {
+      // ➕ CREAR
+      this.productoService.crearProducto(this.productoActual, token)
+        .subscribe({
+          next: () => {
+            this.toastService.mostrar('Producto agregado al catálogo.', 'success');
+            this.cargarProductos();
+            this.cerrarModalProducto();
+          },
+          error: () => this.toastService.mostrar('Error al crear el producto.', 'error')
+        });
+    }
+  }
+
+  eliminarProducto(id: number): void {
+    if (confirm('⚠️ ¿Estás seguro de eliminar este producto? Esta acción es irreversible.')) {
+      const token = localStorage.getItem('tototoken') || '';
+      this.productoService.eliminarProducto(id, token).subscribe({
+        next: () => {
+          this.toastService.mostrar('Producto eliminado.', 'success');
+          this.cargarProductos();
+        },
+        error: () => this.toastService.mostrar('No se puede borrar porque hay compras ligadas a él.', 'error')
+      });
+    }
+  }
+
+  // ==========================================
+  // GESTIÓN DE USUARIOS
+  // ==========================================
   cargarUsuarios(): void {
     const token = localStorage.getItem('tototoken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -39,30 +122,8 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // Cambiar estado (ej: pasar de PREVENTA a DISPONIBLE) o modificar stock
-  guardarCambiosProducto(producto: any, nuevoStock: string, nuevoEstado: string): void {
-    const token = localStorage.getItem('tototoken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    const payload = {
-      stock: parseInt(nuevoStock),
-      estado: nuevoEstado,
-      precio: producto.precio
-    };
-
-    this.http.put(`https://totocards-backend.onrender.com/api/admin/productos/${producto.id_producto}`, payload, { headers }).subscribe({
-      next: (res: any) => {
-        this.toastService.mostrar('Inventario actualizado correctamente.', 'success');
-        this.cargarProductos(); // Recargamos la lista
-      },
-      error: (err) => {
-        this.toastService.mostrar('Error al guardar los cambios.', 'error');
-      }
-    });
-  }
-
   toggleEstadoUsuario(usuario: any): void {
-    const nuevoEstado = !usuario.activo; // Si está true lo pasa a false, y viceversa
+    const nuevoEstado = !usuario.activo; 
     const token = localStorage.getItem('tototoken');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
@@ -70,9 +131,9 @@ export class AdminComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.toastService.mostrar(res.mensaje, nuevoEstado ? 'success' : 'info');
-          this.cargarUsuarios(); // Recargamos la tabla para ver el cambio de color
+          this.cargarUsuarios(); 
         },
-        error: (err) => this.toastService.mostrar('Error al cambiar el estado', 'error')
+        error: () => this.toastService.mostrar('Error al cambiar el estado', 'error')
       });
   }
 }
