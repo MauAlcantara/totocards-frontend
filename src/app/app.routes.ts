@@ -14,6 +14,7 @@ import { PrivacidadComponent } from './components/privacidad/privacidad.componen
 import { TerminosComponent } from './components/terminos/terminos.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { PedidosComponent } from './components/pedidos/pedidos.component';
+import { PedidoDetalleComponent } from './components/pedido-detalle/pedido-detalle.component';
 
 
 export const routes: Routes = [
@@ -30,5 +31,6 @@ export const routes: Routes = [
   { path: 'terminos', component: TerminosComponent },
   { path: 'perfil', component: PerfilComponent },
   { path: 'pedidos', component: PedidosComponent },
+  { path: 'pedido/:id', component: PedidoDetalleComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }              
 ];

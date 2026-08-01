@@ -1,0 +1,50 @@
+<main class="detalle-orden-container">
+
+  <div class="breadcrumb">
+    <a routerLink="/pedidos">← Volver a Mis Compras</a>
+  </div>
+
+  <div *ngIf="cargando" class="loading-state">
+    <p>Desencriptando la bóveda...</p>
+  </div>
+
+  <div *ngIf="error" class="error-state">
+    <p>❌ {{ error }}</p>
+  </div>
+
+  <div class="ticket-layout" *ngIf="!cargando && pedido">
+
+    <header class="ticket-header">
+      <div class="header-info">
+        <h2>Orden #{{ formatearCodigoOrden(pedido.id_pedido) }}</h2>
+        <p class="fecha-orden">Realizada el: {{ pedido.fecha_creacion | date:'longDate' }}</p>
+      </div>
+      <div class="header-status">
+        <span class="badge-estado">{{ pedido.estado_pedido }}</span>
+      </div>
+    </header>
+
+    <section class="ticket-items">
+      <h3>Artículos en este paquete</h3>
+
+      <div class="item-row" *ngFor="let item of detalles">
+        <img [src]="item.imagen_url" [alt]="item.nombre" class="item-img">
+        <div class="item-details">
+          <h4>{{ item.nombre }}</h4>
+          <p class="item-qty">Cantidad: {{ item.cantidad }}</p>
+        </div>
+        <div class="item-price">
+          ${{ item.precio_unitario }} MXN
+        </div>
+      </div>
+    </section>
+
+    <section class="ticket-summary">
+      <div class="summary-row total">
+        <span>Total Pagado:</span>
+        <strong>${{ pedido.total }} MXN</strong>
+      </div>
+    </section>
+
+  </div>
+</main>

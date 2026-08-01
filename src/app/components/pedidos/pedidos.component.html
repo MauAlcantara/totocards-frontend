@@ -32,7 +32,9 @@
       </div>
 
       <div class="pedido-acciones">
-        <button class="btn-detalles">Ver Detalles</button>
+        <button class="btn-secundario" [routerLink]="['/pedido', pedido.id_pedido]">
+          Ver Detalles
+        </button>
       </div>
     </article>
   </div>

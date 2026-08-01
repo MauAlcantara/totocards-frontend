@@ -19,4 +19,9 @@ export class PedidoService {
     
     return this.http.post(`${this.apiUrl}/checkout`, pedido, { headers });
   }
+  obtenerDetallePedido(id: number | string): Observable<any> {
+    const token = localStorage.getItem('tototoken');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.apiUrl}/${id}`, { headers });
+  }
 }
