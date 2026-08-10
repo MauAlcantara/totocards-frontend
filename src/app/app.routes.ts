@@ -29,8 +29,8 @@ export const routes: Routes = [
   { path: 'registro', component: RegistroComponent },
   { path: 'privacidad', component: PrivacidadComponent },
   { path: 'terminos', component: TerminosComponent },
-  { path: 'perfil', component: PerfilComponent },
-  { path: 'pedidos', component: PedidosComponent },
+  { path: 'perfil', component: PerfilComponent, canActivate: [authGuard]  },
+  { path: 'pedidos', component: PedidosComponent, canActivate: [authGuard]  },
   { path: 'pedido/:id', component: PedidoDetalleComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }              
 ];
