@@ -1,21 +1,50 @@
 <main class="contact-container">
-  <h2>Centro de Soporte TotoCards</h2>
-  <p>¿Tienes dudas sobre una carta o tu pedido? Escríbenos y te responderemos a la brevedad posible</p>
+  <div style="color: var(--color-primario); margin-bottom: 15px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </div>
 
-  <form *ngIf="!mensajeEnviado" (submit)="enviarMensaje($event)" class="async-form">
+  <h2>Centro de Soporte TotoCards</h2>
+  <p>¿Tienes dudas sobre una carta o tu pedido? Escríbenos y te responderemos a la brevedad posible.</p>
+
+  <form *ngIf="!mensajeEnviado" (ngSubmit)="enviarMensaje(contactoForm)" #contactoForm="ngForm" class="async-form">
+
+    <label>Tu Nombre Completo:</label>
+    <input type="text" name="nombre" [(ngModel)]="contacto.nombre" required #nombreCtrl="ngModel"
+      placeholder="Ej. Juan Pérez">
+    <small class="error-text" *ngIf="nombreCtrl.invalid && nombreCtrl.touched">El nombre es obligatorio.</small>
+
     <label>Tu Correo Electrónico:</label>
-    <input type="email" placeholder="ejemplo@correo.com" required>
+    <input type="email" name="email" [(ngModel)]="contacto.email" required email #emailCtrl="ngModel"
+      placeholder="ejemplo@correo.com">
+    <small class="error-text" *ngIf="emailCtrl.invalid && emailCtrl.touched">Ingresa un correo electrónico válido (ej.
+      usuario&#64;dominio.com).</small>
 
     <label>Tu Mensaje:</label>
-    <textarea rows="5" placeholder="Escribe tu duda aquí..." required></textarea>
+    <textarea name="mensaje" [(ngModel)]="contacto.mensaje" rows="5" required #mensajeCtrl="ngModel"
+      placeholder="Escribe tu duda aquí..."></textarea>
+    <small class="error-text" *ngIf="mensajeCtrl.invalid && mensajeCtrl.touched">El mensaje no puede estar
+      vacío.</small>
 
-    <button type="submit" class="submit-btn">Enviar Mensaje</button>
-    <p class="loading-text">{{ estadoEnvio }}</p>
+    <button type="submit" class="submit-btn" [disabled]="estadoEnvio !== ''">
+      {{ estadoEnvio !== '' ? 'Enviando...' : 'Enviar Mensaje' }}
+    </button>
+
+    <p class="loading-text" *ngIf="estadoEnvio">{{ estadoEnvio }}</p>
   </form>
 
   <div *ngIf="mensajeEnviado" class="success-box">
-    <h3>¡Mensaje Recibido! ✅</h3>
-    <p>Hemos guardado tu ticket en nuestro servidor. Te responderemos por correo en menos de 24 horas.</p>
-    <button (click)="mensajeEnviado = false" class="submit-btn">Enviar otro mensaje</button>
+    <div style="color: #38b2ac; margin-bottom: 15px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h3>¡Mensaje Recibido!</h3>
+    <p>Hemos guardado tu ticket. Te responderemos por correo en menos de 24 horas.</p>
+    <button (click)="enviarOtro()" class="submit-btn" style="margin-top: 15px;">Enviar otro mensaje</button>
   </div>
 </main>

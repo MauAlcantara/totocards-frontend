@@ -21,12 +21,43 @@
   margin-top: 25px;
 }
 
+.async-form label {
+  font-weight: bold;
+  color: #4a5568;
+  margin-bottom: -5px;
+  /* Acerca un poco el label al input */
+}
+
 .async-form input,
 .async-form textarea {
   padding: 12px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.async-form input:focus,
+.async-form textarea:focus {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+}
+
+/* 🔥 Clases automáticas de Angular para errores */
+.async-form input.ng-invalid.ng-touched,
+.async-form textarea.ng-invalid.ng-touched {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 1px rgba(229, 62, 62, 0.2);
+}
+
+/* 🔥 Estilo del mensaje de texto rojo debajo del input */
+.error-text {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: -10px;
+  margin-bottom: 5px;
+  font-weight: 500;
 }
 
 .submit-btn {
@@ -44,6 +75,11 @@
   background: #c62c0a;
 }
 
+.submit-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
 .loading-text {
   color: #2A75BB;
   font-style: italic;
@@ -53,9 +89,14 @@
 
 .success-box {
   background: #e6fffa;
-  padding: 20px;
+  padding: 30px 20px;
   border-radius: 8px;
   border: 1px solid #38b2ac;
   color: #234e52;
   margin-top: 20px;
+}
+
+.success-box h3 {
+  margin-top: 0;
+  color: #2c7a7b;
 }

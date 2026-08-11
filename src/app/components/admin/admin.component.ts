@@ -14,18 +14,29 @@ import { ToastService } from '../../services/toast.service';
 })
 export class AdminComponent implements OnInit {
   pestaniaActual: string = 'productos'; 
+  
+  // Arreglos de datos
   productos: any[] = [];
   usuarios: any[] = [];
+  mensajes: any[] = []; 
+
+  // Modales Producto
   mostrarModalProducto: boolean = false;
   modoEdicion: boolean = false;
   productoActual: any = this.obtenerProductoVacio();
   mostrarModalEliminar: boolean = false;
   productoAEliminar: any = null;
+
+  // Modales Usuario
   mostrarModalUsuario: boolean = false;
   modoEdicionUsuario: boolean = false;
   usuarioActual: any = this.obtenerUsuarioVacio();
   mostrarModalEliminarUsuario: boolean = false;
   usuarioAEliminar: any = null;
+
+  // Modales Mensajes
+  mostrarModalMensaje: boolean = false;
+  mensajeSeleccionado: any = null;
 
   constructor(
     private http: HttpClient,
@@ -36,8 +47,12 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     this.cargarProductos();
     this.cargarUsuarios();
+    this.cargarMensajes(); 
   }
 
+  // ==========================================
+  // PRODUCTOS
+  // ==========================================
   cargarProductos(): void {
     this.productoService.obtenerProductos().subscribe(datos => this.productos = datos);
   }
@@ -94,6 +109,9 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  // ==========================================
+  // USUARIOS
+  // ==========================================
   cargarUsuarios(): void {
     const token = localStorage.getItem('tototoken') || '';
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -115,7 +133,7 @@ export class AdminComponent implements OnInit {
 
   abrirModalEditarUsuario(usuario: any): void {
     this.modoEdicionUsuario = true;
-    this.usuarioActual = { ...usuario, password: '' }; // No cargamos la contraseña por seguridad
+    this.usuarioActual = { ...usuario, password: '' }; 
     this.mostrarModalUsuario = true;
   }
 
@@ -165,5 +183,37 @@ export class AdminComponent implements OnInit {
         next: (res: any) => { this.toastService.mostrar(res.mensaje, nuevoEstado ? 'success' : 'info'); this.cargarUsuarios(); },
         error: () => this.toastService.mostrar('Error al cambiar el estado', 'error')
       });
+  }
+
+  // ==========================================
+  // MENSAJES
+  // ==========================================
+  cargarMensajes(): void {
+    const token = localStorage.getItem('tototoken') || '';
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    this.http.get('https://totocards-backend.onrender.com/api/admin/mensajes', { headers }).subscribe({
+      next: (datos: any) => this.mensajes = datos,
+      error: () => console.error('Error al cargar la bandeja')
+    });
+  }
+
+  abrirModalMensaje(msg: any): void {
+    this.mensajeSeleccionado = msg;
+    this.mostrarModalMensaje = true;
+
+    if (!msg.leido) {
+      const token = localStorage.getItem('tototoken') || '';
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.http.put(`https://totocards-backend.onrender.com/api/admin/mensajes/${msg.id_mensaje}/leido`, {}, { headers })
+        .subscribe(() => {
+          msg.leido = true;
+        });
+    }
+  }
+
+  cerrarModalMensaje(): void {
+    this.mostrarModalMensaje = false;
+    this.mensajeSeleccionado = null;
   }
 }
