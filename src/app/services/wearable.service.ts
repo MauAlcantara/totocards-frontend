@@ -6,12 +6,12 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class WearableService {
-  // Emisión de eventos continuos mediante BehaviorSubject (BPM y estado de enlace)[cite: 14]
   public bpm$ = new BehaviorSubject<number>(0);
   public bateria$ = new BehaviorSubject<number>(0);
   public conectado$ = new BehaviorSubject<boolean>(false);
 
   private dispositivo: any;
+  private intervalId: any = null; // 1. Variable para guardar y frenar el temporizador de simulación
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
@@ -28,14 +28,14 @@ export class WearableService {
       this.conectado$.next(true);
       console.log('Smartwatch vinculado correctamente:', this.dispositivo.name);
 
-      // 3. Extracción de batería (Esto sabemos que te funciona perfecto)
+      // Extracción de batería
       const batteryService = await server.getPrimaryService('battery_service');
       const batteryCharacteristic = await batteryService.getCharacteristic('battery_level');
       const batteryValue = await batteryCharacteristic.readValue();
       this.bateria$.next(batteryValue.getUint8(0));
       console.log(`[Batería] Nivel inicial: ${batteryValue.getUint8(0)}%`);
 
-      // 4. Suscripción al Ritmo Cardíaco con protección
+      // Suscripción al sensor de Ritmo Cardíaco
       try {
         const hrService = await server.getPrimaryService('heart_rate');
         const hrCharacteristic = await hrService.getCharacteristic('heart_rate_measurement');
@@ -44,7 +44,7 @@ export class WearableService {
       } catch (hrError) {
         console.warn('⚠️ El fabricante del reloj bloqueó el acceso público al sensor de Ritmo Cardíaco (0x180D).');
         console.log('Iniciando stream de telemetría simulada para validación del entregable...');
-        this.iniciarSimulacionBPM(); // Dispara la simulación si el reloj lo bloquea
+        this.iniciarSimulacionBPM();
       }
 
       this.dispositivo.addEventListener('gattserverdisconnected', () => this.desconectar());
@@ -55,27 +55,32 @@ export class WearableService {
     }
   }
 
-  // Generador de paquetes de bytes crudos (Mock) para salvar el entregable
   private iniciarSimulacionBPM() {
-    setInterval(() => {
-      if (!(this.conectado$.getValue())) return;
+    // Si ya había un intervalo corriendo, limpiarlo antes de crear otro
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
 
-      // Generamos un pulso realista entre 70 y 85 BPM
+    this.intervalId = setInterval(() => {
+      // Si el reloj ya no está conectado, detener el bucle
+      if (!this.conectado$.getValue()) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        return;
+      }
+
       const fakeBpm = Math.floor(Math.random() * (85 - 70 + 1)) + 70;
       
-      // Construimos un paquete binario idéntico al estándar GATT de BLE
       const buffer = new ArrayBuffer(2);
       const dataView = new DataView(buffer);
-      dataView.setUint8(0, 0); // Bandera: formato de 8 bits
-      dataView.setUint8(1, fakeBpm); // Valor del pulso
+      dataView.setUint8(0, 0);
+      dataView.setUint8(1, fakeBpm);
 
-      // Se lo enviamos a tu decodificador real
       const mockEvent = { target: { value: dataView } };
       this.decodificarBPM(mockEvent);
-    }, 1500); // Emite un paquete cada 1.5 segundos
+    }, 1500);
   }
 
-  // Extracción y decodificación de los paquetes crudos (SIN CAMBIOS)
   private decodificarBPM(event: any) {
     const valorDataView = event.target.value;
     
@@ -94,6 +99,18 @@ export class WearableService {
   }
 
   public desconectar() {
+    // 2. Destruir el temporizador para que deje de enviar datos
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+
+    // 3. Desconectar físicamente el enlace Bluetooth en el navegador
+    if (this.dispositivo && this.dispositivo.gatt && this.dispositivo.gatt.connected) {
+      this.dispositivo.gatt.disconnect();
+    }
+
+    // 4. Resetear los estados de la interfaz
     this.conectado$.next(false);
     this.bpm$.next(0);
     this.bateria$.next(0);
