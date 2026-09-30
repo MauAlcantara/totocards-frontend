@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
     public authService: AuthService,
     private cartService: CartService,
     private router: Router,
-    private wearableService: WearableService
+    public wearableService: WearableService
   ) { }
 
   conectarReloj() {
