@@ -5,6 +5,7 @@ import { ProductoService } from '../../services/producto.service';
 import { AuthService } from '../../services/auth.service'; 
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs'; 
 import { CartService } from '../../services/cart.service';
+import { WearableService } from '../../services/wearable.service';
 
 @Component({
   selector: 'app-header',
@@ -22,13 +23,23 @@ export class HeaderComponent implements OnInit {
   mostrarDropdown: boolean = false;
   private busquedaSubject = new Subject<string>();
 
+
+  
   constructor(
     private productoService: ProductoService,
     public authService: AuthService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private wearableService: WearableService
   ) { }
-  
+
+  conectarReloj() {
+    this.wearableService.conectarDispositivo();
+  }
+
+  desconectarReloj() {
+    this.wearableService.desconectar();
+  }
   get puedeVerCarrito(): boolean {
     const estaLogueado = this.authService.estaLogueado();
     const usuario = this.authService.obtenerUsuarioActual();

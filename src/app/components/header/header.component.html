@@ -96,6 +96,27 @@
         </svg>
         <span class="cart-badge">{{ totalItems }}</span>
       </div>
+      <!-- Agrega este bloque junto al contenedor de tu carrito de compras -->
+      <div class="wearable-widget" style="display: flex; gap: 10px; align-items: center;">
+      
+        <!-- Estado Desconectado -->
+        <button *ngIf="!(wearableService.conectado$ | async)" (click)="conectarReloj()"
+          style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+          🔴 Vincular Smartwatch
+        </button>
+      
+        <!-- Estado Conectado -->
+        <div *ngIf="wearableService.conectado$ | async" style="display: flex; gap: 15px; color: white; align-items: center;">
+          <span>🟢 Conectado</span>
+          <span style="font-weight: bold; font-size: 1.1em;">💓 {{ wearableService.bpm$ | async }} BPM</span>
+          <span>🔋 {{ wearableService.bateria$ | async }}%</span>
+          <button (click)="desconectarReloj()"
+            style="background: transparent; color: #ffcccc; border: 1px solid #ffcccc; padding: 2px 8px; border-radius: 4px; cursor: pointer;">
+            Desvincular
+          </button>
+        </div>
+      
+      </div>
 
     </div>
   </div>

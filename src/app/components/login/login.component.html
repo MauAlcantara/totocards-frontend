@@ -6,7 +6,7 @@
     </div>
 
     <div class="auth-error-banner" *ngIf="mensajeError">
-      ⚠️ {{ mensajeError }}
+       {{ mensajeError }}
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
