@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ProductoService } from '../../services/producto.service';
+import { AdminService } from '../../services/admin.service';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
@@ -39,8 +39,8 @@ export class AdminComponent implements OnInit {
   mensajeSeleccionado: any = null;
 
   constructor(
-    private http: HttpClient,
     private productoService: ProductoService,
+    private adminService: AdminService,
     private toastService: ToastService
   ) { }
 
@@ -50,11 +50,23 @@ export class AdminComponent implements OnInit {
     this.cargarMensajes(); 
   }
 
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    this.cerrarModalProducto();
+    this.cerrarModalEliminar();
+    this.cerrarModalUsuario();
+    this.cerrarModalEliminarUsuario();
+    this.cerrarModalMensaje();
+  }
+
   // ==========================================
   // PRODUCTOS
   // ==========================================
   cargarProductos(): void {
-    this.productoService.obtenerProductos().subscribe(datos => this.productos = datos);
+    this.productoService.obtenerProductos().subscribe({
+      next: (datos) => this.productos = datos,
+      error: () => this.toastService.mostrar('Error al cargar catálogo de productos.', 'error')
+    });
   }
 
   obtenerProductoVacio() {
@@ -83,17 +95,24 @@ export class AdminComponent implements OnInit {
   cerrarModalProducto(): void { this.mostrarModalProducto = false; }
 
   guardarProducto(): void {
-    const token = localStorage.getItem('tototoken') || '';
     if (this.modoEdicion) {
-      this.productoService.actualizarProducto(this.productoActual.id_producto, this.productoActual, token).subscribe({
-          next: () => { this.toastService.mostrar('Producto actualizado.', 'success'); this.cargarProductos(); this.cerrarModalProducto(); },
-          error: () => this.toastService.mostrar('Error al actualizar.', 'error')
-        });
+      this.productoService.actualizarProducto(this.productoActual.id_producto, this.productoActual).subscribe({
+        next: () => { 
+          this.toastService.mostrar('Producto actualizado.', 'success'); 
+          this.cargarProductos(); 
+          this.cerrarModalProducto(); 
+        },
+        error: () => this.toastService.mostrar('Error al actualizar producto.', 'error')
+      });
     } else {
-      this.productoService.crearProducto(this.productoActual, token).subscribe({
-          next: () => { this.toastService.mostrar('Producto agregado.', 'success'); this.cargarProductos(); this.cerrarModalProducto(); },
-          error: () => this.toastService.mostrar('Error al crear.', 'error')
-        });
+      this.productoService.crearProducto(this.productoActual).subscribe({
+        next: () => { 
+          this.toastService.mostrar('Producto agregado exitosamente.', 'success'); 
+          this.cargarProductos(); 
+          this.cerrarModalProducto(); 
+        },
+        error: () => this.toastService.mostrar('Error al crear producto.', 'error')
+      });
     }
   }
 
@@ -102,10 +121,16 @@ export class AdminComponent implements OnInit {
 
   eliminarProductoConfirmado(): void {
     if (!this.productoAEliminar) return;
-    const token = localStorage.getItem('tototoken') || '';
-    this.productoService.eliminarProducto(this.productoAEliminar.id_producto, token).subscribe({
-      next: (res: any) => { this.toastService.mostrar(res.mensaje, 'success'); this.cargarProductos(); this.cerrarModalEliminar(); },
-      error: (err: any) => { this.toastService.mostrar(err.error?.mensaje, 'error'); this.cerrarModalEliminar(); }
+    this.productoService.eliminarProducto(this.productoAEliminar.id_producto).subscribe({
+      next: (res: any) => { 
+        this.toastService.mostrar(res.mensaje || 'Producto eliminado.', 'success'); 
+        this.cargarProductos(); 
+        this.cerrarModalEliminar(); 
+      },
+      error: (err: any) => { 
+        this.toastService.mostrar(err.error?.mensaje || 'Error al eliminar producto.', 'error'); 
+        this.cerrarModalEliminar(); 
+      }
     });
   }
 
@@ -113,9 +138,7 @@ export class AdminComponent implements OnInit {
   // USUARIOS
   // ==========================================
   cargarUsuarios(): void {
-    const token = localStorage.getItem('tototoken') || '';
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get('https://totocards-backend.onrender.com/api/admin/usuarios', { headers }).subscribe({
+    this.adminService.obtenerUsuarios().subscribe({
       next: (datos: any) => this.usuarios = datos,
       error: (err) => console.error('Error al cargar usuarios', err)
     });
@@ -140,20 +163,25 @@ export class AdminComponent implements OnInit {
   cerrarModalUsuario(): void { this.mostrarModalUsuario = false; }
 
   guardarUsuario(): void {
-    const token = localStorage.getItem('tototoken') || '';
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     if (this.modoEdicionUsuario) {
-      this.http.put(`https://totocards-backend.onrender.com/api/admin/usuarios/${this.usuarioActual.id_usuario}`, this.usuarioActual, { headers })
+      this.adminService.actualizarUsuario(this.usuarioActual.id_usuario, this.usuarioActual)
         .subscribe({
-          next: (res: any) => { this.toastService.mostrar('Usuario actualizado.', 'success'); this.cargarUsuarios(); this.cerrarModalUsuario(); },
-          error: (err: any) => this.toastService.mostrar(err.error?.mensaje || 'Error al actualizar', 'error')
+          next: () => { 
+            this.toastService.mostrar('Usuario actualizado.', 'success'); 
+            this.cargarUsuarios(); 
+            this.cerrarModalUsuario(); 
+          },
+          error: (err: any) => this.toastService.mostrar(err.error?.mensaje || 'Error al actualizar usuario', 'error')
         });
     } else {
-      this.http.post(`https://totocards-backend.onrender.com/api/admin/usuarios`, this.usuarioActual, { headers })
+      this.adminService.crearUsuario(this.usuarioActual)
         .subscribe({
-          next: (res: any) => { this.toastService.mostrar('Usuario registrado.', 'success'); this.cargarUsuarios(); this.cerrarModalUsuario(); },
-          error: (err: any) => this.toastService.mostrar(err.error?.mensaje || 'Error al crear', 'error')
+          next: () => { 
+            this.toastService.mostrar('Usuario registrado.', 'success'); 
+            this.cargarUsuarios(); 
+            this.cerrarModalUsuario(); 
+          },
+          error: (err: any) => this.toastService.mostrar(err.error?.mensaje || 'Error al crear usuario', 'error')
         });
     }
   }
@@ -163,25 +191,29 @@ export class AdminComponent implements OnInit {
 
   eliminarUsuarioConfirmado(): void {
     if (!this.usuarioAEliminar) return;
-    const token = localStorage.getItem('tototoken') || '';
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http.delete(`https://totocards-backend.onrender.com/api/admin/usuarios/${this.usuarioAEliminar.id_usuario}`, { headers })
+    this.adminService.eliminarUsuario(this.usuarioAEliminar.id_usuario)
       .subscribe({
-        next: (res: any) => { this.toastService.mostrar(res.mensaje, 'success'); this.cargarUsuarios(); this.cerrarModalEliminarUsuario(); },
-        error: (err: any) => { this.toastService.mostrar(err.error?.mensaje, 'error'); this.cerrarModalEliminarUsuario(); }
+        next: (res: any) => { 
+          this.toastService.mostrar(res.mensaje || 'Usuario eliminado.', 'success'); 
+          this.cargarUsuarios(); 
+          this.cerrarModalEliminarUsuario(); 
+        },
+        error: (err: any) => { 
+          this.toastService.mostrar(err.error?.mensaje || 'Error al eliminar usuario.', 'error'); 
+          this.cerrarModalEliminarUsuario(); 
+        }
       });
   }
 
   toggleEstadoUsuario(usuario: any): void {
     const nuevoEstado = !usuario.activo; 
-    const token = localStorage.getItem('tototoken') || '';
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http.put(`https://totocards-backend.onrender.com/api/admin/usuarios/${usuario.id_usuario}/estado`, { activo: nuevoEstado }, { headers })
+    this.adminService.cambiarEstadoUsuario(usuario.id_usuario, nuevoEstado)
       .subscribe({
-        next: (res: any) => { this.toastService.mostrar(res.mensaje, nuevoEstado ? 'success' : 'info'); this.cargarUsuarios(); },
-        error: () => this.toastService.mostrar('Error al cambiar el estado', 'error')
+        next: (res: any) => { 
+          this.toastService.mostrar(res.mensaje || 'Estado modificado.', nuevoEstado ? 'success' : 'info'); 
+          this.cargarUsuarios(); 
+        },
+        error: () => this.toastService.mostrar('Error al cambiar el estado del usuario', 'error')
       });
   }
 
@@ -189,10 +221,7 @@ export class AdminComponent implements OnInit {
   // MENSAJES
   // ==========================================
   cargarMensajes(): void {
-    const token = localStorage.getItem('tototoken') || '';
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-    this.http.get('https://totocards-backend.onrender.com/api/admin/mensajes', { headers }).subscribe({
+    this.adminService.obtenerMensajes().subscribe({
       next: (datos: any) => this.mensajes = datos,
       error: () => console.error('Error al cargar la bandeja')
     });
@@ -203,9 +232,7 @@ export class AdminComponent implements OnInit {
     this.mostrarModalMensaje = true;
 
     if (!msg.leido) {
-      const token = localStorage.getItem('tototoken') || '';
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.http.put(`https://totocards-backend.onrender.com/api/admin/mensajes/${msg.id_mensaje}/leido`, {}, { headers })
+      this.adminService.marcarMensajeLeido(msg.id_mensaje)
         .subscribe(() => {
           msg.leido = true;
         });

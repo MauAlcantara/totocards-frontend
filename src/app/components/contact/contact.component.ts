@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../services/toast.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-contact',
@@ -30,7 +31,7 @@ export class ContactComponent {
 
     this.estadoEnvio = 'Enviando tu mensaje al equipo de TotoCards...';
     
-    this.http.post('https://totocards-backend.onrender.com/api/contacto', this.contacto).subscribe({
+    this.http.post(`${environment.apiUrl}/contacto`, this.contacto).subscribe({
       next: () => {
         this.toastService.mostrar('Mensaje enviado correctamente.', 'success');
         this.estadoEnvio = '';

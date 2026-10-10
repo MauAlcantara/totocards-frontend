@@ -58,10 +58,10 @@
 
     <div class="purchase-actions-box" *ngIf="producto.stock > 0">
       <div class="quantity-selector">
-        <button (click)="disminuirCantidad()">-</button>
+        <button type="button" aria-label="Disminuir cantidad" (click)="disminuirCantidad()">-</button>
         <input type="number" class="quantity-input" [value]="cantidadSeleccionada" (input)="validarCantidad($event)"
-        style="width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; background: transparent; appearance: textfield;">
-        <button (click)="aumentarCantidad()">+</button>
+        style="width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; background: transparent; appearance: textfield;" aria-label="Cantidad">
+        <button type="button" aria-label="Aumentar cantidad" (click)="aumentarCantidad()">+</button>
       </div>
 
       <button class="primary-add-to-cart-btn" (click)="agregarItem()"
@@ -102,12 +102,12 @@
 </div>
 
 <div class="modal-overlay" *ngIf="mostrarModalLogin" (click)="cerrarModalLogin()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <h3>¡Alto ahí, Coleccionista! </h3>
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-login-pd-title" (click)="$event.stopPropagation()">
+    <h3 id="modal-login-pd-title">¡Alto ahí, Coleccionista! </h3>
     <p>Para poder armar tu carrito y apartar tus cartas, necesitas iniciar sesión o crear una cuenta en TotoCards.</p>
     <div class="modal-actions">
-      <button class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>
-      <button class="btn-primary" routerLink="/login">Iniciar Sesión</button>
+      <button type="button" class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>
+      <button type="button" class="btn-primary" routerLink="/login" (click)="cerrarModalLogin()">Iniciar Sesión</button>
     </div>
   </div>
 </div>

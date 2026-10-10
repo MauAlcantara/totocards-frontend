@@ -191,7 +191,7 @@
 <!-- MODALES PRODUCTO Y USUARIOS   -->
 <!-- ========================================== -->
 <div class="modal-overlay" *ngIf="mostrarModalProducto" (click)="cerrarModalProducto()">
-  <div class="modal-content admin-modal" (click)="$event.stopPropagation()">
+  <div class="modal-content admin-modal" role="dialog" aria-modal="true" aria-label="Gestión de Producto" (click)="$event.stopPropagation()">
     <h3 style="display: flex; align-items: center; gap: 8px;">
       <svg *ngIf="modoEdicion" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -264,7 +264,7 @@
 </div>
 
 <div class="modal-overlay" *ngIf="mostrarModalEliminar" (click)="cerrarModalEliminar()">
-  <div class="modal-content admin-modal" style="max-width: 420px !important; text-align: center !important;"
+  <div class="modal-content admin-modal" role="dialog" aria-modal="true" aria-label="Confirmación de Eliminación de Producto" style="max-width: 420px !important; text-align: center !important;"
     (click)="$event.stopPropagation()">
     <div style="color: #e53e3e; margin-bottom: 15px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none"
@@ -288,7 +288,7 @@
 </div>
 
 <div class="modal-overlay" *ngIf="mostrarModalUsuario" (click)="cerrarModalUsuario()">
-  <div class="modal-content admin-modal" style="max-width: 500px !important;" (click)="$event.stopPropagation()">
+  <div class="modal-content admin-modal" role="dialog" aria-modal="true" aria-label="Gestión de Coleccionista" style="max-width: 500px !important;" (click)="$event.stopPropagation()">
     <h3 style="display: flex; align-items: center; gap: 8px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -330,7 +330,7 @@
 </div>
 
 <div class="modal-overlay" *ngIf="mostrarModalEliminarUsuario" (click)="cerrarModalEliminarUsuario()">
-  <div class="modal-content admin-modal" style="max-width: 420px !important; text-align: center !important;"
+  <div class="modal-content admin-modal" role="dialog" aria-modal="true" aria-label="Confirmación de Eliminación de Usuario" style="max-width: 420px !important; text-align: center !important;"
     (click)="$event.stopPropagation()">
     <div style="color: #e53e3e; margin-bottom: 15px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none"
@@ -356,7 +356,7 @@
 
 <!-- Modal de Lectura de Mensajes (Soporte) -->
 <div class="modal-overlay" *ngIf="mostrarModalMensaje" (click)="cerrarModalMensaje()">
-  <div class="modal-content admin-modal" style="max-width: 500px !important;" (click)="$event.stopPropagation()">
+  <div class="modal-content admin-modal" role="dialog" aria-modal="true" aria-label="Lectura de Mensaje de Soporte" style="max-width: 500px !important;" (click)="$event.stopPropagation()">
     <h3 style="display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #edf2f7; padding-bottom: 15px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

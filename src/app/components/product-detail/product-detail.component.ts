@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router'; 
 import { ProductoService } from '../../services/producto.service';
@@ -124,6 +124,11 @@ agregarItem(): void {
   }
   cerrarModalLogin(): void {
     this.mostrarModalLogin = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    this.cerrarModalLogin();
   }
 
   obtenerMaximoPermitido(): number {

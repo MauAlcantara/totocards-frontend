@@ -94,14 +94,24 @@
   color: #2b6cb0;
 }
 
+.badge-estado.pagado {
+  background-color: #c6f6d5;
+  color: #22543d;
+}
+
 .badge-estado.camino {
   background-color: #feebc8;
   color: #c05621;
 }
 
 .badge-estado.entregado {
-  background-color: #c6f6d5;
-  color: #2f855a;
+  background-color: #bee3f8;
+  color: #2b6cb0;
+}
+
+.badge-estado.cancelado {
+  background-color: #fed7d7;
+  color: #9b2c2c;
 }
 
 .btn-detalles {

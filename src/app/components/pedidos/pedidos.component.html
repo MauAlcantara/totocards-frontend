@@ -22,11 +22,13 @@
 
       <div class="pedido-estado">
         <span class="badge-estado" [ngClass]="{
-            'pendiente': pedido.estado === 'PENDIENTE',
-            'camino': pedido.estado === 'EN CAMINO',
-            'entregado': pedido.estado === 'ENTREGADO'
+            'pendiente': (pedido.estado_pedido || pedido.estado) === 'PENDIENTE',
+            'pagado': (pedido.estado_pedido || pedido.estado) === 'PAGADO',
+            'camino': (pedido.estado_pedido || pedido.estado) === 'EN CAMINO',
+            'entregado': (pedido.estado_pedido || pedido.estado) === 'ENTREGADO',
+            'cancelado': (pedido.estado_pedido || pedido.estado) === 'CANCELADO'
           }">
-          {{ pedido.estado }}
+          {{ pedido.estado_pedido || pedido.estado || 'PAGADO' }}
         </span>
         <div class="pedido-total">${{ pedido.total }} MXN</div>
       </div>
@@ -39,8 +41,15 @@
     </article>
   </div>
 
-  <div class="empty-state" *ngIf="!cargando && pedidos.length === 0">
-    <div class="empty-icon"></div>
+  <div class="empty-state error-state" *ngIf="!cargando && errorMensaje">
+    <div class="empty-icon">⚠️</div>
+    <h3>Error al cargar pedidos</h3>
+    <p>{{ errorMensaje }}</p>
+    <button class="btn-comprar" (click)="cargarPedidos()">Reintentar</button>
+  </div>
+
+  <div class="empty-state" *ngIf="!cargando && !errorMensaje && pedidos.length === 0">
+    <div class="empty-icon">📦</div>
     <h3>Aún no tienes pedidos</h3>
     <p>Tu bóveda está vacía. ¡Es un buen momento para empezar tu colección!</p>
     <button class="btn-comprar" routerLink="/catalogo">Explorar Catálogo</button>

@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PedidoService {
-  private apiUrl = 'https://totocards-backend.onrender.com/api/pedidos';
+  private apiUrl = `${environment.apiUrl}/pedidos`;
 
   constructor(private http: HttpClient) {}
 
   procesarCheckout(pedido: any): Observable<any> {
-    const token = localStorage.getItem('tototoken');
-    
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-    return this.http.post(`${this.apiUrl}/checkout`, pedido, { headers });
+    return this.http.post(`${this.apiUrl}/checkout`, pedido);
   }
+
+  obtenerMisCompras(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/mis-compras`);
+  }
+
   obtenerDetallePedido(id: number | string): Observable<any> {
-    const token = localStorage.getItem('tototoken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get(`${this.apiUrl}/${id}`, { headers });
+    return this.http.get(`${this.apiUrl}/${id}`);
   }
 }

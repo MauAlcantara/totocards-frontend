@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { WearableService } from '../../services/wearable.service';
 
 @Component({
   selector: 'app-perfil',
@@ -17,9 +17,9 @@ export class PerfilComponent implements OnInit {
   guardando: boolean = false;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private toastService: ToastService,
-    private http: HttpClient
+    public wearableService: WearableService
   ) {}
 
   ngOnInit(): void {
@@ -30,39 +30,58 @@ export class PerfilComponent implements OnInit {
   }
 
   onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.usuario.avatar = e.target.result; 
-      };
-      reader.readAsDataURL(file);
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.toastService.mostrar('Solo se permiten imágenes en formato JPG, PNG o WEBP.', 'error');
+      event.target.value = '';
+      return;
     }
+
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+    if (file.size > maxSizeInBytes) {
+      this.toastService.mostrar('La imagen excede el límite de 2 MB. Elige una imagen más liviana.', 'error');
+      event.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.usuario.avatar = e.target.result; 
+    };
+    reader.readAsDataURL(file);
   }
 
   guardarCambios(): void {
     this.guardando = true;
-    const token = localStorage.getItem('tototoken');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.put(`https://totocards-backend.onrender.com/api/auth/actualizar-perfil`, 
-      { nombre: this.usuario.nombre, avatar: this.usuario.avatar }, 
-      { headers }
-    ).subscribe({
-      next: (res) => {
-        const currentUser = this.authService.obtenerUsuarioActual();
-        const updatedUser = { ...currentUser, nombre: this.usuario.nombre, avatar: this.usuario.avatar };
-        localStorage.setItem('totouser', JSON.stringify(updatedUser));
-
-        this.toastService.mostrar('¡Información guardada en la bóveda!', 'success');
+    this.authService.actualizarPerfil({
+      nombre: this.usuario.nombre,
+      avatar: this.usuario.avatar
+    }).subscribe({
+      next: () => {
+        this.authService.actualizarUsuarioLocal({
+          nombre: this.usuario.nombre,
+          avatar: this.usuario.avatar
+        });
+        this.toastService.mostrar('¡Información guardada exitosamente en la bóveda!', 'success');
         this.guardando = false;
-        
-        setTimeout(() => window.location.reload(), 1500);
       },
       error: (err) => {
-        this.toastService.mostrar('Hubo un error al conectar con el servidor', 'error');
+        this.toastService.mostrar(err.error?.mensaje || 'Hubo un error al actualizar tu perfil.', 'error');
         this.guardando = false;
       }
     });
+  }
+
+  conectarSmartwatch(): void {
+    this.wearableService.conectarDispositivo();
+  }
+
+  desconectarSmartwatch(): void {
+    this.wearableService.desconectar();
+    this.toastService.mostrar('Dispositivo desvinculado.', 'info');
   }
 }

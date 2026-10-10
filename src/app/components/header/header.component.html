@@ -13,8 +13,7 @@
         <ul class="dropdown-menu" *ngIf="menuAbierto">
           <li><a routerLink="/catalogo" (click)="cerrarMenu()">Ver Todo</a></li>
           <li><a [routerLink]="['/catalogo']" [queryParams]="{ cat: 'sobres' }" (click)="cerrarMenu()">Sobres Sueltos</a></li>
-          <li><a [routerLink]="['/catalogo']" [queryParams]="{ cat: 'etb' }" (click)="cerrarMenu()">Elite Trainer Boxes</a>
-          </li>
+          <li><a [routerLink]="['/catalogo']" [queryParams]="{ cat: 'etb' }" (click)="cerrarMenu()">Elite Trainer Boxes</a></li>
           <li><a [routerLink]="['/catalogo']" [queryParams]="{ cat: 'box' }" (click)="cerrarMenu()">Booster Boxes</a></li>
         </ul>
       </li>
@@ -25,19 +24,19 @@
 
   <div class="search-cart-container">
 
-<div class="search-box" style="position: relative;">
-  <input type="text" #inputBuscador placeholder="Buscar expansiones..." (input)="onBuscar($event)"
-    (blur)="onBlur(inputBuscador)">
+    <div class="search-box" style="position: relative;">
+      <input type="text" #inputBuscador placeholder="Buscar expansiones..." (input)="onBuscar($event)"
+        (blur)="onBlur(inputBuscador)" aria-label="Buscar expansiones o productos">
 
-    <button type="button" class="btn-search">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#718096"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"></circle>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-    </svg>
-  </button>
+      <button type="button" class="btn-search" aria-label="Buscar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#718096"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
 
-      <ul class="elastic-search-results" *ngIf="mostrarDropdown">
+      <ul class="elastic-search-results" *ngIf="mostrarDropdown" (mousedown)="$event.preventDefault()">
         <li *ngFor="let resultado of resultadosBusqueda">
           <a [routerLink]="['/producto', resultado.id_producto]" (click)="cerrarBuscador(inputBuscador)">
             <span class="search-name">{{ resultado.nombre }}</span>
@@ -52,70 +51,52 @@
 
     <div class="user-actions">
 
+      <!-- Telemetría discreta si el smartwatch está activo (reubicado de forma elegante) -->
+      <div *ngIf="wearableService.conectado$ | async" class="header-telemetry-badge" title="Smartwatch vinculado">
+        <span class="pulse-icon">💓</span>
+        <span class="pulse-bpm">{{ (wearableService.bpm$ | async) || '--' }} BPM</span>
+      </div>
+
       <div class="nav-item-dropdown profile-trigger" (mouseenter)="abrirMenuPerfil()" (mouseleave)="cerrarMenuPerfil()">
+        <div class="action-icon" aria-label="Menú de perfil" role="button" tabindex="0">
+          <img *ngIf="usuarioActual?.avatar"
+            [src]="usuarioActual.avatar" alt="Mi Perfil" class="header-avatar">
 
-  <div class="action-icon">
-    <img *ngIf="authService.estaLogueado() && authService.obtenerUsuarioActual()?.avatar"
-      [src]="authService.obtenerUsuarioActual()?.avatar" alt="Mi Perfil" class="header-avatar">
-  
-    <svg *ngIf="!authService.estaLogueado() || !authService.obtenerUsuarioActual()?.avatar"
-      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
-    </svg>
-  </div>
+          <svg *ngIf="!usuarioActual?.avatar"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+          </svg>
+        </div>
+
         <ul class="dropdown-menu profile-menu" *ngIf="perfilMenuAbierto">
-
           <ng-container *ngIf="!authService.estaLogueado()">
             <li><a routerLink="/login">Iniciar Sesión</a></li>
             <li><a routerLink="/registro">Crear Cuenta</a></li>
           </ng-container>
 
-        <ng-container *ngIf="authService.estaLogueado()">
-          <li><a style="cursor: default; color: #a0aec0 !important; font-size: 0.8rem !important;">Hola, {{
-              authService.obtenerUsuarioActual()?.nombre }}</a></li>
-        
-          <li *ngIf="authService.obtenerUsuarioActual()?.roles?.includes('Administrador')">
-            <a routerLink="/admin" (click)="cerrarMenuPerfil()"
-              style="color: #ffcb05 !important; font-weight: bold !important;">Panel de Administración</a>
-          </li>
-        
-          <li><a routerLink="/perfil" (click)="cerrarMenuPerfil()">Ajustes de Perfil</a></li>
-          <li *ngIf="!authService.obtenerUsuarioActual()?.roles?.includes('Administrador')">
-            <a routerLink="/pedidos" (click)="cerrarMenuPerfil()">Mis Compras</a>
-          </li>
-          <li><a (click)="cerrarSesion()" class="logout-link">Cerrar Sesión</a></li>
-        </ng-container>
+          <ng-container *ngIf="authService.estaLogueado()">
+            <li><span style="cursor: default; color: #a0aec0; font-size: 0.8rem; display: block; padding: 6px 12px;">Hola, {{ usuarioActual?.nombre }}</span></li>
 
+            <li *ngIf="usuarioActual?.roles?.includes('Administrador')">
+              <a routerLink="/admin" (click)="cerrarMenuPerfil()"
+                style="color: #ffcb05 !important; font-weight: bold !important;">Panel de Administración</a>
+            </li>
+
+            <li><a routerLink="/perfil" (click)="cerrarMenuPerfil()">Ajustes de Perfil & Wearables</a></li>
+            <li *ngIf="!usuarioActual?.roles?.includes('Administrador')">
+              <a routerLink="/pedidos" (click)="cerrarMenuPerfil()">Mis Compras</a>
+            </li>
+            <li><a (click)="cerrarSesion()" class="logout-link">Cerrar Sesión</a></li>
+          </ng-container>
         </ul>
       </div>
 
-      <div class="cart action-icon" (click)="onCarritoClick()" *ngIf="puedeVerCarrito">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <div class="cart action-icon" (click)="onCarritoClick()" *ngIf="puedeVerCarrito" aria-label="Ver carrito" role="button" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path
             d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
         </svg>
         <span class="cart-badge">{{ totalItems }}</span>
-      </div>
-      <!-- Agrega este bloque junto al contenedor de tu carrito de compras -->
-      <div class="wearable-widget" style="display: flex; gap: 10px; align-items: center;">
-      
-        <!-- Estado Desconectado -->
-        <button *ngIf="!(wearableService.conectado$ | async)" (click)="conectarReloj()"
-          style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-          🔴 Vincular Smartwatch
-        </button>
-      
-        <!-- Estado Conectado -->
-        <div *ngIf="wearableService.conectado$ | async" style="display: flex; gap: 15px; color: white; align-items: center;">
-          <span>🟢 Conectado</span>
-          <span style="font-weight: bold; font-size: 1.1em;">💓 {{ wearableService.bpm$ | async }} BPM</span>
-          <span>🔋 {{ wearableService.bateria$ | async }}%</span>
-          <button (click)="desconectarReloj()"
-            style="background: transparent; color: #ffcccc; border: 1px solid #ffcccc; padding: 2px 8px; border-radius: 4px; cursor: pointer;">
-            Desvincular
-          </button>
-        </div>
-      
       </div>
 
     </div>
@@ -123,12 +104,12 @@
 </header>
 
 <div class="modal-overlay" *ngIf="mostrarModalLogin" (click)="cerrarModalLogin()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <h3>¡Alto ahí, Coleccionista! </h3>
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-login-title" (click)="$event.stopPropagation()">
+    <h3 id="modal-login-title">¡Alto ahí, Coleccionista! </h3>
     <p>Para poder armar tu carrito y apartar tus cartas, necesitas iniciar sesión o crear una cuenta en TotoCards.</p>
     <div class="modal-actions">
-      <button class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>
-      <button class="btn-primary" routerLink="/login" (click)="cerrarModalLogin()">Iniciar Sesión</button>
+      <button type="button" class="btn-secondary" (click)="cerrarModalLogin()">Seguir viendo</button>
+      <button type="button" class="btn-primary" routerLink="/login" (click)="cerrarModalLogin()">Iniciar Sesión</button>
     </div>
   </div>
 </div>

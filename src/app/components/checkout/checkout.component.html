@@ -1,69 +1,276 @@
 <main class="checkout-container">
-  <h2>Finalizar Compra</h2>
 
-  <div class="checkout-grid">
+  <!-- ========================================== -->
+  <!-- VISTA DE ÉXITO TRAS COMPLETAR COMPRA       -->
+  <!-- ========================================== -->
+  <section class="checkout-success-card" *ngIf="compraCompletada">
+    <div class="success-icon-badge">✨</div>
+    <h2>¡Gracias por tu compra, Coleccionista!</h2>
+    <p class="order-code-banner">Orden confirmada: <strong>#{{ codigoOrden }}</strong></p>
+    <p class="success-desc">
+      Tus artículos han sido apartados en la bóveda de TotoCards. Nuestro equipo preparará tu paquete utilizando
+      guantes de nitrilo y protección rígida para que tus cartas lleguen en condición impecable.
+    </p>
 
-    <div class="order-summary">
-      <h3>Resumen de tu Pedido</h3>
-
-      <div class="cart-item" *ngFor="let item of carrito">
-        <img [src]="item.imagen_url" [alt]="item.nombre" width="60">
-        <div class="item-info">
-          <h4>{{ item.nombre }}</h4>
-          <p>Cant: {{ item.cantidad }} x ${{ item.precio_unitario }}</p>
-          <button (click)="quitarItem(item.id_producto)"
-            style="background: none; border: none; color: #e53e3e; font-size: 0.8rem; cursor: pointer; padding: 0; margin-top: 5px;">✕
-            Quitar</button>
-        </div>
-        <div class="item-total">
-          ${{ item.quantity * item.precio_unitario || item.cantidad * item.precio_unitario }}
-        </div>
-      </div>
-      
-      <div *ngIf="carrito.length === 0 && !mensaje" style="text-align: center; padding: 20px;">
-        <p>Tu carrito está vacío. ¡Ve al catálogo a buscar expansiones!</p>
-        <a routerLink="/catalogo" style="color: var(--color-primario); font-weight: bold;">Explorar productos</a>
-      </div>
-
-<div class="cart-summary-details">
-  <div class="summary-row">
-    <span>Subtotal</span>
-    <span>${{ subtotal | number:'1.2-2' }}</span>
-  </div>
-
-  <div class="summary-row discount" *ngIf="descuentoEtb > 0">
-    <span> Descuento Fin de Semana (10% en ETB):</span>
-    <span>-${{ descuentoEtb | number:'1.2-2' }}</span>
-  </div>
-
-  <div class="summary-row shipping">
-    <span>Envío a Bóveda:</span>
-    <span *ngIf="envioGratisVerano" class="free-shipping">¡GRATIS (Festival Verano)!</span>
-    <span *ngIf="!envioGratisVerano">$150.00</span>
-  </div>
-
-  <hr class="summary-divider">
-
-  <div class="cart-total">
-    <span>Total a Pagar:</span>
-    <strong>${{ total | number:'1.2-2' }} MXN</strong>
-  </div>
-</div>
+    <div class="success-actions">
+      <button class="btn-primary" routerLink="/pedidos">Ver Mis Compras</button>
+      <button class="btn-secondary" routerLink="/catalogo">Seguir Explorando</button>
     </div>
+  </section>
 
-    <div class="payment-panel">
-      <h3>Método de Pago</h3>
-      <p class="secure-notice"> Pagos procesados de forma segura mediante encriptación bancaria.</p>
+  <!-- ========================================== -->
+  <!-- VISTA DE CARRITO VACÍO                     -->
+  <!-- ========================================== -->
+  <section class="checkout-empty-card" *ngIf="!compraCompletada && carrito.length === 0">
+    <div class="empty-icon">🛒</div>
+    <h2>Tu carrito está vacío</h2>
+    <p>No tienes artículos agregados en tu orden. Explora nuestro catálogo y asegura tus cartas favoritas.</p>
+    <button class="btn-primary" routerLink="/catalogo">Ir al Catálogo TCG</button>
+  </section>
 
-      <div class="server-message" *ngIf="mensaje"
-        [ngClass]="{'success': mensaje.includes('✅'), 'error': mensaje.includes('❌')}">
-        {{ mensaje }}
+  <!-- ========================================== -->
+  <!-- VISTA PRINCIPAL DE FINALIZACIÓN DE COMPRA  -->
+  <!-- ========================================== -->
+  <div *ngIf="!compraCompletada && carrito.length > 0">
+    <header class="checkout-header">
+      <div class="breadcrumb">
+        <a routerLink="/catalogo">← Volver al Catálogo</a>
+      </div>
+      <h2>Finalizar Compra</h2>
+      <p>Completa tus datos de entrega y selecciona tu método de pago preferido.</p>
+    </header>
+
+    <div class="checkout-layout">
+
+      <!-- COLUMNA IZQUIERDA: FORMULARIOS -->
+      <div class="checkout-forms-column">
+
+        <!-- PASO 1: DIRECCIÓN DE ENTREGA -->
+        <section class="checkout-card">
+          <div class="card-step-header">
+            <span class="step-number">1</span>
+            <div>
+              <h3>Dirección de Entrega en México</h3>
+              <p class="step-sub">Asegúrate de proporcionar una dirección válida para paquetería.</p>
+            </div>
+          </div>
+
+          <form [formGroup]="checkoutForm" class="checkout-form-grid">
+            <div class="form-group full-width">
+              <label for="nombreCompleto">Nombre y Apellidos del Destinatario *</label>
+              <input id="nombreCompleto" type="text" formControlName="nombreCompleto" placeholder="Ej. Carlos Mendoza">
+              <span class="field-error" *ngIf="checkoutForm.get('nombreCompleto')?.touched && checkoutForm.get('nombreCompleto')?.invalid">
+                Ingresa el nombre completo del destinatario.
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="telefono">Teléfono de Contacto (10 dígitos) *</label>
+              <input id="telefono" type="tel" formControlName="telefono" placeholder="55 1234 5678">
+              <span class="field-error" *ngIf="checkoutForm.get('telefono')?.touched && checkoutForm.get('telefono')?.invalid">
+                Teléfono requerido (10 dígitos).
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="codigoPostal">Código Postal *</label>
+              <input id="codigoPostal" type="text" formControlName="codigoPostal" placeholder="06700" maxlength="5">
+              <span class="field-error" *ngIf="checkoutForm.get('codigoPostal')?.touched && checkoutForm.get('codigoPostal')?.invalid">
+                Código postal válido de 5 dígitos.
+              </span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="calleNumero">Calle y Número Exterior/Interior *</label>
+              <input id="calleNumero" type="text" formControlName="calleNumero" placeholder="Av. Insurgentes Sur 450, Depto 3B">
+              <span class="field-error" *ngIf="checkoutForm.get('calleNumero')?.touched && checkoutForm.get('calleNumero')?.invalid">
+                Ingresa la calle y número exterior.
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="colonia">Colonia / Fraccionamiento *</label>
+              <input id="colonia" type="text" formControlName="colonia" placeholder="Roma Norte">
+              <span class="field-error" *ngIf="checkoutForm.get('colonia')?.touched && checkoutForm.get('colonia')?.invalid">
+                Ingresa la colonia.
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="ciudad">Municipio / Alcaldía *</label>
+              <input id="ciudad" type="text" formControlName="ciudad" placeholder="Cuauhtémoc">
+              <span class="field-error" *ngIf="checkoutForm.get('ciudad')?.touched && checkoutForm.get('ciudad')?.invalid">
+                Ingresa el municipio o alcaldía.
+              </span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="estado">Estado *</label>
+              <select id="estado" formControlName="estado">
+                <option *ngFor="let est of estadosMexico" [value]="est">{{ est }}</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="instruccionesEntrega">Referencias o Instrucciones de Entrega (Opcional)</label>
+              <textarea id="instruccionesEntrega" formControlName="instruccionesEntrega" rows="2" placeholder="Ej. Casa blanca con reja negra, dejar con vigilancia."></textarea>
+            </div>
+          </form>
+        </section>
+
+        <!-- PASO 2: MÉTODO DE PAGO -->
+        <section class="checkout-card">
+          <div class="card-step-header">
+            <span class="step-number">2</span>
+            <div>
+              <h3>Método de Pago Seguro</h3>
+              <p class="step-sub">Transacción cifrada y protegida por protocolos bancarios.</p>
+            </div>
+          </div>
+
+          <!-- SELECTOR DE FORMA DE PAGO -->
+          <div class="payment-tabs">
+            <button type="button" class="payment-tab" [class.active]="metodoPagoSeleccionado === 'tarjeta'" (click)="seleccionarMetodo('tarjeta')">
+              <span class="tab-icon">💳</span>
+              <span>Tarjeta Bancaria</span>
+            </button>
+            <button type="button" class="payment-tab" [class.active]="metodoPagoSeleccionado === 'paypal'" (click)="seleccionarMetodo('paypal')">
+              <span class="tab-icon">🅿️</span>
+              <span>PayPal</span>
+            </button>
+            <button type="button" class="payment-tab" [class.active]="metodoPagoSeleccionado === 'spei'" (click)="seleccionarMetodo('spei')">
+              <span class="tab-icon">🏦</span>
+              <span>SPEI / Transferencia</span>
+            </button>
+          </div>
+
+          <!-- FORMULARIO TARJETA -->
+          <div *ngIf="metodoPagoSeleccionado === 'tarjeta'" [formGroup]="checkoutForm" class="card-fields-box">
+            <div class="accepted-cards">
+              <span>Tarjetas aceptadas:</span>
+              <span class="card-chip-tag">VISA</span>
+              <span class="card-chip-tag">Mastercard</span>
+              <span class="card-chip-tag">American Express</span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="numeroTarjeta">Número de Tarjeta *</label>
+              <input id="numeroTarjeta" type="text" formControlName="numeroTarjeta" placeholder="4532 0000 0000 0000" maxlength="19">
+            </div>
+
+            <div class="form-group full-width">
+              <label for="nombreTitular">Nombre en la Tarjeta *</label>
+              <input id="nombreTitular" type="text" formControlName="nombreTitular" placeholder="COMO APARECE EN EL PLÁSTICO">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fechaExpira">Vencimiento (MM/AA) *</label>
+                <input id="fechaExpira" type="text" formControlName="fechaExpira" placeholder="12/28" maxlength="5">
+              </div>
+              <div class="form-group">
+                <label for="cvv">CVV / CVC *</label>
+                <input id="cvv" type="password" formControlName="cvv" placeholder="•••" maxlength="4">
+              </div>
+            </div>
+          </div>
+
+          <!-- PAYPAL INFO -->
+          <div *ngIf="metodoPagoSeleccionado === 'paypal'" class="alt-payment-box">
+            <p><strong>Pago Exprés con PayPal:</strong> Al presionar confirmar pedido serás procesado mediante la pasarela segura de PayPal para completar la transacción.</p>
+          </div>
+
+          <!-- SPEI INFO -->
+          <div *ngIf="metodoPagoSeleccionado === 'spei'" class="alt-payment-box">
+            <p><strong>Transferencia Electrónica (SPEI):</strong> Se generará una clave interbancaria única referenciada a tu orden. Tu pedido se preparará automáticamente al conciliar el depósito bancario.</p>
+          </div>
+        </section>
+
       </div>
 
-      <button class="pay-btn" (click)="pagar()" [disabled]="cargando || carrito.length === 0">
-        {{ cargando ? 'Procesando el pago con el banco...' : 'Pagar Pedido Ahora' }}
-      </button>
-    </div>
+      <!-- COLUMNA DERECHA: RESUMEN DE LA ORDEN (STICKY) -->
+      <aside class="checkout-summary-column">
+        <div class="summary-sticky-card">
+          <h3>Resumen de la Orden</h3>
 
+          <!-- LISTA DE PRODUCTOS -->
+          <div class="summary-items-list">
+            <div class="summary-item" *ngFor="let item of carrito">
+              <img [src]="item.imagen_url" [alt]="item.nombre" class="item-thumb">
+              <div class="item-details">
+                <h4 class="item-name">{{ item.nombre }}</h4>
+                <div class="item-meta">
+                  <span class="item-unit-price">${{ item.precio_unitario | number:'1.2-2' }} MXN</span>
+                  <span class="item-badge-preventa" *ngIf="item.estado === 'PREVENTA'">PREVENTA</span>
+                </div>
+                <div class="quantity-controls">
+                  <button type="button" class="btn-qty" (click)="disminuirCantidad(item)" aria-label="Disminuir cantidad de este artículo">-</button>
+                  <span class="qty-count">{{ item.cantidad }}</span>
+                  <button type="button" class="btn-qty" (click)="aumentarCantidad(item)" aria-label="Aumentar cantidad de este artículo">+</button>
+                  <button type="button" class="btn-remove" (click)="quitarItem(item.id_producto)" title="Quitar producto" aria-label="Eliminar producto del carrito">Quitar</button>
+                </div>
+              </div>
+              <div class="item-subtotal">
+                ${{ (item.cantidad * item.precio_unitario) | number:'1.2-2' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- DESGLOSE DE COSTOS -->
+          <div class="costs-breakdown">
+            <div class="cost-row">
+              <span>Subtotal artículos</span>
+              <span>${{ subtotal | number:'1.2-2' }} MXN</span>
+            </div>
+
+            <div class="cost-row discount-row" *ngIf="descuentoEtb > 0">
+              <span>✨ Descuento Fin de Semana (10% en ETB)</span>
+              <span>-${{ descuentoEtb | number:'1.2-2' }} MXN</span>
+            </div>
+
+            <div class="cost-row">
+              <span>Envío a domicilio</span>
+              <span *ngIf="envioGratisVerano" class="badge-free-shipping">¡GRATIS (Festival Verano)!</span>
+              <span *ngIf="!envioGratisVerano">${{ costoEnvio | number:'1.2-2' }} MXN</span>
+            </div>
+
+            <hr class="summary-separator">
+
+            <div class="cost-row total-row">
+              <span>Total a Pagar</span>
+              <strong>${{ total | number:'1.2-2' }} MXN</strong>
+            </div>
+          </div>
+
+          <!-- MENSAJE DE ERROR DEL SERVIDOR SI OCURRE -->
+          <div class="checkout-alert-error" *ngIf="mensajeServidor">
+            ⚠️ {{ mensajeServidor }}
+          </div>
+
+          <!-- BOTÓN PRINCIPAL DE PAGO -->
+          <button type="button" class="btn-pay-now" (click)="pagar()" [disabled]="cargando || carrito.length === 0">
+            <span *ngIf="!cargando">Confirmar y Pagar ${{ total | number:'1.2-2' }} MXN</span>
+            <span *ngIf="cargando">Procesando orden con la bóveda...</span>
+          </button>
+
+          <!-- INSIGNIAS DE SEGURIDAD -->
+          <div class="trust-badges">
+            <div class="trust-badge-item">
+              <span>🔒</span>
+              <span>Pago 100% Cifrado SSL</span>
+            </div>
+            <div class="trust-badge-item">
+              <span>🛡️</span>
+              <span>Embalaje Blindado Mint</span>
+            </div>
+            <div class="trust-badge-item">
+              <span>🚚</span>
+              <span>Rastreo en tiempo real</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
   </div>
 </main>

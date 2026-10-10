@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
+import { PedidoService } from '../../services/pedido.service';
 
 @Component({
   selector: 'app-pedidos',
@@ -14,30 +13,36 @@ import { AuthService } from '../../services/auth.service';
 export class PedidosComponent implements OnInit {
   pedidos: any[] = [];
   cargando: boolean = true;
+  errorMensaje: string = '';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(
+    private pedidoService: PedidoService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   ngOnInit(): void {
-    const token = localStorage.getItem('tototoken');
-    
-    if (!token) {
+    this.cargarPedidos();
+  }
+
+  cargarPedidos(): void {
+    if (!isPlatformBrowser(this.platformId)) {
       this.cargando = false;
       return;
     }
 
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.cargando = true;
+    this.errorMensaje = '';
 
-    this.http.get<any[]>('https://totocards-backend.onrender.com/api/pedidos/mis-compras', { headers })
+    this.pedidoService.obtenerMisCompras()
       .subscribe({
         next: (data) => {
-          this.pedidos = data;
+          this.pedidos = data || [];
           this.cargando = false;
         },
         error: (err) => {
-          console.error('No se pudieron cargar los pedidos (Puede que la tabla aún no exista)', err);
-          this.pedidos = [
-            { id_pedido: 'TCG-8472', fecha: new Date(), total: 1590.00, estado: 'EN CAMINO', articulos: 1 }
-          ];
+          console.error('Error al obtener compras de la base de datos:', err);
+          this.pedidos = [];
+          this.errorMensaje = 'No se pudo conectar con el servidor para consultar tu historial. Intenta nuevamente.';
           this.cargando = false;
         }
       });

@@ -12,7 +12,7 @@ import { ProductoService } from '../../services/producto.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   imagenesBanner: string[] = [
-    'assets/banner-Fondo.jpg  ',
+    'assets/banner-Fondo.jpg',
     'assets/banner-Fondo2.jpg',
     'assets/banner-Fondo3.jpg'
   ];
@@ -26,9 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const fechaActual = new Date();
     const mesActual = fechaActual.getMonth();
-    const anioActual = fechaActual.getFullYear();
     
-    if (anioActual === 2026 && mesActual >= 5 && mesActual <= 7) {
+    // Festival de Verano: Junio (mes 5), Julio (mes 6) y Agosto (mes 7) de cada año
+    if (mesActual >= 5 && mesActual <= 7) {
       this.esEventoVerano = true;
     }
 

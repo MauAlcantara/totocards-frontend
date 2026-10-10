@@ -8,9 +8,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const toastService = inject(ToastService); 
   
-  const usuario = authService.obtenerUsuarioActual();
-
-  if (authService.estaLogueado() && usuario?.roles?.includes('Administrador')) {
+  if (authService.estaLogueado() && authService.esAdmin()) {
     return true; 
   } else {
     toastService.mostrar('Acceso Denegado: Privilegios insuficientes.', 'error');

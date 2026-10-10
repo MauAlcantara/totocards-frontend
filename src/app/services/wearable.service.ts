@@ -18,6 +18,12 @@ export class WearableService {
   async conectarDispositivo() {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    if (!(navigator as any)?.bluetooth) {
+      console.warn('Web Bluetooth API no está soportada en este navegador.');
+      alert('Tu navegador no soporta la conexión Web Bluetooth. Te recomendamos usar Google Chrome o Microsoft Edge sobre HTTPS.');
+      return;
+    }
+
     try {
       this.dispositivo = await (navigator as any).bluetooth.requestDevice({
         acceptAllDevices: true,

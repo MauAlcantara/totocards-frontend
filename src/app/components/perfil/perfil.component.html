@@ -1,7 +1,7 @@
 <main class="perfil-container">
   <div class="perfil-header">
     <h2>Información Personal</h2>
-    <p>Administra tu información y personaliza tu foto de perfil.</p>
+    <p>Administra tu información, personaliza tu foto de perfil y gestiona tus dispositivos de telemetría.</p>
   </div>
 
   <div class="perfil-layout">
@@ -46,6 +46,47 @@
           </button>
         </div>
       </form>
+
+      <!-- SECCIÓN DISPOSITIVOS & WEARABLES (IoT) -->
+      <div class="wearable-profile-card">
+        <div class="wearable-card-header">
+          <div class="wearable-icon-badge">⌚</div>
+          <div>
+            <h4>Dispositivos & Wearables</h4>
+            <p>Conecta tu reloj inteligente para monitorear tu emoción y pulsaciones en vivo.</p>
+          </div>
+        </div>
+
+        <div class="wearable-card-body">
+          <div *ngIf="!(wearableService.conectado$ | async)" class="wearable-disconnected">
+            <span class="status-pill offline">Sin vincular</span>
+            <button type="button" class="btn-wearable-connect" (click)="conectarSmartwatch()">
+              Vincular Reloj Bluetooth
+            </button>
+          </div>
+
+          <div *ngIf="wearableService.conectado$ | async" class="wearable-connected">
+            <div class="telemetry-stats">
+              <div class="stat-box">
+                <span class="stat-label">Ritmo Cardíaco</span>
+                <span class="stat-value pulse">💓 {{ (wearableService.bpm$ | async) || '--' }} BPM</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Batería</span>
+                <span class="stat-value">🔋 {{ (wearableService.bateria$ | async) || '--' }}%</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Estado</span>
+                <span class="status-pill online">🟢 Conectado</span>
+              </div>
+            </div>
+            <button type="button" class="btn-wearable-disconnect" (click)="desconectarSmartwatch()">
+              Desvincular Reloj
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>

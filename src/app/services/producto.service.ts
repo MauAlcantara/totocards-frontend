@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
-  private apiUrl = 'https://totocards-backend.onrender.com/api/productos';
-  private adminUrl = 'https://totocards-backend.onrender.com/api/admin/productos';
+  private apiUrl = `${environment.apiUrl}/productos`;
+  private adminUrl = `${environment.apiUrl}/admin/productos`;
 
   constructor(private http: HttpClient) { }
 
@@ -24,18 +25,18 @@ export class ProductoService {
     return this.http.get(`${this.apiUrl}/buscar?q=${termino}`);
   }
 
-  crearProducto(producto: any, token: string): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.post(this.adminUrl, producto, { headers });
+  crearProducto(producto: any, token?: string): Observable<any> {
+    const options = token ? { headers: new HttpHeaders().set('Authorization', `Bearer ${token}`) } : {};
+    return this.http.post(this.adminUrl, producto, options);
   }
 
-  actualizarProducto(id: number | string, producto: any, token: string): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.put(`${this.adminUrl}/${id}`, producto, { headers });
+  actualizarProducto(id: number | string, producto: any, token?: string): Observable<any> {
+    const options = token ? { headers: new HttpHeaders().set('Authorization', `Bearer ${token}`) } : {};
+    return this.http.put(`${this.adminUrl}/${id}`, producto, options);
   }
 
-  eliminarProducto(id: number | string, token: string): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.adminUrl}/${id}`, { headers });
+  eliminarProducto(id: number | string, token?: string): Observable<any> {
+    const options = token ? { headers: new HttpHeaders().set('Authorization', `Bearer ${token}`) } : {};
+    return this.http.delete(`${this.adminUrl}/${id}`, options);
   }
 }
