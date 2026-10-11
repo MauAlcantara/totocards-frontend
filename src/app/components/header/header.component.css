@@ -300,32 +300,80 @@
 .user-actions {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
 }
 
-.header-telemetry-badge {
+/* VISTA 2: CÁPSULA PERSISTENTE EN CABECERA (PÁGINA 11) */
+.wearable-capsule-nav {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  padding: 4px 12px;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 6px 14px;
   border-radius: 20px;
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 600;
-  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-.header-telemetry-badge .pulse-icon {
-  font-size: 0.95rem;
-  display: inline-block;
+.wearable-capsule-nav:hover {
+  transform: translateY(-2px);
+  border-color: #60a5fa;
+  background: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.3);
+}
+
+.capsule-led {
+  width: 9px;
+  height: 9px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+  animation: ledBlink 1.8s infinite;
+}
+
+@keyframes ledBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.capsule-model {
+  color: #e2e8f0;
+  letter-spacing: 0.5px;
+}
+
+.capsule-battery {
+  color: #86efac;
+}
+
+.capsule-bpm {
+  color: #fca5a5;
+  font-weight: 800;
   animation: pulseBeat 1.2s infinite ease-in-out;
+}
+
+.nav-emotion-link {
+  color: #f6e05e !important;
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-emotion-link:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(246, 224, 94, 0.6);
 }
 
 @keyframes pulseBeat {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.22); }
+  50% { transform: scale(1.15); }
 }
 
 .action-icon {

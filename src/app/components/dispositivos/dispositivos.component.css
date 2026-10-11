@@ -1,0 +1,438 @@
+.dispositivos-view-container {
+  max-width: 1200px;
+  margin: 35px auto 60px auto;
+  padding: 0 24px;
+}
+
+.view-header {
+  margin-bottom: 30px;
+}
+
+.breadcrumb-tag {
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  color: #a0aec0;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.main-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-primario, #1a202c);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.btn-live-monitor {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #2b6cb0 0%, #1a365d 100%);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 15px rgba(43, 108, 176, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-live-monitor:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(43, 108, 176, 0.45);
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #48bb78;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #48bb78;
+  animation: pulseLive 1.5s infinite;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* GRID DE 3 PANELES */
+.diagnostic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.card-panel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.header-icon {
+  width: 44px;
+  height: 44px;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.card-tag {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  font-weight: 600;
+}
+
+/* PANEL 1: LECTURA DE HARDWARE */
+.specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.spec-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spec-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #a0aec0;
+  letter-spacing: 1px;
+}
+
+.spec-value {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.spec-value.highlight {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a365d;
+}
+
+.spec-value.mono {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+.spec-value.latency {
+  color: #38a169;
+  font-weight: 700;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.status-pill.online {
+  background: #def7ec;
+  color: #03543f;
+}
+
+.status-pill.offline {
+  background: #fed7d7;
+  color: #9b2c2c;
+}
+
+/* PANEL 2: EL GEMELO DIGITAL */
+.panel-gemelo {
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  position: relative;
+}
+
+.gemelo-header {
+  margin-bottom: 20px;
+}
+
+.gemelo-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #4a5568;
+  text-transform: uppercase;
+}
+
+/* BISEL DEL SMARTWATCH */
+.smartwatch-bezel {
+  width: 270px;
+  height: 270px;
+  background: radial-gradient(circle, #2d3748 0%, #1a202c 70%, #0d1117 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  border: 6px solid #2d3748;
+  transition: transform 0.15s ease;
+}
+
+.smartwatch-bezel.vibrating {
+  animation: hapticShake 0.15s infinite;
+}
+
+@keyframes hapticShake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  25% { transform: translate(-2px, -1px) rotate(-1deg); }
+  50% { transform: translate(-1px, 2px) rotate(1deg); }
+  75% { transform: translate(2px, 1px) rotate(0deg); }
+  100% { transform: translate(1px, -1px) rotate(1deg); }
+}
+
+/* PANTALLA CIRCULAR DEL RELOJ (240x240px) */
+.smartwatch-screen {
+  width: 240px;
+  height: 240px;
+  background-color: #111111;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 14px;
+  box-sizing: border-box;
+  color: white;
+  user-select: none;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.watch-time {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #a0aec0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+}
+
+.watch-heart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  animation: heartPulse 1.2s infinite ease-in-out;
+}
+
+.watch-heart.pulse-fast {
+  animation: heartPulse 0.6s infinite ease-in-out;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+.watch-bpm {
+  font-size: 3.4rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: -2px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.watch-unit {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #e53e3e;
+  letter-spacing: 2px;
+  margin-top: -4px;
+}
+
+.watch-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.watch-battery {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #48bb78;
+}
+
+.watch-mode {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #718096;
+}
+
+.gemelo-caption {
+  margin-top: 20px;
+  font-size: 0.82rem;
+  color: #a0aec0;
+  font-style: italic;
+  text-align: center;
+}
+
+/* PANEL 3: ACCIONES */
+.actions-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-vibrate {
+  background: #3182ce;
+  color: white;
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.25);
+}
+
+.btn-vibrate:hover {
+  background: #2b6cb0;
+  transform: translateY(-1px);
+}
+
+.btn-calibrate {
+  background: #f7fafc;
+  color: #2d3748;
+  border-color: #cbd5e0;
+}
+
+.btn-calibrate:hover {
+  background: #edf2f7;
+  border-color: #a0aec0;
+}
+
+.btn-disconnect {
+  background: #fff5f5;
+  color: #e53e3e;
+  border-color: #feb2b2;
+}
+
+.btn-disconnect:hover {
+  background: #fed7d7;
+}
+
+.icon-indicator {
+  font-size: 1.1rem;
+}
+
+/* SLIDER DE SIMULACIÓN PARA TESTEO */
+.simulator-slider-box {
+  background: #f8fafc;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.slider-header label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4a5568;
+}
+
+.slider-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #2b6cb0;
+}
+
+.range-slider {
+  width: 100%;
+  accent-color: #3182ce;
+  cursor: pointer;
+}
+
+.zones-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.z-blue { color: #3182ce; }
+.z-yellow { color: #d69e2e; }
+.z-red { color: #e53e3e; }
+
+.disclaimer-text {
+  font-size: 0.78rem;
+  color: #a0aec0;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .diagnostic-grid {
+    grid-template-columns: 1fr;
+  }
+}

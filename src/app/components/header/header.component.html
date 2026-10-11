@@ -19,6 +19,8 @@
       </li>
       <li><a routerLink="/preventas">Preventas</a></li>
       <li><a routerLink="/contacto">Contacto</a></li>
+      <!-- ENLACE DIRECTO AL MONITOR DE EMOCIÓN EN NAVBAR (PÁGINA 11 Y 12) -->
+      <li><a routerLink="/monitor-emocion" class="nav-emotion-link">Monitor de Emoción</a></li>
     </ul>
   </nav>
 
@@ -51,10 +53,15 @@
 
     <div class="user-actions">
 
-      <!-- Telemetría discreta si el smartwatch está activo (reubicado de forma elegante) -->
-      <div *ngIf="wearableService.conectado$ | async" class="header-telemetry-badge" title="Smartwatch vinculado">
-        <span class="pulse-icon">💓</span>
-        <span class="pulse-bpm">{{ (wearableService.bpm$ | async) || '--' }} BPM</span>
+      <!-- VISTA 2: WIDGET PERSISTENTE EN CABECERA (PÁGINA 11 DEL REPORTE) -->
+      <div *ngIf="wearableService.conectado$ | async" 
+           class="wearable-capsule-nav" 
+           routerLink="/monitor-emocion" 
+           title="Clic para abrir Monitor de Emoción en Vivo">
+        <div class="capsule-led"></div>
+        <span class="capsule-model">Wear OS · CONECTADO</span>
+        <span class="capsule-battery">🔋 {{ (wearableService.bateria$ | async) }}%</span>
+        <span class="capsule-bpm">💓 {{ (wearableService.bpm$ | async) }} BPM</span>
       </div>
 
       <div class="nav-item-dropdown profile-trigger" (mouseenter)="abrirMenuPerfil()" (mouseleave)="cerrarMenuPerfil()">
@@ -82,7 +89,8 @@
                 style="color: #ffcb05 !important; font-weight: bold !important;">Panel de Administración</a>
             </li>
 
-            <li><a routerLink="/perfil" (click)="cerrarMenuPerfil()">Ajustes de Perfil & Wearables</a></li>
+            <li><a routerLink="/perfil" (click)="cerrarMenuPerfil()">Ajustes de Perfil</a></li>
+            <li><a routerLink="/perfil/dispositivos" (click)="cerrarMenuPerfil()">Gemelo Digital & Wear OS</a></li>
             <li *ngIf="!usuarioActual?.roles?.includes('Administrador')">
               <a routerLink="/pedidos" (click)="cerrarMenuPerfil()">Mis Compras</a>
             </li>

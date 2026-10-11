@@ -15,7 +15,8 @@ import { TerminosComponent } from './components/terminos/terminos.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { PedidosComponent } from './components/pedidos/pedidos.component';
 import { PedidoDetalleComponent } from './components/pedido-detalle/pedido-detalle.component';
-
+import { DispositivosComponent } from './components/dispositivos/dispositivos.component';
+import { MonitorEmocionComponent } from './components/monitor-emocion/monitor-emocion.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },             
@@ -29,8 +30,11 @@ export const routes: Routes = [
   { path: 'registro', component: RegistroComponent },
   { path: 'privacidad', component: PrivacidadComponent },
   { path: 'terminos', component: TerminosComponent },
-  { path: 'perfil', component: PerfilComponent, canActivate: [authGuard]  },
-  { path: 'pedidos', component: PedidosComponent, canActivate: [authGuard]  },
+  { path: 'perfil', component: PerfilComponent, canActivate: [authGuard] },
+  { path: 'perfil/dispositivos', component: DispositivosComponent },
+  { path: 'dispositivos', component: DispositivosComponent },
+  { path: 'monitor-emocion', component: MonitorEmocionComponent },
+  { path: 'pedidos', component: PedidosComponent, canActivate: [authGuard] },
   { path: 'pedido/:id', component: PedidoDetalleComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }              
 ];

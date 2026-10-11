@@ -51,18 +51,23 @@
       <div class="wearable-profile-card">
         <div class="wearable-card-header">
           <div class="wearable-icon-badge">⌚</div>
-          <div>
+          <div style="flex: 1;">
             <h4>Dispositivos & Wearables</h4>
             <p>Conecta tu reloj inteligente para monitorear tu emoción y pulsaciones en vivo.</p>
           </div>
+          <a routerLink="/perfil/dispositivos" class="btn-wearable-config-pill" title="Configurar Gemelo Digital">
+            ⚙️ Diagnóstico & Gemelo Digital
+          </a>
         </div>
 
         <div class="wearable-card-body">
           <div *ngIf="!(wearableService.conectado$ | async)" class="wearable-disconnected">
             <span class="status-pill offline">Sin vincular</span>
-            <button type="button" class="btn-wearable-connect" (click)="conectarSmartwatch()">
-              Vincular Reloj Bluetooth
-            </button>
+            <div class="wearable-actions-row">
+              <a routerLink="/perfil/dispositivos" class="btn-wearable-connect">
+                Conectar / Simular Wear OS
+              </a>
+            </div>
           </div>
 
           <div *ngIf="wearableService.conectado$ | async" class="wearable-connected">
@@ -80,9 +85,17 @@
                 <span class="status-pill online">🟢 Conectado</span>
               </div>
             </div>
-            <button type="button" class="btn-wearable-disconnect" (click)="desconectarSmartwatch()">
-              Desvincular Reloj
-            </button>
+            <div class="wearable-actions-row">
+              <a routerLink="/perfil/dispositivos" class="btn-wearable-action-link">
+                ⚙️ Gemelo Digital
+              </a>
+              <a routerLink="/monitor-emocion" class="btn-wearable-action-link emotion">
+                💓 Monitor en Vivo
+              </a>
+              <button type="button" class="btn-wearable-disconnect" (click)="desconectarSmartwatch()">
+                Desvincular
+              </button>
+            </div>
           </div>
         </div>
       </div>

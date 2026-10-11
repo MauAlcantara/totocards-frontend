@@ -284,6 +284,61 @@
   color: #e53e3e;
 }
 
+.btn-wearable-config-pill {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2b6cb0;
+  background: #ebf8ff;
+  border: 1px solid #bee3f8;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-wearable-config-pill:hover {
+  background: #2b6cb0;
+  color: white;
+  border-color: #2b6cb0;
+}
+
+.wearable-actions-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-wearable-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #edf2f7;
+  color: #2d3748;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-wearable-action-link:hover {
+  background: #e2e8f0;
+  color: #1a202c;
+}
+
+.btn-wearable-action-link.emotion {
+  background: #feebc8;
+  color: #c05621;
+}
+
+.btn-wearable-action-link.emotion:hover {
+  background: #fbd38d;
+  color: #9c4221;
+}
+
 .btn-wearable-disconnect {
   background: transparent;
   color: #e53e3e;

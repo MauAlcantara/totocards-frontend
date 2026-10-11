@@ -1,0 +1,147 @@
+<main class="monitor-view-wrapper" [class.tension-shake]="esZonaCritica">
+
+  <!-- CABECERA DE SESIÓN Y CALIBRACIÓN BASAL (PÁGINA 12) -->
+  <header class="session-header">
+    <div class="header-left">
+      <div class="live-session-badge">
+        <span class="live-indicator-dot"></span>
+        SESIÓN EN DIRECTO
+      </div>
+      <h1 class="session-title">Monitor de Emoción: Apertura en Vivo</h1>
+      <p class="session-desc">Abre tus sobres físicos frente a la pantalla y monitorea tu nivel de adrenalina en tiempo real.</p>
+    </div>
+
+    <!-- TARJETA DE ESTADO Y CALIBRACIÓN -->
+    <div class="calibration-card">
+      <div class="calib-item">
+        <span class="calib-label">DISPOSITIVO</span>
+        <span class="calib-val device-val">Wear OS 🟢</span>
+      </div>
+      <div class="calib-item">
+        <span class="calib-label">PULSO BASAL</span>
+        <span class="calib-val">{{ pulsoBasal }} BPM</span>
+      </div>
+      <div class="calib-item">
+        <span class="calib-label">ESTADO</span>
+        <span class="calib-val status-val">MONITOREANDO</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECCIÓN CENTRAL: TACÓMETRO CIRCULAR + GRÁFICA ECG -->
+  <section class="dashboard-main-grid">
+
+    <!-- ÁREA IZQUIERDA: TACÓMETRO CIRCULAR DE EMOCIÓN -->
+    <div class="tachometer-card" [ngClass]="zonaActual.clase">
+      <div class="tacho-top-label">
+        <span class="tacho-live-badge">💓 LIVE</span>
+      </div>
+
+      <!-- MEDIDOR RADIAL GRADUADO CON ARCO Y AGUJA SVG -->
+      <div class="radial-gauge-container">
+        <svg class="gauge-svg" viewBox="0 0 280 280">
+          <!-- Arco de fondo completo -->
+          <circle cx="140" cy="140" r="105" class="gauge-track" />
+          
+          <!-- Segmento Azul: Zona Calma (<75 BPM) -->
+          <circle cx="140" cy="140" r="105" class="gauge-segment seg-calma" stroke-dasharray="160 500" stroke-dashoffset="0" />
+          
+          <!-- Segmento Amarillo: Zona Expectativa (76-95 BPM) -->
+          <circle cx="140" cy="140" r="105" class="gauge-segment seg-expectativa" stroke-dasharray="140 500" stroke-dashoffset="-160" />
+          
+          <!-- Segmento Rojo: Zona Crítica (>95 BPM) -->
+          <circle cx="140" cy="140" r="105" class="gauge-segment seg-critica" stroke-dasharray="140 500" stroke-dashoffset="-300" />
+        </svg>
+
+        <!-- AGUJA DINÁMICA -->
+        <div class="gauge-needle" [style.transform]="'rotate(' + rotacionAguja + 'deg)'">
+          <div class="needle-pointer"></div>
+        </div>
+
+        <!-- CONTENIDO CENTRAL DEL TACÓMETRO -->
+        <div class="gauge-center-content">
+          <div class="gauge-bpm-number">{{ bpmActual }}</div>
+          <div class="gauge-unit">BPM</div>
+        </div>
+      </div>
+
+      <!-- ETIQUETA DE ZONA ACTIVA -->
+      <div class="active-zone-pill" [ngClass]="zonaActual.clase">
+        {{ zonaActual.nombre }}
+      </div>
+
+      <!-- UMBRALES EN BASE -->
+      <div class="zone-thresholds-bar">
+        <span class="th-calma">Calma (&lt;75)</span>
+        <span class="th-expectativa">Expectativa (76-95)</span>
+        <span class="th-critica">Crítica (&gt;95)</span>
+      </div>
+    </div>
+
+    <!-- ÁREA DERECHA: GRÁFICA DE ONDA EN TIEMPO REAL (ECG / WAVEFORM) -->
+    <div class="ecg-chart-card">
+      <div class="chart-header">
+        <div>
+          <h3>Ritmo cardíaco en tiempo real</h3>
+          <span class="chart-sub">ECG · ÚLTIMOS 30 SEGUNDOS</span>
+        </div>
+        <div class="live-pill-tag">
+          <span class="dot-blink"></span> LIVE
+        </div>
+      </div>
+
+      <!-- LIENZO DE ONDA HOSPITALARIA / SIGNOS VITALES -->
+      <div class="ecg-screen-wrapper">
+        <div class="ecg-grid-overlay"></div>
+        <svg class="ecg-svg" viewBox="0 0 500 180" preserveAspectRatio="none">
+          <polyline [attr.points]="puntosEcg" class="ecg-polyline" [class.ecg-critical]="esZonaCritica" />
+        </svg>
+      </div>
+
+      <div class="chart-footer-caption">
+        Osciloscopio biológico activo transmitido vía Web Bluetooth / Wear OS Bridge
+      </div>
+    </div>
+
+  </section>
+
+  <!-- PANEL INFERIOR DE MÉTRICAS ACUMULADAS DE SESIÓN (PÁGINA 12) -->
+  <footer class="session-metrics-panel">
+    <div class="metrics-grid">
+      <!-- TARJETA PROMEDIO -->
+      <div class="metric-box">
+        <span class="metric-title">PROMEDIO</span>
+        <span class="metric-number">{{ promedioBpm }}</span>
+        <span class="metric-unit">BPM</span>
+      </div>
+
+      <!-- TARJETA PICO MÁXIMO -->
+      <div class="metric-box highlight-peak">
+        <span class="metric-title">PICO MÁXIMO</span>
+        <span class="metric-number">{{ picoMaximo }}</span>
+        <span class="metric-unit">BPM</span>
+      </div>
+
+      <!-- TARJETA DURACIÓN -->
+      <div class="metric-box">
+        <span class="metric-title">DURACIÓN</span>
+        <span class="metric-number time-val">{{ tiempoFormateado }}</span>
+        <span class="metric-unit">TIEMPO ACTIVO</span>
+      </div>
+    </div>
+
+    <!-- BOTONES DE PRUEBA / DEMOSTRACIÓN ACADÉMICA -->
+    <div class="session-demo-controls">
+      <button type="button" class="btn-demo-peak" (click)="simularPicoAdrenalina()">
+        ⚡ Simular Carta Rara (Pico 114 BPM)
+      </button>
+      <button type="button" class="btn-demo-calm" (click)="restaurarCalma()">
+        🌿 Restablecer a Calma (72 BPM)
+      </button>
+      <a routerLink="/perfil/dispositivos" class="btn-demo-link">
+        Configurar Gemelo Digital
+      </a>
+    </div>
+  </footer>
+
+</main>

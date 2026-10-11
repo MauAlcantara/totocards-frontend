@@ -1,0 +1,157 @@
+<main class="dispositivos-view-container">
+  <!-- BREADCRUMB & TITULAR -->
+  <header class="view-header">
+    <div class="breadcrumb-tag">PERFIL / DISPOSITIVOS CONECTADOS</div>
+    <div class="header-flex">
+      <div>
+        <h1 class="main-title">Diagnóstico y Gemelo Digital</h1>
+        <p class="subtitle">Tu Wear OS permanece sincronizado con tu experiencia de apertura física.</p>
+      </div>
+      <div class="header-action-links">
+        <a routerLink="/monitor-emocion" class="btn-live-monitor">
+          <span class="live-dot"></span>
+          Ir al Monitor de Emoción
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- GRID DE 3 PANELES (ESPECIFICACIÓN DE PRÁCTICA 1) -->
+  <section class="diagnostic-grid">
+
+    <!-- PANEL 1: LECTURA TÉCNICA DE HARDWARE -->
+    <div class="card-panel panel-hardware">
+      <div class="card-header">
+        <div class="header-icon">🔧</div>
+        <div>
+          <h3>Hardware</h3>
+          <span class="card-tag">Lectura Técnica</span>
+        </div>
+      </div>
+
+      <div class="specs-list" *ngIf="wearableService.dispositivo$ | async as disp">
+        <div class="spec-row">
+          <span class="spec-label">MODELO</span>
+          <span class="spec-value highlight">{{ disp.nombre }} · 1.28"</span>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-label">PROTOCOLO</span>
+          <span class="spec-value mono">{{ disp.protocolo }}</span>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-label">LATENCIA DE LECTURA</span>
+          <span class="spec-value latency">~{{ disp.latenciaLectura }}</span>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-label">NIVEL DE BATERÍA</span>
+          <span class="spec-value battery-status">
+            {{ (wearableService.bateria$ | async) }}% · {{ (wearableService.bateria$ | async)! > 30 ? 'Excelente' : 'Recargar' }}
+          </span>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-label">PULSO BASAL CALIBRADO</span>
+          <span class="spec-value">{{ (wearableService.pulsoBasal$ | async) }} BPM</span>
+        </div>
+
+        <div class="spec-row">
+          <span class="spec-label">ESTADO DEL ENLACE</span>
+          <span class="status-pill" [class.online]="wearableService.conectado$ | async" [class.offline]="!(wearableService.conectado$ | async)">
+            {{ (wearableService.conectado$ | async) ? '🟢 ENLACE ACTIVO' : '🔴 DESCONECTADO' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: EL GEMELO DIGITAL (RELOJ CIRCULAR 240x240px) -->
+    <div class="card-panel panel-gemelo">
+      <div class="gemelo-header">
+        <span class="gemelo-label">GEMELO DIGITAL</span>
+      </div>
+
+      <!-- CARÁTULA FÍSICA CIRCULAR DEL SMARTWATCH -->
+      <div class="smartwatch-bezel" [class.vibrating]="vibrando">
+        <div class="smartwatch-screen">
+          <!-- HORA EN VIVO -->
+          <div class="watch-time">{{ horaActual }}</div>
+
+          <!-- ICONO DE CORAZÓN PULSANTE -->
+          <div class="watch-heart" [class.pulse-fast]="(wearableService.bpm$ | async)! > 95">
+            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="#e53e3e">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+
+          <!-- INDICADOR NUMÉRICO EN TIPOGRAFÍA MASIVA -->
+          <div class="watch-bpm">
+            {{ (wearableService.bpm$ | async) || '--' }}
+          </div>
+          <div class="watch-unit">BPM</div>
+
+          <!-- FOOTER DE LA PANTALLA -->
+          <div class="watch-footer">
+            <span class="watch-battery">🔋 {{ (wearableService.bateria$ | async) }}%</span>
+            <span class="watch-mode">MODO APERTURA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="gemelo-caption">
+        Simulación en tiempo real · última lectura hace 0.2s
+      </div>
+    </div>
+
+    <!-- PANEL 3: ACCIONES DEL DISPOSITIVO -->
+    <div class="card-panel panel-acciones">
+      <div class="card-header">
+        <div class="header-icon">⚡</div>
+        <div>
+          <h3>Acciones del dispositivo</h3>
+          <span class="card-tag">Configuración Háptica</span>
+        </div>
+      </div>
+
+      <div class="actions-buttons-container">
+        <!-- BOTÓN PROBAR VIBRACIÓN -->
+        <button type="button" class="btn-action btn-vibrate" (click)="probarVibracion()">
+          <span>Probar Vibración en Reloj</span>
+          <span class="icon-indicator">⚡</span>
+        </button>
+
+        <!-- BOTÓN RECALIBRAR PULSO BASAL -->
+        <button type="button" class="btn-action btn-calibrate" (click)="recalibrarPulso()">
+          <span>Recalibrar Pulso Basal</span>
+          <span class="icon-indicator">♡</span>
+        </button>
+
+        <!-- BOTÓN DESVINCULAR / VINCULAR -->
+        <button type="button" class="btn-action btn-disconnect" (click)="cambiarConexion()">
+          <span>{{ (wearableService.conectado$ | async) ? 'Desvincular Dispositivo' : 'Vincular Wear OS' }}</span>
+          <span class="icon-indicator">{{ (wearableService.conectado$ | async) ? '✕' : '✓' }}</span>
+        </button>
+      </div>
+
+      <!-- CONTROL MANUAL DE BPM PARA TESTING EN VIVO / EMULADOR -->
+      <div class="simulator-slider-box">
+        <div class="slider-header">
+          <label for="bpmSlider">Simular Ritmo Cardíaco (Demostración):</label>
+          <span class="slider-val">{{ bpmControl }} BPM</span>
+        </div>
+        <input id="bpmSlider" type="range" min="50" max="150" step="1" [(ngModel)]="bpmControl" (input)="onBpmSliderChange()" class="range-slider">
+        <div class="zones-legend">
+          <span class="z-blue">Calma (&lt;75)</span>
+          <span class="z-yellow">Expectativa (76-95)</span>
+          <span class="z-red">Crítica (&gt;95)</span>
+        </div>
+      </div>
+
+      <small class="disclaimer-text">
+        Las acciones se ejecutan utilizando el puente local HTTP con el emulador Wear OS (10.0.2.2).
+      </small>
+    </div>
+
+  </section>
+</main>
