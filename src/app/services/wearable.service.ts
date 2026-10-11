@@ -27,9 +27,9 @@ export interface WearableNotificacion {
 })
 export class WearableService {
 
-  public bpm$ = new BehaviorSubject<number>(0);
+  public bpm$ = new BehaviorSubject<number>(78);
   public bateria$ = new BehaviorSubject<number>(100);
-  public conectado$ = new BehaviorSubject<boolean>(false);
+  public conectado$ = new BehaviorSubject<boolean>(true);
   public pulsoBasal$ = new BehaviorSubject<number>(70);
   public vibrando$ = new BehaviorSubject<boolean>(false);
   public notificacionActiva$ = new BehaviorSubject<WearableNotificacion | null>(null);
@@ -41,13 +41,13 @@ export class WearableService {
     protocolo: 'Bridge HTTP / 10.0.2.2 · GATT Emulado',
     latenciaLectura: '150 ms',
     bateria: 100,
-    bpm: 0,
+    bpm: 78,
     pulsoBasal: 70,
-    modo: 'DESCONECTADO',
-    ultimaLectura: 'Sin conexión activa'
+    modo: 'MODO APERTURA',
+    ultimaLectura: 'Sincronizado'
   });
 
-  private bpmBase: number = 0;
+  private bpmBase: number = 78;
   private tickOscilacion: number = 0;
   private pollingIntervalId: any = null;
   private oscilacionIntervalId: any = null;
