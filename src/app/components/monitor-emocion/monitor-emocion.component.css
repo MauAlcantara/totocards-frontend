@@ -104,6 +104,19 @@
 
 .calib-val.device-val {
   color: #2b6cb0;
+  display: flex;
+  align-items: center;
+}
+
+.device-dot-online {
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #22c55e;
+  display: inline-block;
+  margin-right: 6px;
+  animation: ledBlink 1.8s infinite;
 }
 
 .calib-val.status-val {

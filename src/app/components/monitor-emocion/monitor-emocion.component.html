@@ -15,7 +15,10 @@
     <div class="calibration-card">
       <div class="calib-item">
         <span class="calib-label">DISPOSITIVO</span>
-        <span class="calib-val device-val">Wear OS 🟢</span>
+        <span class="calib-val device-val">
+          <span class="device-dot-online"></span>
+          Wear OS
+        </span>
       </div>
       <div class="calib-item">
         <span class="calib-label">PULSO BASAL</span>
@@ -34,7 +37,12 @@
     <!-- ÁREA IZQUIERDA: TACÓMETRO CIRCULAR DE EMOCIÓN -->
     <div class="tachometer-card" [ngClass]="zonaActual.clase">
       <div class="tacho-top-label">
-        <span class="tacho-live-badge">💓 LIVE</span>
+        <span class="tacho-live-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#e53e3e" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+          </svg>
+          LIVE
+        </span>
       </div>
 
       <!-- MEDIDOR RADIAL GRADUADO CON ARCO Y AGUJA SVG -->
@@ -133,12 +141,22 @@
     <!-- BOTONES DE PRUEBA / DEMOSTRACIÓN ACADÉMICA -->
     <div class="session-demo-controls">
       <button type="button" class="btn-demo-peak" (click)="simularPicoAdrenalina()">
-        ⚡ Simular Carta Rara (Pico 114 BPM)
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        Simular Carta Rara (Pico 114 BPM)
       </button>
       <button type="button" class="btn-demo-calm" (click)="restaurarCalma()">
-        🌿 Restablecer a Calma (72 BPM)
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+        Restablecer a Calma (72 BPM)
       </button>
       <a routerLink="/perfil/dispositivos" class="btn-demo-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
         Configurar Gemelo Digital
       </a>
     </div>

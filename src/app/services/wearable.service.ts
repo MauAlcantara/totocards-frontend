@@ -21,7 +21,6 @@ export interface WearableDispositivo {
   providedIn: 'root'
 })
 export class WearableService {
-  private apiUrl = `${environment.apiUrl}/wearable`;
 
   public bpm$ = new BehaviorSubject<number>(78);
   public bateria$ = new BehaviorSubject<number>(100);
@@ -43,7 +42,6 @@ export class WearableService {
   });
 
   private pollingIntervalId: any = null;
-  private simularIntervalId: any = null;
   private dispositivoBluetooth: any = null;
 
   constructor(
@@ -53,6 +51,18 @@ export class WearableService {
     if (isPlatformBrowser(this.platformId)) {
       this.iniciarSincronizacionBackend();
     }
+  }
+
+  // Resuelve la URL correcta dinámicamente:
+  // Si estamos en localhost (navegador local), apunta a localhost:3000 donde el emulador transmite vía 10.0.2.2.
+  // Si estamos en producción (Vercel), apunta a Render.
+  public getApiUrl(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api/wearable';
+      }
+    }
+    return `${environment.apiUrl}/wearable`;
   }
 
   // Zona de emoción calculada en tiempo real según los umbrales del reporte (Pág. 12)
@@ -66,7 +76,7 @@ export class WearableService {
     })
   );
 
-  // Iniciar sondeo periódico al backend para sincronizar la telemetría del emulador Wear OS
+  // Iniciar sondeo continuo al backend para sincronizar la telemetría del emulador Wear OS
   public iniciarSincronizacionBackend(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -77,16 +87,15 @@ export class WearableService {
     // Consulta inicial inmediata
     this.consultarTelemetriaServidor();
 
-    // Sondeo ligero cada 2.5 segundos
+    // Sondeo continuo cada 1 segundo (1000 ms) para reflejar cambios del emulador al instante
     this.pollingIntervalId = setInterval(() => {
-      if (this.conectado$.getValue()) {
-        this.consultarTelemetriaServidor();
-      }
-    }, 2500);
+      this.consultarTelemetriaServidor();
+    }, 1000);
   }
 
   private consultarTelemetriaServidor(): void {
-    this.http.get<any>(`${this.apiUrl}/telemetria`).subscribe({
+    const url = this.getApiUrl();
+    this.http.get<any>(`${url}/telemetria`).subscribe({
       next: (data) => {
         if (data) {
           if (data.bpm !== undefined && data.bpm > 0) {
@@ -106,16 +115,16 @@ export class WearableService {
           this.dispositivo$.next({
             ...actual,
             bpm: data.bpm || actual.bpm,
-            bateria: data.bateria || actual.bateria,
+            bateria: data.bateria !== undefined ? data.bateria : actual.bateria,
             pulsoBasal: data.pulsoBasal || actual.pulsoBasal,
             modo: data.modo || actual.modo,
             dispositivo: data.dispositivo || actual.nombre,
-            ultimaLectura: `Última sincronización: ${new Date().toLocaleTimeString()}`
+            ultimaLectura: `Sincronizado: ${new Date().toLocaleTimeString()}`
           } as any);
         }
       },
       error: () => {
-        // En caso de que el backend local no esté activo, el servicio mantiene los valores en memoria reactiva
+        // En caso de que el backend no responda temporalmente, no bloqueamos el siguiente sondeo
       }
     });
   }
@@ -129,7 +138,7 @@ export class WearableService {
     this.dispositivo$.next({ ...actual, bpm: bpmLimpio });
 
     // Notificar al backend
-    this.http.post(`${this.apiUrl}/telemetria`, { bpm: bpmLimpio }).subscribe({
+    this.http.post(`${this.getApiUrl()}/telemetria`, { bpm: bpmLimpio }).subscribe({
       error: () => {}
     });
   }
@@ -139,7 +148,7 @@ export class WearableService {
     this.vibrando$.next(true);
     setTimeout(() => this.vibrando$.next(false), 1200);
 
-    return this.http.post(`${this.apiUrl}/vibrar`, {});
+    return this.http.post(`${this.getApiUrl()}/vibrar`, {});
   }
 
   // Recalibrar pulso basal (Pág. 11 y 12 del reporte)
@@ -150,12 +159,12 @@ export class WearableService {
     const actual = this.dispositivo$.getValue();
     this.dispositivo$.next({ ...actual, pulsoBasal: valor });
 
-    return this.http.post(`${this.apiUrl}/calibrar`, { pulsoBasal: valor });
+    return this.http.post(`${this.getApiUrl()}/calibrar`, { pulsoBasal: valor });
   }
 
   // Enviar notificación al smartwatch (ej. compra confirmada o carta rara)
   public enviarNotificacionWearable(titulo: string, mensaje: string, icono: string = 'alerta'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/notificacion`, { titulo, mensaje, icono, vibrar: true });
+    return this.http.post(`${this.getApiUrl()}/notificacion`, { titulo, mensaje, icono, vibrar: true });
   }
 
   // Conectar con el emulador de Wear OS
@@ -166,7 +175,7 @@ export class WearableService {
     }
     this.bateria$.next(100);
 
-    this.http.post(`${this.apiUrl}/estado`, { conectado: true }).subscribe({
+    this.http.post(`${this.getApiUrl()}/estado`, { conectado: true }).subscribe({
       error: () => {}
     });
   }
@@ -186,7 +195,7 @@ export class WearableService {
     this.conectado$.next(false);
     this.bpm$.next(0);
 
-    this.http.post(`${this.apiUrl}/estado`, { conectado: false }).subscribe({
+    this.http.post(`${this.getApiUrl()}/estado`, { conectado: false }).subscribe({
       error: () => {}
     });
   }

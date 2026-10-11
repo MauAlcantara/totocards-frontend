@@ -357,6 +357,45 @@
   padding: 4px 10px;
   border-radius: 12px;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-indicator-dot.online {
+  background-color: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  animation: ledBlink 1.8s infinite;
+}
+
+.status-indicator-dot.offline {
+  background-color: #94a3b8;
+}
+
+.stat-svg-inline {
+  vertical-align: -3px;
+  margin-right: 4px;
+}
+
+.pulse-beat {
+  animation: pulseBeat 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseBeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+@keyframes ledBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .status-pill.offline {

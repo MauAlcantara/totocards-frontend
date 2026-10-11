@@ -10,7 +10,7 @@
       <div class="header-action-links">
         <a routerLink="/monitor-emocion" class="btn-live-monitor">
           <span class="live-dot"></span>
-          Ir al Monitor de Emoción
+          <span>Ir al Monitor de Emoción</span>
         </a>
       </div>
     </div>
@@ -22,7 +22,13 @@
     <!-- PANEL 1: LECTURA TÉCNICA DE HARDWARE -->
     <div class="card-panel panel-hardware">
       <div class="card-header">
-        <div class="header-icon">🔧</div>
+        <div class="header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </div>
         <div>
           <h3>Hardware</h3>
           <span class="card-tag">Lectura Técnica</span>
@@ -60,7 +66,8 @@
         <div class="spec-row">
           <span class="spec-label">ESTADO DEL ENLACE</span>
           <span class="status-pill" [class.online]="wearableService.conectado$ | async" [class.offline]="!(wearableService.conectado$ | async)">
-            {{ (wearableService.conectado$ | async) ? '🟢 ENLACE ACTIVO' : '🔴 DESCONECTADO' }}
+            <span class="status-dot-mini" [class.online]="wearableService.conectado$ | async"></span>
+            {{ (wearableService.conectado$ | async) ? 'ENLACE ACTIVO' : 'DESCONECTADO' }}
           </span>
         </div>
       </div>
@@ -93,21 +100,31 @@
 
           <!-- FOOTER DE LA PANTALLA -->
           <div class="watch-footer">
-            <span class="watch-battery">🔋 {{ (wearableService.bateria$ | async) }}%</span>
+            <span class="watch-battery">
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 2px;">
+                <rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect>
+                <line x1="22" y1="11" x2="22" y2="13"></line>
+              </svg>
+              {{ (wearableService.bateria$ | async) }}%
+            </span>
             <span class="watch-mode">MODO APERTURA</span>
           </div>
         </div>
       </div>
 
       <div class="gemelo-caption">
-        Simulación en tiempo real · última lectura hace 0.2s
+        Simulación en tiempo real · sincronización continua 1 Hz
       </div>
     </div>
 
     <!-- PANEL 3: ACCIONES DEL DISPOSITIVO -->
     <div class="card-panel panel-acciones">
       <div class="card-header">
-        <div class="header-icon">⚡</div>
+        <div class="header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
         <div>
           <h3>Acciones del dispositivo</h3>
           <span class="card-tag">Configuración Háptica</span>
@@ -118,19 +135,29 @@
         <!-- BOTÓN PROBAR VIBRACIÓN -->
         <button type="button" class="btn-action btn-vibrate" (click)="probarVibracion()">
           <span>Probar Vibración en Reloj</span>
-          <span class="icon-indicator">⚡</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="icon-indicator">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
         </button>
 
         <!-- BOTÓN RECALIBRAR PULSO BASAL -->
         <button type="button" class="btn-action btn-calibrate" (click)="recalibrarPulso()">
           <span>Recalibrar Pulso Basal</span>
-          <span class="icon-indicator">♡</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="icon-indicator">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+          </svg>
         </button>
 
         <!-- BOTÓN DESVINCULAR / VINCULAR -->
         <button type="button" class="btn-action btn-disconnect" (click)="cambiarConexion()">
           <span>{{ (wearableService.conectado$ | async) ? 'Desvincular Dispositivo' : 'Vincular Wear OS' }}</span>
-          <span class="icon-indicator">{{ (wearableService.conectado$ | async) ? '✕' : '✓' }}</span>
+          <svg *ngIf="wearableService.conectado$ | async" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="icon-indicator">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <svg *ngIf="!(wearableService.conectado$ | async)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="icon-indicator">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
         </button>
       </div>
 

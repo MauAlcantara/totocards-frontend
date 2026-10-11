@@ -33,7 +33,12 @@
       <!-- TARJETA 1: DATOS PERSONALES (FORMULARIO INDEPENDIENTE) -->
       <section class="perfil-card form-card">
         <div class="card-title-row">
-          <div class="title-icon">👤</div>
+          <div class="title-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
           <div>
             <h3>Datos de la Cuenta</h3>
             <p>Información básica de tu perfil en TotoCards.</p>
@@ -63,12 +68,22 @@
       <!-- TARJETA 2: MONITOR DE EMOCIÓN & SMARTWATCH (TARJETA SEPARADA DEDICADA) -->
       <section class="perfil-card wearable-card">
         <div class="card-title-row">
-          <div class="title-icon wearable-icon">⌚</div>
+          <div class="title-icon wearable-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="7" width="12" height="10" rx="3"></rect>
+              <path d="M9 7V3h6v4"></path>
+              <path d="M9 17v4h6v-4"></path>
+            </svg>
+          </div>
           <div class="title-text-group">
             <div class="title-badge-wrapper">
               <h3>Smartwatch & Monitor de Emoción</h3>
-              <span *ngIf="wearableService.conectado$ | async" class="status-pill online">🟢 Conectado</span>
-              <span *ngIf="!(wearableService.conectado$ | async)" class="status-pill offline">⚪ Sin Vincular</span>
+              <span *ngIf="wearableService.conectado$ | async" class="status-pill online">
+                <span class="status-indicator-dot online"></span> Conectado
+              </span>
+              <span *ngIf="!(wearableService.conectado$ | async)" class="status-pill offline">
+                <span class="status-indicator-dot offline"></span> Sin Vincular
+              </span>
             </div>
             <p>Monitorea tus latidos cardíacos en tiempo real y siente alertas hápticas al abrir sobres físicos.</p>
           </div>
@@ -85,7 +100,10 @@
           </div>
           <a routerLink="/monitor-emocion" class="btn-hero-monitor">
             <span>Entrar al Monitor</span>
-            <span class="hero-arrow">→</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="hero-arrow">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
           </a>
         </div>
 
@@ -96,24 +114,50 @@
             <div class="telemetry-stats">
               <div class="stat-box">
                 <span class="stat-label">Ritmo Cardíaco</span>
-                <span class="stat-value pulse">💓 {{ (wearableService.bpm$ | async) || '--' }} BPM</span>
+                <span class="stat-value pulse">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#e53e3e" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-svg-inline pulse-beat">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                  </svg>
+                  {{ (wearableService.bpm$ | async) || '--' }} BPM
+                </span>
               </div>
               <div class="stat-box">
                 <span class="stat-label">Batería</span>
-                <span class="stat-value">🔋 {{ (wearableService.bateria$ | async) || '--' }}%</span>
+                <span class="stat-value">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="stat-svg-inline">
+                    <rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect>
+                    <line x1="22" y1="11" x2="22" y2="13"></line>
+                    <line x1="6" y1="11" x2="10" y2="11"></line>
+                  </svg>
+                  {{ (wearableService.bateria$ | async) || '--' }}%
+                </span>
               </div>
               <div class="stat-box">
                 <span class="stat-label">Dispositivo</span>
-                <span class="stat-value small">Wear OS XL Round</span>
+                <span class="stat-value small">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-svg-inline">
+                    <circle cx="12" cy="12" r="7"></circle>
+                    <polyline points="12 9 12 12 13.5 13.5"></polyline>
+                  </svg>
+                  Wear OS XL Round
+                </span>
               </div>
             </div>
 
             <div class="wearable-actions-bar">
               <a routerLink="/perfil/dispositivos" class="btn-sub-action">
-                ⚙️ Diagnóstico & Gemelo Digital
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Diagnóstico & Gemelo Digital</span>
               </a>
               <button type="button" class="btn-wearable-disconnect" (click)="desconectarSmartwatch()">
-                Desvincular Reloj
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                  <line x1="12" y1="2" x2="12" y2="12"></line>
+                </svg>
+                <span>Desvincular Reloj</span>
               </button>
             </div>
           </div>
@@ -121,14 +165,21 @@
           <!-- Si el dispositivo está desconectado -->
           <div *ngIf="!(wearableService.conectado$ | async)" class="disconnected-info-box">
             <p class="disconnected-tip">
-              Inicia el emulador de Android Studio o el simulador local para recibir telemetría cardíaca en directo.
+              Inicia el emulador de Android Studio o la sincronización local para recibir telemetría cardíaca en directo.
             </p>
             <div class="wearable-actions-bar">
               <button type="button" class="btn-connect-wearos" (click)="conectarSmartwatch()">
-                ⚡ Conectar / Simular Wear OS
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>Conectar / Simular Wear OS</span>
               </button>
               <a routerLink="/perfil/dispositivos" class="btn-sub-action">
-                ⚙️ Centro de Diagnóstico
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Centro de Diagnóstico</span>
               </a>
             </div>
           </div>
