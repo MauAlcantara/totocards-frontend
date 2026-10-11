@@ -94,13 +94,70 @@
   margin-top: 10px;
 }
 
-.form-section {
+/* Columna Derecha con Dos Tarjetas Separadas */
+.perfil-cards-column {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.perfil-card {
   background-color: white;
-  padding: 40px;
+  padding: 35px;
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   border: 1px solid #edf2f7;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.title-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.title-icon.wearable-icon {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.title-text-group {
+  flex: 1;
+}
+
+.title-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.card-title-row h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-primario, #1a202c);
+}
+
+.card-title-row p {
+  margin: 4px 0 0 0;
+  font-size: 0.88rem;
+  color: #718096;
 }
 
 .form-group {
@@ -163,61 +220,139 @@
   cursor: wait;
 }
 
-/* Wearable Profile Card */
-.wearable-profile-card {
-  margin-top: 35px;
-  padding-top: 25px;
-  border-top: 1px solid #edf2f7;
+/* BANNER HERO DESTACADO: MONITOR DE EMOCIÓN EN VIVO */
+.emotion-hero-banner {
+  background: linear-gradient(135deg, #fff5f5 0%, #fffaf0 100%);
+  border: 1.5px solid #fed7d7;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 15px rgba(229, 62, 62, 0.07);
 }
 
-.wearable-card-header {
+.emotion-hero-title {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 6px;
 }
 
-.wearable-icon-badge {
-  font-size: 1.8rem;
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #e53e3e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #e53e3e;
+  animation: pulseBeacon 1.2s infinite ease-in-out;
 }
 
-.wearable-card-header h4 {
-  margin: 0 0 4px 0;
+@keyframes pulseBeacon {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+}
+
+.emotion-hero-title h4 {
+  margin: 0;
   font-size: 1.15rem;
-  color: var(--color-primario);
+  font-weight: 800;
+  color: #c53030;
 }
 
-.wearable-card-header p {
+.emotion-hero-content p {
   margin: 0;
   font-size: 0.88rem;
-  color: #718096;
+  color: #742a2a;
+  line-height: 1.4;
+  max-width: 440px;
 }
 
-.wearable-card-body {
+.btn-hero-monitor {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  color: white !important;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 12px 22px;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(229, 62, 62, 0.35);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-hero-monitor:hover {
+  background: linear-gradient(135deg, #c53030, #9b2c2c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(229, 62, 62, 0.45);
+}
+
+.hero-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-hero-monitor:hover .hero-arrow {
+  transform: translateX(4px);
+}
+
+/* DETALLES DE TELEMETRÍA Y ACCIONES DE DISPOSITIVO */
+.wearable-details-container {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 20px;
 }
 
-.wearable-disconnected {
+.telemetry-stats {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
   gap: 15px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 110px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: #a0aec0;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #2d3748;
+}
+
+.stat-value.pulse {
+  color: #e53e3e;
+}
+
+.stat-value.small {
+  font-size: 0.95rem;
 }
 
 .status-pill {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 12px;
@@ -234,109 +369,48 @@
   color: #03543f;
 }
 
-.btn-wearable-connect {
+.wearable-actions-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-sub-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-sub-action:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.btn-connect-wearos {
   background: #2b6cb0;
   color: white;
   border: none;
   padding: 10px 18px;
   border-radius: 8px;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s ease;
 }
 
-.btn-wearable-connect:hover {
+.btn-connect-wearos:hover {
   background: #2c5282;
-}
-
-.telemetry-stats {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-}
-
-.stat-box {
-  background: white;
-  border: 1px solid #e2e8f0;
-  padding: 12px 16px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 110px;
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #a0aec0;
-  font-weight: 700;
-}
-
-.stat-value {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #2d3748;
-}
-
-.stat-value.pulse {
-  color: #e53e3e;
-}
-
-.btn-wearable-config-pill {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #2b6cb0;
-  background: #ebf8ff;
-  border: 1px solid #bee3f8;
-  padding: 6px 12px;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.btn-wearable-config-pill:hover {
-  background: #2b6cb0;
-  color: white;
-  border-color: #2b6cb0;
-}
-
-.wearable-actions-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.btn-wearable-action-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #edf2f7;
-  color: #2d3748;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.btn-wearable-action-link:hover {
-  background: #e2e8f0;
-  color: #1a202c;
-}
-
-.btn-wearable-action-link.emotion {
-  background: #feebc8;
-  color: #c05621;
-}
-
-.btn-wearable-action-link.emotion:hover {
-  background: #fbd38d;
-  color: #9c4221;
 }
 
 .btn-wearable-disconnect {
@@ -344,11 +418,12 @@
   color: #e53e3e;
   border: 1px solid #feb2b2;
   padding: 8px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  margin-left: auto;
 }
 
 .btn-wearable-disconnect:hover {
@@ -356,14 +431,35 @@
   border-color: #fc8181;
 }
 
-@media (max-width: 768px) {
+.disconnected-tip {
+  margin: 0 0 14px 0;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 850px) {
   .perfil-layout {
     flex-direction: column;
   }
 
   .avatar-section,
-  .form-section {
+  .perfil-cards-column {
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .emotion-hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-hero-monitor {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .btn-wearable-disconnect {
+    margin-left: 0;
   }
 }

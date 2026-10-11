@@ -1,11 +1,12 @@
 <main class="perfil-container">
   <div class="perfil-header">
-    <h2>Información Personal</h2>
-    <p>Administra tu información, personaliza tu foto de perfil y gestiona tus dispositivos de telemetría.</p>
+    <h2>Mi Perfil & Dispositivos</h2>
+    <p>Administra tus datos personales y gestiona tu smartwatch Wear OS para la telemetría en vivo.</p>
   </div>
 
   <div class="perfil-layout">
 
+    <!-- COLUMNA IZQUIERDA: AVATAR & ROL -->
     <div class="avatar-section">
       <div class="avatar-wrapper">
         <img
@@ -26,51 +27,72 @@
       <p class="rol-tag">Miembro Activo</p>
     </div>
 
-    <div class="form-section">
-      <form (ngSubmit)="guardarCambios()">
+    <!-- COLUMNA DERECHA: TARJETAS INDEPENDIENTES -->
+    <div class="perfil-cards-column">
 
-        <div class="form-group">
-          <label>Nombre Completo</label>
-          <input type="text" [(ngModel)]="usuario.nombre" name="nombre" required placeholder="Ej. Juan Pérez">
-        </div>
-
-        <div class="form-group">
-          <label>Correo Electrónico (No modificable)</label>
-          <input type="email" [(ngModel)]="usuario.email" name="email" disabled class="input-disabled">
-          <small>El correo está vinculado a tus compras, contacta a soporte para cambiarlo.</small>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-guardar" [disabled]="guardando">
-            {{ guardando ? 'Guardando en la bóveda...' : 'Guardar Cambios' }}
-          </button>
-        </div>
-      </form>
-
-      <!-- SECCIÓN DISPOSITIVOS & WEARABLES (IoT) -->
-      <div class="wearable-profile-card">
-        <div class="wearable-card-header">
-          <div class="wearable-icon-badge">⌚</div>
-          <div style="flex: 1;">
-            <h4>Dispositivos & Wearables</h4>
-            <p>Conecta tu reloj inteligente para monitorear tu emoción y pulsaciones en vivo.</p>
+      <!-- TARJETA 1: DATOS PERSONALES (FORMULARIO INDEPENDIENTE) -->
+      <section class="perfil-card form-card">
+        <div class="card-title-row">
+          <div class="title-icon">👤</div>
+          <div>
+            <h3>Datos de la Cuenta</h3>
+            <p>Información básica de tu perfil en TotoCards.</p>
           </div>
-          <a routerLink="/perfil/dispositivos" class="btn-wearable-config-pill" title="Configurar Gemelo Digital">
-            ⚙️ Diagnóstico & Gemelo Digital
+        </div>
+
+        <form (ngSubmit)="guardarCambios()">
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" [(ngModel)]="usuario.nombre" name="nombre" required placeholder="Ej. Juan Pérez">
+          </div>
+
+          <div class="form-group">
+            <label>Correo Electrónico (No modificable)</label>
+            <input type="email" [(ngModel)]="usuario.email" name="email" disabled class="input-disabled">
+            <small>El correo está vinculado a tus compras, contacta a soporte para cambiarlo.</small>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-guardar" [disabled]="guardando">
+              {{ guardando ? 'Guardando en la bóveda...' : 'Guardar Cambios' }}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- TARJETA 2: MONITOR DE EMOCIÓN & SMARTWATCH (TARJETA SEPARADA DEDICADA) -->
+      <section class="perfil-card wearable-card">
+        <div class="card-title-row">
+          <div class="title-icon wearable-icon">⌚</div>
+          <div class="title-text-group">
+            <div class="title-badge-wrapper">
+              <h3>Smartwatch & Monitor de Emoción</h3>
+              <span *ngIf="wearableService.conectado$ | async" class="status-pill online">🟢 Conectado</span>
+              <span *ngIf="!(wearableService.conectado$ | async)" class="status-pill offline">⚪ Sin Vincular</span>
+            </div>
+            <p>Monitorea tus latidos cardíacos en tiempo real y siente alertas hápticas al abrir sobres físicos.</p>
+          </div>
+        </div>
+
+        <!-- BANNER DESTACADO PARA EL MONITOR DE EMOCIÓN EN VIVO -->
+        <div class="emotion-hero-banner">
+          <div class="emotion-hero-content">
+            <div class="emotion-hero-title">
+              <span class="pulse-dot"></span>
+              <h4>Monitor de Emoción en Vivo</h4>
+            </div>
+            <p>Abre tus sobres frente a la pantalla y observa el tacómetro radial, curva ECG y animaciones de tensión en directo.</p>
+          </div>
+          <a routerLink="/monitor-emocion" class="btn-hero-monitor">
+            <span>Entrar al Monitor</span>
+            <span class="hero-arrow">→</span>
           </a>
         </div>
 
-        <div class="wearable-card-body">
-          <div *ngIf="!(wearableService.conectado$ | async)" class="wearable-disconnected">
-            <span class="status-pill offline">Sin vincular</span>
-            <div class="wearable-actions-row">
-              <a routerLink="/perfil/dispositivos" class="btn-wearable-connect">
-                Conectar / Simular Wear OS
-              </a>
-            </div>
-          </div>
-
-          <div *ngIf="wearableService.conectado$ | async" class="wearable-connected">
+        <!-- ESTADO DE TELEMETRÍA Y ACCIONES DE DISPOSITIVO -->
+        <div class="wearable-details-container">
+          <!-- Si el dispositivo está conectado -->
+          <div *ngIf="wearableService.conectado$ | async" class="connected-info-box">
             <div class="telemetry-stats">
               <div class="stat-box">
                 <span class="stat-label">Ritmo Cardíaco</span>
@@ -81,24 +103,38 @@
                 <span class="stat-value">🔋 {{ (wearableService.bateria$ | async) || '--' }}%</span>
               </div>
               <div class="stat-box">
-                <span class="stat-label">Estado</span>
-                <span class="status-pill online">🟢 Conectado</span>
+                <span class="stat-label">Dispositivo</span>
+                <span class="stat-value small">Wear OS XL Round</span>
               </div>
             </div>
-            <div class="wearable-actions-row">
-              <a routerLink="/perfil/dispositivos" class="btn-wearable-action-link">
-                ⚙️ Gemelo Digital
-              </a>
-              <a routerLink="/monitor-emocion" class="btn-wearable-action-link emotion">
-                💓 Monitor en Vivo
+
+            <div class="wearable-actions-bar">
+              <a routerLink="/perfil/dispositivos" class="btn-sub-action">
+                ⚙️ Diagnóstico & Gemelo Digital
               </a>
               <button type="button" class="btn-wearable-disconnect" (click)="desconectarSmartwatch()">
-                Desvincular
+                Desvincular Reloj
               </button>
             </div>
           </div>
+
+          <!-- Si el dispositivo está desconectado -->
+          <div *ngIf="!(wearableService.conectado$ | async)" class="disconnected-info-box">
+            <p class="disconnected-tip">
+              Inicia el emulador de Android Studio o el simulador local para recibir telemetría cardíaca en directo.
+            </p>
+            <div class="wearable-actions-bar">
+              <button type="button" class="btn-connect-wearos" (click)="conectarSmartwatch()">
+                ⚡ Conectar / Simular Wear OS
+              </button>
+              <a routerLink="/perfil/dispositivos" class="btn-sub-action">
+                ⚙️ Centro de Diagnóstico
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
+
+      </section>
 
     </div>
 
