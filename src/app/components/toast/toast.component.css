@@ -1,7 +1,7 @@
 .toast-container {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
+  top: 30px;
+  right: 30px;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -9,9 +9,9 @@
   border-radius: 12px;
   color: white;
   font-family: system-ui, -apple-system, sans-serif;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
   z-index: 999999;
-  animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: slideInDown 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .toast-container.success {
@@ -34,7 +34,7 @@
 .toast-content {
   font-size: 1rem;
   font-weight: 500;
-  max-width: 300px;
+  max-width: 320px;
   line-height: 1.4;
 }
 
@@ -56,14 +56,23 @@
   transform: scale(1.1);
 }
 
-@keyframes slideInRight {
+@keyframes slideInDown {
   0% {
-    transform: translateX(120%);
+    transform: translateY(-80px);
     opacity: 0;
   }
-
   100% {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .toast-container {
+    top: 15px;
+    right: 15px;
+    left: 15px;
+    padding: 14px 18px;
+    max-width: calc(100vw - 30px);
   }
 }

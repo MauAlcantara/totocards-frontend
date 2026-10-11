@@ -17,16 +17,22 @@ export interface WearableDispositivo {
   ultimaLectura: string;
 }
 
+export interface WearableNotificacion {
+  titulo: string;
+  mensaje: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class WearableService {
 
-  public bpm$ = new BehaviorSubject<number>(78);
+  public bpm$ = new BehaviorSubject<number>(0);
   public bateria$ = new BehaviorSubject<number>(100);
-  public conectado$ = new BehaviorSubject<boolean>(true);
+  public conectado$ = new BehaviorSubject<boolean>(false);
   public pulsoBasal$ = new BehaviorSubject<number>(70);
   public vibrando$ = new BehaviorSubject<boolean>(false);
+  public notificacionActiva$ = new BehaviorSubject<WearableNotificacion | null>(null);
 
   public dispositivo$ = new BehaviorSubject<WearableDispositivo>({
     nombre: 'Wear OS XL Round (Emulador)',
@@ -35,13 +41,16 @@ export class WearableService {
     protocolo: 'Bridge HTTP / 10.0.2.2 · GATT Emulado',
     latenciaLectura: '150 ms',
     bateria: 100,
-    bpm: 78,
+    bpm: 0,
     pulsoBasal: 70,
-    modo: 'MODO APERTURA',
-    ultimaLectura: 'Última lectura hace 0.2s'
+    modo: 'DESCONECTADO',
+    ultimaLectura: 'Sin conexión activa'
   });
 
+  private bpmBase: number = 0;
+  private tickOscilacion: number = 0;
   private pollingIntervalId: any = null;
+  private oscilacionIntervalId: any = null;
   private dispositivoBluetooth: any = null;
 
   constructor(
@@ -50,12 +59,13 @@ export class WearableService {
   ) {
     if (isPlatformBrowser(this.platformId)) {
       this.iniciarSincronizacionBackend();
+      this.iniciarOscilacionFisiologica();
     }
   }
 
   // Resuelve la URL correcta dinámicamente:
-  // Si estamos en localhost (navegador local), apunta a localhost:3000 donde el emulador transmite vía 10.0.2.2.
-  // Si estamos en producción (Vercel), apunta a Render.
+  // - Localhost: apunta al servidor Node.js en localhost:3000
+  // - Producción (Vercel): apunta al servidor en Render
   public getApiUrl(): string {
     if (isPlatformBrowser(this.platformId)) {
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -63,6 +73,27 @@ export class WearableService {
       }
     }
     return `${environment.apiUrl}/wearable`;
+  }
+
+  // Micro-variación fisiológica en el frontend para sensación de ritmo cardíaco dinámico y vivo
+  private iniciarOscilacionFisiologica(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.oscilacionIntervalId = setInterval(() => {
+      if (this.conectado$.getValue() && this.bpmBase > 0) {
+        this.tickOscilacion++;
+        // Variación sutil (+/- 1-2 BPM) simulando variabilidad fisiológica continua (HRV)
+        const jitter = Math.round(Math.sin(this.tickOscilacion * 0.75) * 1.5);
+        const bpmDinamico = Math.max(45, Math.min(220, this.bpmBase + jitter));
+        this.bpm$.next(bpmDinamico);
+
+        const actual = this.dispositivo$.getValue();
+        this.dispositivo$.next({
+          ...actual,
+          bpm: bpmDinamico
+        });
+      }
+    }, 1200);
   }
 
   // Zona de emoción calculada en tiempo real según los umbrales del reporte (Pág. 12)
@@ -98,40 +129,46 @@ export class WearableService {
     this.http.get<any>(`${url}/telemetria`).subscribe({
       next: (data) => {
         if (data) {
-          if (data.bpm !== undefined && data.bpm > 0) {
-            this.bpm$.next(data.bpm);
+          const estaConectado = Boolean(data.conectado);
+          this.conectado$.next(estaConectado);
+
+          if (estaConectado) {
+            if (data.bpm !== undefined && data.bpm > 0) {
+              this.bpmBase = data.bpm;
+              this.bpm$.next(data.bpm);
+            }
+          } else {
+            this.bpmBase = 0;
+            this.bpm$.next(0);
           }
+
           if (data.bateria !== undefined) {
             this.bateria$.next(data.bateria);
           }
           if (data.pulsoBasal !== undefined) {
             this.pulsoBasal$.next(data.pulsoBasal);
           }
-          if (data.conectado !== undefined) {
-            this.conectado$.next(data.conectado);
-          }
 
           const actual = this.dispositivo$.getValue();
           this.dispositivo$.next({
             ...actual,
-            bpm: data.bpm || actual.bpm,
+            bpm: estaConectado ? (data.bpm || actual.bpm) : 0,
             bateria: data.bateria !== undefined ? data.bateria : actual.bateria,
-            pulsoBasal: data.pulsoBasal || actual.pulsoBasal,
-            modo: data.modo || actual.modo,
+            pulsoBasal: data.pulsoBasal !== undefined ? data.pulsoBasal : actual.pulsoBasal,
+            modo: estaConectado ? (data.modo || 'MODO APERTURA') : 'DESCONECTADO',
             dispositivo: data.dispositivo || actual.nombre,
-            ultimaLectura: `Sincronizado: ${new Date().toLocaleTimeString()}`
+            ultimaLectura: estaConectado ? `Sincronizado: ${new Date().toLocaleTimeString()}` : 'Desconectado'
           } as any);
         }
       },
-      error: () => {
-        // En caso de que el backend no responda temporalmente, no bloqueamos el siguiente sondeo
-      }
+      error: () => {}
     });
   }
 
   // Ajustar BPM manualmente (útil para pruebas en vivo y demostración de zonas de emoción)
   public ajustarBpmManual(nuevoBpm: number): void {
     const bpmLimpio = Math.max(40, Math.min(200, Math.round(nuevoBpm)));
+    this.bpmBase = bpmLimpio;
     this.bpm$.next(bpmLimpio);
 
     const actual = this.dispositivo$.getValue();
@@ -146,9 +183,19 @@ export class WearableService {
   // Disparar prueba de vibración háptica en el reloj (Práctica 1 y 4)
   public probarVibracion(): Observable<any> {
     this.vibrando$.next(true);
+    this.notificacionActiva$.next({
+      titulo: 'Prueba Háptica',
+      mensaje: 'Vibración detonada desde TotoCards Web'
+    });
+
     setTimeout(() => this.vibrando$.next(false), 1200);
+    setTimeout(() => this.notificacionActiva$.next(null), 4000);
 
     return this.http.post(`${this.getApiUrl()}/vibrar`, {});
+  }
+
+  public limpiarNotificacion(): void {
+    this.notificacionActiva$.next(null);
   }
 
   // Recalibrar pulso basal (Pág. 11 y 12 del reporte)
@@ -164,16 +211,26 @@ export class WearableService {
 
   // Enviar notificación al smartwatch (ej. compra confirmada o carta rara)
   public enviarNotificacionWearable(titulo: string, mensaje: string, icono: string = 'alerta'): Observable<any> {
+    this.notificacionActiva$.next({ titulo, mensaje });
+    setTimeout(() => this.notificacionActiva$.next(null), 4000);
+
     return this.http.post(`${this.getApiUrl()}/notificacion`, { titulo, mensaje, icono, vibrar: true });
   }
 
   // Conectar con el emulador de Wear OS
   public conectarWearOs(): void {
     this.conectado$.next(true);
-    if (this.bpm$.getValue() === 0) {
-      this.bpm$.next(78);
-    }
+    this.bpmBase = 78;
+    this.bpm$.next(78);
     this.bateria$.next(100);
+
+    const actual = this.dispositivo$.getValue();
+    this.dispositivo$.next({
+      ...actual,
+      bpm: 78,
+      modo: 'MODO APERTURA',
+      ultimaLectura: `Vinculado: ${new Date().toLocaleTimeString()}`
+    });
 
     this.http.post(`${this.getApiUrl()}/estado`, { conectado: true }).subscribe({
       error: () => {}
@@ -193,7 +250,16 @@ export class WearableService {
     this.dispositivoBluetooth = null;
 
     this.conectado$.next(false);
+    this.bpmBase = 0;
     this.bpm$.next(0);
+
+    const actual = this.dispositivo$.getValue();
+    this.dispositivo$.next({
+      ...actual,
+      bpm: 0,
+      modo: 'DESCONECTADO',
+      ultimaLectura: 'Desconectado'
+    });
 
     this.http.post(`${this.getApiUrl()}/estado`, { conectado: false }).subscribe({
       error: () => {}
@@ -243,6 +309,7 @@ export class WearableService {
           const val = event.target.value;
           const flags = val.getUint8(0);
           const bpm = (flags & 0x01) ? val.getUint16(1, true) : val.getUint8(1);
+          this.bpmBase = bpm;
           this.bpm$.next(bpm);
         });
       } catch (e) {

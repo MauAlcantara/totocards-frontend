@@ -6,6 +6,7 @@ import { PedidoService } from '../../services/pedido.service';
 import { CartService } from '../../services/cart.service'; 
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../services/auth.service';
+import { WearableService } from '../../services/wearable.service';
 
 @Component({
   selector: 'app-checkout',
@@ -45,6 +46,7 @@ export class CheckoutComponent implements OnInit {
     private cartService: CartService, 
     private toastService: ToastService,
     private authService: AuthService,
+    private wearableService: WearableService,
     private router: Router
   ) {
     const usuario = this.authService.obtenerUsuarioActual();
@@ -194,6 +196,13 @@ export class CheckoutComponent implements OnInit {
         this.codigoOrden = res.codigo_orden || `TCG-${String(res.id_pedido).padStart(4, '0')}`;
         this.toastService.mostrar('¡Compra asegurada con éxito!', 'success');
         this.cartService.limpiarCarrito();
+
+        // Notificación automática al Smartwatch Wear OS y Gemelo Digital
+        this.wearableService.enviarNotificacionWearable(
+          '¡Compra Exitosa!',
+          `Orden #${this.codigoOrden} por $${this.total.toFixed(2)}`,
+          'compra'
+        ).subscribe({ error: () => {} });
       },
       error: (err) => {
         this.cargando = false;
