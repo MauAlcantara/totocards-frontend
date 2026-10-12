@@ -49,6 +49,7 @@ export class WearableService {
 
   private bpmBase: number = 78;
   private tickOscilacion: number = 0;
+  private ultimoUpdateRemoto: number = 0;
   private pollingIntervalId: any = null;
   private oscilacionIntervalId: any = null;
   private dispositivoBluetooth: any = null;
@@ -75,14 +76,17 @@ export class WearableService {
     return `${environment.apiUrl}/wearable`;
   }
 
-  // Micro-variación fisiológica en el frontend para sensación de ritmo cardíaco dinámico y vivo
+  // Micro-variación fisiológica en el frontend cuando no hay telemetría viva remota activa
   private iniciarOscilacionFisiologica(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.oscilacionIntervalId = setInterval(() => {
-      if (this.conectado$.getValue() && this.bpmBase > 0) {
+      // Si recibimos lecturas vivas del emulador hace menos de 2.5s, no sobreescribir con onda artificial
+      const ahora = Date.now();
+      const conTelemetriaViva = (ahora - this.ultimoUpdateRemoto) < 2500;
+
+      if (!conTelemetriaViva && this.conectado$.getValue() && this.bpmBase > 0) {
         this.tickOscilacion++;
-        // Variación sutil (+/- 1-2 BPM) simulando variabilidad fisiológica continua (HRV)
         const jitter = Math.round(Math.sin(this.tickOscilacion * 0.75) * 1.5);
         const bpmDinamico = Math.max(45, Math.min(220, this.bpmBase + jitter));
         this.bpm$.next(bpmDinamico);
@@ -134,6 +138,7 @@ export class WearableService {
 
           if (estaConectado) {
             if (data.bpm !== undefined && data.bpm > 0) {
+              this.ultimoUpdateRemoto = Date.now();
               this.bpmBase = data.bpm;
               this.bpm$.next(data.bpm);
             }
