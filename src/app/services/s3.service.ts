@@ -26,9 +26,6 @@ export class S3Service {
         const subidaPromise = fetch(resFirmada.uploadUrl, {
           method: 'PUT',
           body: archivo,
-          headers: {
-            'Content-Type': archivo.type || 'image/jpeg'
-          }
         }).then(response => {
           if (!response.ok) {
             throw new Error(`Error en S3 con status ${response.status}`);
