@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { WearableService } from '../../services/wearable.service';
+import { S3Service } from '../../services/s3.service';
 
 @Component({
   selector: 'app-perfil',
@@ -16,11 +17,13 @@ import { WearableService } from '../../services/wearable.service';
 export class PerfilComponent implements OnInit {
   usuario: any = { id_usuario: '', nombre: '', email: '', avatar: '' };
   guardando: boolean = false;
+  subiendoAvatar: boolean = false;
 
   constructor(
     public authService: AuthService,
     private toastService: ToastService,
-    public wearableService: WearableService
+    public wearableService: WearableService,
+    private s3Service: S3Service
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +34,7 @@ export class PerfilComponent implements OnInit {
   }
 
   onFileSelected(event: any): void {
-    const file = event.target.files?.[0];
+    const file: File = event.target.files?.[0];
     if (!file) return;
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -41,18 +44,49 @@ export class PerfilComponent implements OnInit {
       return;
     }
 
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
     if (file.size > maxSizeInBytes) {
-      this.toastService.mostrar('La imagen excede el límite de 2 MB. Elige una imagen más liviana.', 'error');
+      this.toastService.mostrar('La imagen excede el límite de 5 MB. Elige un archivo más ligero.', 'error');
       event.target.value = '';
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.usuario.avatar = e.target.result; 
-    };
-    reader.readAsDataURL(file);
+    this.subiendoAvatar = true;
+    this.toastService.mostrar('Cargando imagen a AWS S3...', 'info');
+
+    // Flujo AWS S3: Presigned URL -> PUT directo a S3 -> Registro de metadatos en Neon
+    this.s3Service.subirArchivo(file, this.usuario.id_usuario).subscribe({
+      next: (res: any) => {
+        const urlS3 = res.archivo?.url_publica || res.publicUrl;
+        this.usuario.avatar = urlS3;
+
+        // Persistir en el perfil del usuario inmediatamente
+        this.authService.actualizarPerfil({
+          nombre: this.usuario.nombre,
+          avatar: urlS3
+        }).subscribe({
+          next: () => {
+            this.authService.actualizarUsuarioLocal({
+              nombre: this.usuario.nombre,
+              avatar: urlS3
+            });
+            this.toastService.mostrar('Foto actualizada y alojada en AWS S3.', 'success');
+            this.subiendoAvatar = false;
+          },
+          error: (err) => {
+            console.error('Error al actualizar avatar en perfil:', err);
+            this.toastService.mostrar('Imagen subida a S3, pero hubo un detalle al actualizar el perfil.', 'info');
+            this.subiendoAvatar = false;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al subir imagen a S3:', err);
+        this.toastService.mostrar('Error al subir a AWS S3. Verifica CORS y permisos del bucket.', 'error');
+        this.subiendoAvatar = false;
+        event.target.value = '';
+      }
+    });
   }
 
   guardarCambios(): void {
