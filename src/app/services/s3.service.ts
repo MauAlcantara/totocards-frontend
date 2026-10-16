@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, switchMap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, from, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +16,29 @@ export class S3Service {
       fileType: archivo.type || 'image/jpeg'
     };
 
+    // 1. Pedir la URL preasignada al backend (aquí el interceptor sí puede mandar el Bearer token)
     return this.http.post<{ uploadUrl: string; fileKey: string; publicUrl: string }>(
       `${this.apiUrl}/presigned-url`,
       payload
     ).pipe(
+      // 2. Subir directamente a AWS S3 usando 'fetch' nativo para omitir interceptores de Angular
       switchMap((resFirmada) => {
-        // Asignamos el Content-Type del archivo
-        const headers = new HttpHeaders({
-          'Content-Type': archivo.type || 'image/jpeg'
+        const subidaPromise = fetch(resFirmada.uploadUrl, {
+          method: 'PUT',
+          body: archivo,
+          headers: {
+            'Content-Type': archivo.type || 'image/jpeg'
+          }
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`Error en S3 con status ${response.status}`);
+          }
+          return response;
         });
 
-        // Petición PUT directa al endpoint temporal de Amazon S3
-        return this.http.put(resFirmada.uploadUrl, archivo, { headers }).pipe(
+        // Convertimos la promesa de fetch en Observable
+        return from(subidaPromise).pipe(
+          // 3. Confirmar registro en PostgreSQL (Neon.tech)
           switchMap(() => {
             const metadatos = {
               s3_key: resFirmada.fileKey,
